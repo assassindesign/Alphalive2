@@ -33,7 +33,8 @@ public:
         ChannelAT,
         PitchUp,
         PitchDown,
-        Sequence
+        Sequence,
+        OSC
     };
     
     enum CurveType{
@@ -131,7 +132,7 @@ private:
     bool enabled = true;
     bool quantiseEnabled = false;
     bool reversePressure = false;
-    int velocityCurve = 0;
+    int velocityCurve = CurveType::Logarithmic;
     int pressureCurve = 0;
     int padGroup = 0;
     int midiDestination = 0;

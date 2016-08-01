@@ -24,14 +24,14 @@ class PlayablePad
         Midi = 0,
         Chord,
         Sequencer,
-        
     };
+    
 public:
     PlayablePad(PadData* dataForPad);
     ~PlayablePad();
     
     void hitPad(const int velocity);
-    void pressPad(const int pressure);
+    void pressPad(const float pressure);
     
     void setMidiNote(const int newMidiNote);
     const int getMidiNote();
@@ -42,6 +42,7 @@ public:
 private:    
     PadData* padData;
     InternalMidiRouter* router;
+    int rawVelocity;
 };
 
 #endif /* PlayablePad_hpp */

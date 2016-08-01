@@ -16,13 +16,15 @@
 #include "PadInspector.hpp"
 
 class MainContentComponent;
-class Pad : public GUIRepaintListener
+class Pad : public AppDataListener,
+            public Component
 {
 public:
     Pad(PadData* _padData, MainContentComponent &ref);
     ~Pad();
     void paint(Graphics& g) override;
     void resized()override;
+    void appDataChangeCallback() override;
     void setColour(const Colour newColour);
     void setSelected(const bool padIsSelected);
     bool getSelected();

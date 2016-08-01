@@ -14,7 +14,8 @@
 #include "GUIColours.h"
 
 
-class PadInspector : public GUIRepaintListener
+class PadInspector : public AppDataListener,
+                     public Component
 {
 public:
     
@@ -33,6 +34,7 @@ public:
     ~PadInspector();
     void paint(Graphics& g) override;
     void resized() override;
+    void appDataChangeCallback() override;
     void setPadDataToInspect(PadData* newPadData);
     void refreshData();
     
@@ -43,7 +45,7 @@ private:
     
     Rectangle<int> leftBumperBox, titleBox;
     
-    OwnedArray<ListEntry> listEntrys;
+    //OwnedArray<ListEntry> listEntrys;
     
     Slider midiNoteSlider;
     

@@ -21,7 +21,7 @@ Alphalive2Engine::~Alphalive2Engine()
 
 void Alphalive2Engine::initialise()
 {
-    midiOut = new ExternalMidiOut("Monster Sequencer");
+    midiOut = new ExternalMidiOut("Alphalive 2");
     
     router = new InternalMidiRouter(midiOut);
     

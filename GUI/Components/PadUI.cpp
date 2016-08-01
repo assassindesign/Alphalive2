@@ -54,6 +54,11 @@ void Pad::resized()
 
 }
 
+void Pad::appDataChangeCallback()
+{
+    repaint();
+}
+
 void Pad::setColour(const Colour newColour)
 {
     if (padColour != newColour)

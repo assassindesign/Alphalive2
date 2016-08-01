@@ -75,6 +75,12 @@ void ScaleView::resized()
     keyLabel.setBounds(0, 0, getWidth()/2.0, getHeight());
 }
 
+void ScaleView::appDataChangeCallback()
+{
+    repaint();
+}
+
+
 void ScaleView::buttonClicked (Button* button)
 {
     PlayableSphere* sphere = AppData::Instance()->getEnginePointer()->getSpherePointer(0);

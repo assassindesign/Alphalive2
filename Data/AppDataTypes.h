@@ -9,41 +9,135 @@
 #ifndef AppDataTypes_h
 #define AppDataTypes_h
 
-// This file contains the structs and patterns for data in the application.
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AppDataListeners.h"
 
-class AppDataFormat : public AsyncUpdater
+/*
+    Catch-all file for AppDataTypes not big enough to warrant their own files
+*/
+
+class ScaleData : public AppDataFormat
 {
 public:
-    AppDataFormat(){}
-    ~AppDataFormat()
+    ScaleData(){}
+    ~ScaleData(){};
+    
+    enum BaseKey{
+        C = 0,
+        CSharp,
+        D,
+        DSharp,
+        E,
+        F,
+        FSharp,
+        G,
+        GSharp,
+        A,
+        ASharp,
+        B
+    };
+    
+    enum DataIDs{
+        Key = 0,
+        Octave,
+        Scale
+    };
+    
+    //==GETS=======================================================
+    
+    const int getKey()
     {
-        listeners.clear();
+        return key;
     }
     
-    void addListener(GUIRepaintListener* newListener)
+    const int getOctave()
     {
-        listeners.add(newListener);
+        return octave;
     }
     
-    void removeListener(GUIRepaintListener* listenerToRemove)
+    const int getScale()
     {
-        listeners.remove(listenerToRemove);
+        return scale;
     }
     
-    void callListeners()
+    //==SETS=======================================================
+    
+    bool setKey(const int newKey)
     {
-        triggerAsyncUpdate();
+        bool success = true;
+        dataLock.enter();
+        if (newKey != key)
+        {
+            if (newKey > -1 && newKey < BaseKey::B)
+                key = newKey;
+            else
+                success = false;
+            
+        }
+        else{
+            success = false;
+        }
+        dataLock.exit();
+        
+        if(success)
+            callListeners(DataIDs::Key);
+        
+        return success;
     }
+    
+    bool setOctave(const int newOctave)
+    {
+        bool success = true;
+        dataLock.enter();
+        if (newOctave != octave)
+        {
+            if (newOctave > -3 && newOctave < 6)
+                octave = newOctave;
+            else
+                success = false;
+            
+        }
+        else
+        {
+            success = false;
+        }
+        
+        dataLock.exit();
+        
+        if (success)
+            callListeners(DataIDs::Key);
+        
+        return success;
+    }
+    
+    bool setScale(const int newScale)
+    {
+        bool success = true;
+        dataLock.enter();
+        if (newScale != scale)
+        {
+            scale = newScale;
+        }
+        else
+        {
+            jassertfalse; //value out of range
+            success = false;
+        }
+        dataLock.exit();
+        
+        if (success)
+            callListeners(DataIDs::Key);
+        
+        return success;
+    }
+    
 private:
-    void handleAsyncUpdate() override
-    {
-        listeners.call(&GUIRepaintListener::refreshUI);
-
-    }
-private:
-    ListenerList<GUIRepaintListener> listeners;
+    
+    int key = BaseKey::C;
+    int octave = 1;
+    int scale = 1;;
+    CriticalSection dataLock;
 };
+
 
 #endif /* AppDataTypes_h */

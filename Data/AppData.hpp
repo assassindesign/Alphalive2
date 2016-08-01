@@ -20,10 +20,6 @@
  */
 class Alphalive2Engine;
 
-enum AppDataType{
-    
-    
-};
 
 class AppData : public DeletedAtShutdown,
                 public ActionBroadcaster,

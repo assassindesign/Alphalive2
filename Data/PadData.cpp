@@ -152,7 +152,7 @@ void PadData::setPadID (const int newPadID)
         jassertfalse; //value out of range
     }
     dataLock.exit();
-    callListeners();
+    callListeners(DataIDs::PadID);
     
 }
 
@@ -174,7 +174,7 @@ bool PadData::setMidiNote (const int newNote)
         success = false;
     }
     dataLock.exit();
-    callListeners();
+    callListeners(DataIDs::MidiNotes);
     
     return success;
 }
@@ -212,7 +212,7 @@ bool PadData::setMidiNote (const int newNote, const int velPercentage)
         success = false;
     }
     dataLock.exit();
-    callListeners();
+    callListeners(DataIDs::MidiNotes);
     
     return success;
 }
@@ -228,7 +228,7 @@ void PadData::setPadFunction (const int newFunction)
         jassertfalse; //value out of range
     }
     dataLock.exit();
-    callListeners();
+    callListeners(DataIDs::PadFunction);
     
 }
 
@@ -245,8 +245,8 @@ bool PadData::setVelocity (const int newVel)
         succeed = false;
     }
     dataLock.exit();
-    callListeners();
-    
+    //callListeners(DataIDs::Velocity);
+    callRepaintListeners();
     return succeed;
 }
 
@@ -260,12 +260,12 @@ bool PadData::setPadPressure (const float newPressure)
         padPressure = newPressure;
     }
     else{
-        //jassertfalse; //value out of range
+        jassertfalse; //value out of range
         succeed = false;
     }
     dataLock.exit();
-    callListeners();
-    
+    //callListeners(DataIDs::Pressure);
+    callRepaintListeners();
     return succeed;
 
     
@@ -282,7 +282,7 @@ void PadData::setMidiChannel (const int newChannel)
         jassertfalse; //value out of range
     }
     dataLock.exit();
-    callListeners();
+    callListeners(DataIDs::MidiChannel);
     
 }
 
@@ -297,7 +297,7 @@ void PadData::setPressureMode(const int newMode)
         jassertfalse; //value out of range
     }
     dataLock.exit();
-    callListeners();
+    callListeners(DataIDs::PressureMode);
     
 }
 
@@ -306,7 +306,7 @@ void PadData::setSticky(const bool shouldBeSticky)
     dataLock.enter();
     sticky = shouldBeSticky;
     dataLock.exit();
-    callListeners();
+    callListeners(DataIDs::Sticky);
     
 }
 
@@ -315,7 +315,7 @@ void PadData::setEnabled(const bool shouldBeEnabled)
     dataLock.enter();
     enabled = shouldBeEnabled;
     dataLock.exit();
-    callListeners();
+    callListeners(DataIDs::Enabled);
     
 }
 void PadData::setQuantiseEnabled(const bool shouldBeQuantised)
@@ -323,7 +323,7 @@ void PadData::setQuantiseEnabled(const bool shouldBeQuantised)
     dataLock.enter();
     quantiseEnabled = shouldBeQuantised;
     dataLock.exit();
-    callListeners();
+    callListeners(DataIDs::QuantiseEnabled);
     
 }
 void PadData::setReversePressure(const bool shouldReversePressure)
@@ -331,7 +331,7 @@ void PadData::setReversePressure(const bool shouldReversePressure)
     dataLock.enter();
     reversePressure = shouldReversePressure;
     dataLock.exit();
-    callListeners();
+    callListeners(DataIDs::ReversePressure);
     
 }
     
@@ -346,7 +346,7 @@ void PadData::setVelocityCurve(const int newCurve)
         jassertfalse; //value out of range
     }
     dataLock.exit();
-    callListeners();
+    callListeners(DataIDs::VelocityCurve);
     
 }
 
@@ -360,7 +360,7 @@ void PadData::setPressureCurve(const int newCurve){
         jassertfalse; //value out of range
     }
     dataLock.exit();
-    callListeners();
+    callListeners(DataIDs::PressureCurve);
     
 }
 void PadData::setPadGroup(const int newGroup){
@@ -373,7 +373,7 @@ void PadData::setPadGroup(const int newGroup){
         jassertfalse; //value out of range
     }
     dataLock.exit();
-    callListeners();
+    callListeners(DataIDs::PadGroup);
     
 }
 
@@ -384,7 +384,7 @@ void PadData::setMidiDestination(const int newDestination)
     pressureMode = newDestination;
     
     dataLock.exit();
-    callListeners();
+    callListeners(DataIDs::MidiDestination);
 }
 
 
@@ -402,7 +402,7 @@ bool PadData::addMidiNote(const int newNote)
         success = false;
     }
     dataLock.exit();
-    callListeners();
+    callListeners(DataIDs::MidiNotes);
     
     return success;
 }
@@ -431,7 +431,7 @@ bool PadData::addMidiNote(const int newNote, const int velPercentage)
         success = false;
     }
     dataLock.exit();
-    callListeners();
+    callListeners(DataIDs::MidiNotes);
     
     return success;
 }
@@ -449,7 +449,7 @@ void PadData::removeMidiNote(const int noteToRemove)
     }
     
     dataLock.exit();
-    callListeners();
+    callListeners(DataIDs::MidiNotes);
 }
 
 void PadData::clearAllMidiNotes()
@@ -459,7 +459,7 @@ void PadData::clearAllMidiNotes()
     midiNotes.clear();
     
     dataLock.exit();
-    callListeners();
+    callListeners(DataIDs::MidiNotes);
 }
 
 //============= GETS ===========================================

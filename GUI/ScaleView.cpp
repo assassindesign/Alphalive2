@@ -38,8 +38,8 @@ ScaleView::ScaleView()
     
     scaleData = AppData::Instance()->getGlobalScaleData();
     
-    currentKey = scaleData->key;
-    currentOctave = scaleData->octave;
+    currentKey = scaleData->getKey();
+    currentOctave = scaleData->getOctave();
     scaleData->addListener(this);
     
     
@@ -56,11 +56,7 @@ ScaleView::~ScaleView()
 void ScaleView::paint(Graphics& g)
 {
     g.fillAll(Colour(GUIColours::Background));
-    currentKey = scaleData->key;
-    currentOctave = scaleData->octave;
-    currentScale =  scaleData->scale;
-
-    keyLabel.setText(labelStrings->getReference(currentKey) + String(currentOctave), dontSendNotification);
+    
 }
 
 void ScaleView::resized()
@@ -75,6 +71,16 @@ void ScaleView::resized()
     keyLabel.setBounds(0, 0, getWidth()/2.0, getHeight());
 }
 
+void ScaleView::appDataChangeCallback(const int changedData)
+{
+    currentKey = scaleData->getKey();
+    currentOctave = scaleData->getOctave();
+    currentScale =  scaleData->getScale();
+    
+    keyLabel.setText(labelStrings->getReference(currentKey) + String(currentOctave), dontSendNotification);
+}
+
+
 void ScaleView::buttonClicked (Button* button)
 {
     PlayableSphere* sphere = AppData::Instance()->getEnginePointer()->getSpherePointer(0);
@@ -88,9 +94,7 @@ void ScaleView::buttonClicked (Button* button)
         }
         
         //keyLabel.setText(labelStrings->getReference(currentKey) + String(currentOctave), dontSendNotification);
-        sphere->transposeMidiByNote(1);
-        AppData::Instance()->getGlobalScaleData()->callListeners();
-        AppData::Instance()->getGlobalScaleData()->callListeners();
+        sphere->transposeMidiByNote(1);       
 
         //repaint();
     }
@@ -105,8 +109,7 @@ void ScaleView::buttonClicked (Button* button)
         
         //keyLabel.setText(labelStrings->getReference(currentKey) + String(currentOctave), dontSendNotification);
         sphere->transposeMidiByNote(-1);
-        AppData::Instance()->getGlobalScaleData()->key = currentKey;
-        AppData::Instance()->getGlobalScaleData()->callListeners();
+        AppData::Instance()->getGlobalScaleData()->setKey(currentKey);
 
     }
     else if (button == &octPlusButton)

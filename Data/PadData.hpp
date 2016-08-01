@@ -43,6 +43,25 @@ public:
         StaticCurve
     };
     
+    enum DataIDs{
+        RefreshAll = 0,
+        PadID,
+        MidiNotes,
+        PadFunction,
+        Velocity,
+        Pressure,
+        MidiChannel,
+        PressureMode,
+        Sticky,
+        Enabled,
+        QuantiseEnabled,
+        ReversePressure,
+        VelocityCurve,
+        PressureCurve,
+        PadGroup,
+        MidiDestination
+    };
+    
     struct MidiNote{
         int noteNumber = 0;
         int velocityPercentage = 100;

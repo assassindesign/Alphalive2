@@ -59,6 +59,12 @@ void PlayablePad::hitPad(const int velocity)
 
 void PlayablePad::pressPad(const int pressure)
 {
+    if (padData->setPadPressure(pressure))
+    {
+        MidiMessage message;
+        message = MidiMessage::aftertouchChange(padData->getMidiChannel(), padData->getMidiNote(), pressure);
+        router->sendMidiToDestination(InternalMidiRouter::MidiOut, &message);
+    }
     
 }
 

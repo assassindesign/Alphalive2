@@ -12,11 +12,11 @@ PadInspector::PadInspector()
 {
     padDataToInspect = nullptr;
     backgroundColour = Colour(GUIColours::Background).withBrightness(Colour(GUIColours::Background).getBrightness()+0.05);
-    for (int i = 0; i < 10; i++)
-    {
-        listEntrys.add(new ListEntry());
-        addAndMakeVisible(listEntrys.getLast());
-    }
+//    for (int i = 0; i < 10; i++)
+//    {
+//        listEntrys.add(new ListEntry());
+//        addAndMakeVisible(listEntrys.getLast());
+//    }
     
     midiNoteSlider.setRange(0, 127, 1);
     addAndMakeVisible(midiNoteSlider);
@@ -57,16 +57,16 @@ void PadInspector::resized()
     titleBox.removeFromBottom(getHeight()-20);
     
     
-    for (int i = 0; i < listEntrys.size(); i++)
-    {
-        if (i == 0) {
-            listEntrys[0]->setBounds(leftBumperBox.getRight(), titleBox.getBottom() + 5, getWidth()-leftBumperBox.getWidth(), 50);
-        }
-        else
-        {
-            listEntrys[i]->setBounds(listEntrys[i-1]->getBounds().translated(0, 52));
-        }
-    }
+//    for (int i = 0; i < listEntrys.size(); i++)
+//    {
+//        if (i == 0) {
+//            listEntrys[0]->setBounds(leftBumperBox.getRight(), titleBox.getBottom() + 5, getWidth()-leftBumperBox.getWidth(), 50);
+//        }
+//        else
+//        {
+//            listEntrys[i]->setBounds(listEntrys[i-1]->getBounds().translated(0, 52));
+//        }
+//    }
     
 }
 
@@ -89,7 +89,7 @@ void PadInspector::setPadDataToInspect(PadData* newPadData)
     }
 }
 
-void PadInspector::refreshData()
+void PadInspector::appDataChangeCallback(const int changedData)
 {
     
 }

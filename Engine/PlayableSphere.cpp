@@ -26,7 +26,7 @@ PlayableSphere::PlayableSphere(const int numPads, const int _sphereID) : sphereI
     {
         for (int i = 0; i < numPads; i++)
         {
-            playablePads.add(new PlayablePad(sphereData->padData[i]));
+            playablePads.add(new PlayablePad(sphereData->getPadData(i)));
         }
         
     }
@@ -60,11 +60,11 @@ void PlayableSphere::mapSphere(const int rootNote, const MappedScale scale, cons
 {
     
     currentRootNote = rootNote;
-    AppData::Instance()->getGlobalScaleData()->scale = currentScale = scale;
+    AppData::Instance()->getGlobalScaleData()->setScale(scale);
+    currentScale = MappedScale(AppData::Instance()->getGlobalScaleData()->getScale());
     currentRowConfig = config;
-    AppData::Instance()->getGlobalScaleData()->key = rootNote % 12;
-    AppData::Instance()->getGlobalScaleData()->octave = (rootNote/12) - 2;
-    AppData::Instance()->getGlobalScaleData()->callListeners();
+    AppData::Instance()->getGlobalScaleData()->setKey(rootNote % 12);
+    AppData::Instance()->getGlobalScaleData()->setScale((rootNote/12) - 2);
     
     int octaveCount, positionInScale;
     octaveCount = positionInScale = 0;
@@ -137,26 +137,6 @@ void PlayableSphere::mapSphere(const int rootNote, const MappedScale scale, cons
                 break;
         }
         
-        
-        //DBG(pads.getUnchecked(i)->getMidiNote());
-    }
-    if (sphereData != nullptr)
-    {
-        for (int i = 0; i < playablePads.size(); i++)
-        {
-            if (i < sphereData->padData.size())
-            {
-                //sphereData->padData[i]->setMidiNote(playablePads[i]->getMidiNote());
-                //sphereData->padData[i]->callListeners();
-
-            }
-            else
-            {
-                //mismatch between pads and padData array size?
-                jassert(false);
-            }
-        }
-
     }
 }
 
@@ -186,8 +166,6 @@ void PlayableSphere::setRowConfig(const RowConfig newConfig)
 
 void PlayableSphere::hitPad(const int padID, const int vel)
 {
-    sphereData = AppData::Instance()->getSphereData(sphereID);
-    
     if (sphereMidiEnabled)
     {
         if (padID < playablePads.size())
@@ -199,22 +177,14 @@ void PlayableSphere::hitPad(const int padID, const int vel)
 }
 void PlayableSphere::pressPad(const int padID, const float pressure)
 {
-    sphereData = AppData::Instance()->getSphereData(sphereID);
+    if (sphereMidiEnabled)
+    {
+        if (padID < playablePads.size())
+        {
+            playablePads[padID]->pressPad(pressure);
+        }
+    }
     
-    if (pressure >= 0 && pressure < 128)
-    {
-        MidiMessage message;
-        message = MidiMessage::aftertouchChange(playablePads[padID]->getMidiChannel(), playablePads[padID]->getMidiNote(), pressure);
-        router->sendMidiToDestination(InternalMidiRouter::MidiOut, &message);
-        
-        sphereData->padData[padID]->setPadPressure(pressure);
-        sphereData->padData[padID]->callListeners();
-    }
-    else
-    {
-        //jassert(false); //pressure out of range
-    }
-   
 }
 
 void PlayableSphere::midiThruToDestination (const int note, const int vel)

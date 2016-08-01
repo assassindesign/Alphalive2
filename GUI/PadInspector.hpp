@@ -34,7 +34,7 @@ public:
     ~PadInspector();
     void paint(Graphics& g) override;
     void resized() override;
-    void appDataChangeCallback() override;
+    void appDataChangeCallback(const int changedData) override;
     void setPadDataToInspect(PadData* newPadData);
     void refreshData();
     

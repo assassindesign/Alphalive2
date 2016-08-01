@@ -22,14 +22,14 @@ SphereView::SphereView(const int _sphereID, MainContentComponent &ref) : sphereI
         segmentLines.add(new Line<float>());
     }
     
-    for (int i = 0 ; i < sphereData->padData.size(); i++)
+    for (int i = 0 ; i < sphereData->getNumPadDataObjects(); i++)
     {
-        pads.add(new Pad(sphereData->padData[i], ref));
+        pads.add(new Pad(sphereData->getPadData(i), ref));
         pads.getLast()->setSize(50,50);
         
         addAndMakeVisible(pads.getLast());
         
-        sphereData->padData[i]->addListener(pads.getLast());
+        sphereData->getPadData(i)->addListener(pads.getLast());
         
         pads.getLast()->addMouseListener(this, true);
     }

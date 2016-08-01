@@ -31,40 +31,72 @@ class AppDataListener
 public:
     AppDataListener(){};
     virtual ~AppDataListener(){};
-    virtual void appDataChangeCallback() = 0;
+    virtual void appDataChangeCallback(const int changedData) = 0;
 };
 
 class AppDataFormat : public AsyncUpdater
 {
 public:
-    AppDataFormat(){}
+    AppDataFormat()
+    {
+        changedDataIDs.clear();
+    }
     ~AppDataFormat()
     {
-        listeners.clear();
+        appDataListeners.clear();
+        repaintListeners.clear();
     }
     
     void addListener(AppDataListener* newListener)
     {
-        listeners.add(newListener);
+        appDataListeners.add(newListener);
     }
     
     void removeListener(AppDataListener* listenerToRemove)
     {
-        listeners.remove(listenerToRemove);
+        appDataListeners.remove(listenerToRemove);
     }
     
-    void callListeners()
+    void addListener(GUIRepaintListener* newListener)
+    {
+        repaintListeners.add(newListener);
+    }
+    
+    void removeListener(GUIRepaintListener* listenerToRemove)
+    {
+        repaintListeners.remove(listenerToRemove);
+    }
+    
+    void callListeners(const int changedData)
+    {
+        dataLock.enter();
+        changedDataIDs.add(changedData);
+        dataLock.exit();
+        triggerAsyncUpdate();
+    }
+    
+    void callRepaintListeners()
     {
         triggerAsyncUpdate();
     }
 private:
     void handleAsyncUpdate() override
     {
-        listeners.call(&AppDataListener::appDataChangeCallback);
+        repaintListeners.call(&GUIRepaintListener::refreshUI);
+        dataLock.enter();
+        for (int i = 0; i < changedDataIDs.size(); i++)
+        {
+            appDataListeners.call(&AppDataListener::appDataChangeCallback, changedDataIDs.getUnchecked(i));
+        }
+        changedDataIDs.clearQuick();
+        dataLock.exit();
         
     }
 private:
-    ListenerList<AppDataListener> listeners;
+    ListenerList<AppDataListener> appDataListeners;
+    ListenerList<GUIRepaintListener> repaintListeners;
+    Array<int> changedDataIDs;
+    CriticalSection dataLock;
 };
 
 #endif /* AppDataListeners_h */

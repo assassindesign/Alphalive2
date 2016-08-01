@@ -31,10 +31,6 @@ public:
     }
     ~SphereData(){}
     
-    OwnedArray<PadData> padData;
-    int sphereID = -1;
-    SphereType sphereType = Empty;
-    
     ValueTree* toValueTree()
     {
         ValueTree* outputTree = new ValueTree("SphereData");
@@ -48,6 +44,33 @@ public:
         
         return outputTree;
     }
+    
+    const int getSphereID()
+    {
+        return sphereID;
+    }
+    
+    PadData* getPadData(const int forPad)
+    {
+        if (forPad > -1 && forPad < padData.size())
+        {
+            return padData.getUnchecked(forPad);
+        }
+        else
+        {
+            return nullptr;
+        }
+    }
+    
+    const int getNumPadDataObjects()
+    {
+        return padData.size();
+    }
+    
+private:
+    OwnedArray<PadData> padData;
+    int sphereID = -1;
+    SphereType sphereType = Empty;
 };
 
 class TempoData : public AppDataFormat
@@ -62,30 +85,5 @@ public:
 };
 
 
-class ScaleData : public AppDataFormat
-{
-public:
-    ScaleData(){}
-    ~ScaleData(){};
-    
-    enum BaseKey{
-        C = 0,
-        CSharp,
-        D,
-        DSharp,
-        E,
-        F,
-        FSharp,
-        G,
-        GSharp,
-        A,
-        ASharp,
-        B
-    };
-    
-    int key = BaseKey::C;
-    int octave = 1;
-    int scale = 1;;
-    
-};
+
 #endif /* SphereData_hpp */

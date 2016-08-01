@@ -89,7 +89,7 @@ void PadInspector::setPadDataToInspect(PadData* newPadData)
     }
 }
 
-void PadInspector::appDataChangeCallback()
+void PadInspector::appDataChangeCallback(const int changedData)
 {
     
 }

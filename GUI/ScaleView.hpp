@@ -14,9 +14,9 @@
 #include "AlphaLive2Engine.hpp"
 #include "NeonButton.hpp"
 
-class ScaleView : public Component,
-                  public Button::Listener,
-                  public AppDataListener
+class ScaleView : public Button::Listener,
+                  public AppDataListener,
+                  public Component
                   
 {
 public:
@@ -29,7 +29,7 @@ public:
     
     void resized() override;
     
-    void appDataChangeCallback() override;
+    void appDataChangeCallback(const int changedData) override;
     
     void buttonClicked (Button*) override;
 private:

@@ -130,7 +130,7 @@ void SphereView::paint(Graphics& g)
     {
         backgroundColour = backgroundColour.withBrightness(backgroundColour.getBrightness()+0.02);
         g.setColour(backgroundColour);
-        g.fillEllipse(segmentLines[12]->getPointAlongLine(rowRadii[i]).getX()+3, segmentLines[0]->getPointAlongLine(rowRadii[i]).getY(), rowRadii[i]*2-6, rowRadii[i]*2-6);
+        g.fillEllipse(segmentLines[12]->getPointAlongLine(rowRadii[i]).getX(), segmentLines[0]->getPointAlongLine(rowRadii[i]).getY(), rowRadii[i]*2, rowRadii[i]*2);
     }
     
     g.setColour(*new Colour(0x15FFFFFF));

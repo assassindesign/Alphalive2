@@ -11,20 +11,13 @@
 #include "AlphaSphereConnection.hpp"
 #include "AppData.hpp"
 #include "Alphalive2Engine.hpp"
+#include "ScaleValue.h"
 
 #if JUCE_LINUX
 #include <unistd.h>
 #endif // JUCE_LINUX
 
-#define MAX_PRESSURE 511
-#define MAX_VELOCITY 127.0
 
-static double scaleValue (double value, double minValue, double maxValue, double minRange, double maxRange)
-{
-    return (((maxRange - minRange) *
-             (value - minValue)) /
-            (maxValue - minValue)) + minRange;
-}
 
 //static MidiSequencerEngine* engine = AppData::Instance()->getEnginePointer();
 
@@ -46,11 +39,6 @@ AlphaSphereConnection::AlphaSphereConnection()
     #endif
 
     #endif
-
-    for (int i = 0; i < 48; i++)
-    {
-        padVelocity[i] = 0;
-    }
 
     velocityMinRange = 0;
     velocityMaxRange = 127;
@@ -100,8 +88,6 @@ void AlphaSphereConnection::hidInputCallback (int pad, int value, int velocity)
     {
         //insert pad velocity curve mapping here
         
-        if (padVelocity[recievedPad] != velocity)
-        {
 //            //exponential mapping of velocity
 //            recievedVelocity = exp((float)recievedVelocity/MAX_VELOCITY)-1;
 //            recievedVelocity = recievedVelocity * (MAX_VELOCITY/1.71828);
@@ -110,29 +96,10 @@ void AlphaSphereConnection::hidInputCallback (int pad, int value, int velocity)
 //            if (recievedVelocity > 0 && recievedVelocity < 1) //value 1 = 0.6, which is rounded to 0
 //                recievedVelocity = 1;
 
-            //logarithmic mapping of velocity
-            recievedVelocity = log(recievedVelocity+1);
-            recievedVelocity = recievedVelocity * (MAX_VELOCITY/4.85); // not sure why 4.85 here!
-            if (recievedVelocity > MAX_VELOCITY)
-                recievedVelocity = MAX_VELOCITY;
 
-            int minValue = velocityMinRange;
-            int maxValue = velocityMaxRange;
-            recievedVelocity = scaleValue (recievedVelocity, 0, 127.0, minValue, maxValue);
-
-
-            //DBG("HID Pad: " + String(recievedPad) + " with Velocity: " + String(recievedVelocity));
-            engine->hitPad(recievedPad, recievedVelocity);
-            padVelocity[recievedPad] = velocity;
-        }
-        
-        if (padPressure[recievedPad] != value)
-        {
-            engine->pressPad(pad, recievedValue);
-            padPressure[recievedPad] = recievedValue;
-        }
-
-
+        engine->hitPad(recievedPad, recievedVelocity);
+        engine->pressPad(pad, recievedValue);
+  
     }
 
 }

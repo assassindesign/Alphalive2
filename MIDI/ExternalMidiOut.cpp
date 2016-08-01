@@ -46,4 +46,5 @@ void ExternalMidiOut::setMidiChannel(const int newChannel)
 void ExternalMidiOut::handleMidiMessage(const MidiMessage* message)
 {
     midiOutput->sendMessageNow(*message);
+    
 }

@@ -23,10 +23,10 @@ MainContentComponent::MainContentComponent()
 {
     
     appData = AppData::Instance();
-    appData->setEnginePointer(new MidiSequencerEngine());
-    midiSequencerEngine = appData->getEnginePointer();
+    appData->setEnginePointer(new Alphalive2Engine());
+    alphalive2Engine = appData->getEnginePointer();
     
-    midiSequencerEngine->initialise();
+    alphalive2Engine->initialise();
     
     padInspector = new PadInspector();
     addAndMakeVisible(padInspector);

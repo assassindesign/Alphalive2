@@ -26,7 +26,7 @@ struct MidiChannelPressureHolder
     int controlChange[128];
 };
 
-class MidiSequencerEngine;
+class Alphalive2Engine;
 
 class AlphaSphereConnection : public HidComms
 {
@@ -70,7 +70,7 @@ private:
     int velocityMinRange;
     int velocityMaxRange;
     
-    MidiSequencerEngine* engine;
+    Alphalive2Engine* engine;
     
     
 };

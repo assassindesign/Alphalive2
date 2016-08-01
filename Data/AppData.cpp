@@ -36,7 +36,7 @@ AppData* AppData::Instance()
     return pInstance;
 }
 
-bool AppData::setEnginePointer(MidiSequencerEngine* newEngine = nullptr)
+bool AppData::setEnginePointer(Alphalive2Engine* newEngine = nullptr)
 {
     if (newEngine != nullptr)
     {
@@ -49,7 +49,7 @@ bool AppData::setEnginePointer(MidiSequencerEngine* newEngine = nullptr)
     }
 }
 
-MidiSequencerEngine* AppData::getEnginePointer()
+Alphalive2Engine* AppData::getEnginePointer()
 {
     return engine;
 }

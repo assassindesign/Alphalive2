@@ -10,7 +10,7 @@
 #define TempoView_hpp
 
 #include "AppData.hpp"
-#include "MidiSequencerEngine.hpp"
+#include "Alphalive2Engine.hpp"
 #include "NeonButton.hpp"
 
 class MetronomeTickerUI : public Component,
@@ -101,7 +101,7 @@ private:
     
     Slider tempoSlider;
     
-    MidiSequencerEngine* engine;
+    Alphalive2Engine* engine;
     
     MetronomeTickerUI ticker;
 };

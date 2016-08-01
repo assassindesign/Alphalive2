@@ -6,8 +6,8 @@
 //
 //
 
-#ifndef MidiSequencerEngine_hpp
-#define MidiSequencerEngine_hpp
+#ifndef Alphalive2Engine_hpp
+#define Alphalive2Engine_hpp
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PlayableSphere.hpp"
@@ -18,12 +18,12 @@
 #include "MasterClock.hpp"
 #include "AppData.hpp"
 
-class MidiSequencerEngine : public DeletedAtShutdown,
+class Alphalive2Engine : public DeletedAtShutdown,
                             public AudioAppComponent
 {
 public:
-    MidiSequencerEngine();
-    ~MidiSequencerEngine();
+    Alphalive2Engine();
+    ~Alphalive2Engine();
     
     void initialise();
     
@@ -67,4 +67,4 @@ private:
     int hIDLinkedSphere;
 };
 
-#endif /* MidiSequencerEngine_hpp */
+#endif /* Alphalive2Engine_hpp */

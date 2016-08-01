@@ -11,7 +11,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AppData.hpp"
-#include "MidiSequencerEngine.hpp"
+#include "Alphalive2Engine.hpp"
 #include "SphereView.hpp"
 #include "TempoView.hpp"
 #include "ScaleView.hpp"
@@ -36,7 +36,7 @@ public:
     
 private:
     ScopedPointer<AppData> appData;
-    ScopedPointer<MidiSequencerEngine> midiSequencerEngine;
+    ScopedPointer<Alphalive2Engine> alphalive2Engine;
     ScopedPointer<SphereView> sphereView;
     ScopedPointer<TempoView> tempoView;
     ScopedPointer<ScaleView> scaleView;

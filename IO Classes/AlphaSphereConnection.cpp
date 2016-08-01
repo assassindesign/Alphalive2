@@ -10,7 +10,7 @@
 
 #include "AlphaSphereConnection.hpp"
 #include "AppData.hpp"
-#include "MidiSequencerEngine.hpp"
+#include "Alphalive2Engine.hpp"
 
 #if JUCE_LINUX
 #include <unistd.h>

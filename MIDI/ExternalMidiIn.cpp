@@ -7,7 +7,7 @@
 //
 
 #include "ExternalMidiIn.hpp"
-#include "MidiSequencerEngine.hpp"
+#include "AlphaLive2Engine.hpp"
 
 ExternalMidiIn::ExternalMidiIn(AudioDeviceManager* globalDeviceManager)
     : startTime (Time::getMillisecondCounterHiRes() * 0.001), deviceManager(globalDeviceManager), currentMidiDevice(0)

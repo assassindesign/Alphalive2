@@ -18,7 +18,7 @@
     THIS CLASS IS A SINGLETON. 
  
  */
-class MidiSequencerEngine;
+class Alphalive2Engine;
 
 enum AppDataType{
     
@@ -34,9 +34,9 @@ public:
     
     static AppData* Instance();
     
-    bool setEnginePointer(MidiSequencerEngine* newEngine);
+    bool setEnginePointer(Alphalive2Engine* newEngine);
     
-    MidiSequencerEngine* getEnginePointer();
+    Alphalive2Engine* getEnginePointer();
     
     
     //Adds a new SphereData object to the array and returns the array index of
@@ -55,7 +55,7 @@ protected:
 private:
     
     static AppData* pInstance;
-    MidiSequencerEngine* engine;
+    Alphalive2Engine* engine;
     
     OwnedArray<SphereData> sphereDataArray;
     ScopedPointer<ScaleData> globalScaleData;

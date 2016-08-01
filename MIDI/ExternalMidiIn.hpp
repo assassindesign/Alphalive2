@@ -31,7 +31,7 @@ private:
     AudioDeviceManager* deviceManager;
     int currentMidiDevice;
     
-    MidiSequencerEngine* engine;
+    Alphalive2Engine* engine;
 };
 
 #endif /* ExternalMidiIn_hpp */

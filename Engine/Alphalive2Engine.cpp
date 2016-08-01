@@ -6,20 +6,20 @@
 //
 //
 
-#include "MidiSequencerEngine.hpp"
+#include "Alphalive2Engine.hpp"
 
 
-MidiSequencerEngine::MidiSequencerEngine()
+Alphalive2Engine::Alphalive2Engine()
 {
     
 }
 
-MidiSequencerEngine::~MidiSequencerEngine()
+Alphalive2Engine::~Alphalive2Engine()
 {
     shutdownAudio();
 }
 
-void MidiSequencerEngine::initialise()
+void Alphalive2Engine::initialise()
 {
     midiOut = new ExternalMidiOut("Monster Sequencer");
     
@@ -43,7 +43,7 @@ void MidiSequencerEngine::initialise()
 
 
 
-void MidiSequencerEngine::midiThru(const MidiMessage& message)
+void Alphalive2Engine::midiThru(const MidiMessage& message)
 {
     //DBG("MIDI MESSAGE IN");
     router->sendMidiToDestination(InternalMidiRouter::MidiDestination::MidiOut, &message);
@@ -51,14 +51,14 @@ void MidiSequencerEngine::midiThru(const MidiMessage& message)
 }
 
 
-void MidiSequencerEngine::hitPad (const int pad, const int velocity)
+void Alphalive2Engine::hitPad (const int pad, const int velocity)
 {
     //DBG("Hit Pad : " + String(pad) + " : " + String(velocity));
     spheres[hIDLinkedSphere]->hitPad(pad, velocity);
 
 }
 
-void MidiSequencerEngine::pressPad (const int pad, const int pressure)
+void Alphalive2Engine::pressPad (const int pad, const int pressure)
 {
     //DBG("Press Pad : " + String(pad) + " : " + String(pressure));
     
@@ -67,7 +67,7 @@ void MidiSequencerEngine::pressPad (const int pad, const int pressure)
 }
 
 
-void MidiSequencerEngine::setHIDLinkedSphere(const int newSphereID)
+void Alphalive2Engine::setHIDLinkedSphere(const int newSphereID)
 {
     if (newSphereID < spheres.size())
     {
@@ -79,13 +79,13 @@ void MidiSequencerEngine::setHIDLinkedSphere(const int newSphereID)
     }
 }
 
-const int MidiSequencerEngine::getHIDLinkedSphere()
+const int Alphalive2Engine::getHIDLinkedSphere()
 {
     return hIDLinkedSphere;
 }
 
 
-PlayableSphere* MidiSequencerEngine::getSpherePointer(const int sphereID)
+PlayableSphere* Alphalive2Engine::getSpherePointer(const int sphereID)
 {
     for (int i = 0; i < spheres.size(); i++)
     {
@@ -97,28 +97,28 @@ PlayableSphere* MidiSequencerEngine::getSpherePointer(const int sphereID)
     return nullptr;
 }
 
-MasterClock* MidiSequencerEngine::getMasterClockPointer()
+MasterClock* Alphalive2Engine::getMasterClockPointer()
 {
     return masterClock.get();
 }
 
-InternalMidiRouter* MidiSequencerEngine::getMidiRouterPointer()
+InternalMidiRouter* Alphalive2Engine::getMidiRouterPointer()
 {
     return router.get();
 }
 
 
-void MidiSequencerEngine::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
+void Alphalive2Engine::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
     masterClock->prepareToPlay(samplesPerBlockExpected, sampleRate);
 }
 
-void MidiSequencerEngine::releaseResources()
+void Alphalive2Engine::releaseResources()
 {
     masterClock->releaseResources();
 }
 
-void MidiSequencerEngine::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
+void Alphalive2Engine::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
     masterClock->getNextAudioBlock(bufferToFill);
 }

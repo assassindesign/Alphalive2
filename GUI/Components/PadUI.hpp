@@ -11,7 +11,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AppData.hpp"
-#include "MidiSequencerEngine.hpp"
+#include "AlphaLive2Engine.hpp"
 #include "GUIColours.h"
 #include "PadInspector.hpp"
 

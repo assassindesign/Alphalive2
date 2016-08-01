@@ -8,14 +8,13 @@
 
 #include "PlayableSphere.hpp"
 #include "MidiScales.h"
-#include "MidiSequencerEngine.hpp"
+#include "AlphaLive2Engine.hpp"
 
 PlayableSphere::PlayableSphere(const int numPads, const int _sphereID) : sphereID(_sphereID)
 {
     
     destination = InternalMidiRouter::MidiDestination::MidiOut;
     
-
     sphereData = AppData::Instance()->getSphereData(sphereID);
     
     if (sphereData == nullptr) {
@@ -35,7 +34,7 @@ PlayableSphere::PlayableSphere(const int numPads, const int _sphereID) : sphereI
     if (AppData::Instance()->getEnginePointer()->getMidiRouterPointer() != 0)
     {
         router = AppData::Instance()->getEnginePointer()->getMidiRouterPointer();
-        mapSphere(36, Hungarian, CenterRow);
+        mapSphere(36, Natural, OneRow);
         midiThruEnabled = false;
         sphereMidiEnabled = true;
 

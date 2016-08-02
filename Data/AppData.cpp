@@ -34,6 +34,45 @@ AppData* AppData::Instance()
     return pInstance;
 }
 
+
+const int AppData::createNewSphereDataObject(const int withNumPads)
+{
+    sphereDataArray.add(new SphereData(withNumPads, 48));
+    return sphereDataArray.size()-1;
+}
+
+
+//============= GETS ===========================================
+SphereData* AppData::getSphereData (const int forSphere)
+{
+    if (forSphere < sphereDataArray.size() && !sphereDataArray.isEmpty())
+    {
+        return sphereDataArray[forSphere];
+    }
+    else
+    {
+        jassert(false);
+        return nullptr;
+    }
+}
+
+Alphalive2Engine* AppData::getEnginePointer()
+{
+    return engine;
+}
+
+bool AppData::getAdvancedFeaturesEnabled()
+{
+    return advancedFeaturesEnabled;
+}
+
+AppData::PadReference AppData::getcurrentlyInspectingPad()
+{
+    return currentlyInspectingPad;
+}
+
+
+//============= SETS ===========================================
 bool AppData::setEnginePointer(Alphalive2Engine* newEngine = nullptr)
 {
     if (newEngine != nullptr)
@@ -47,26 +86,31 @@ bool AppData::setEnginePointer(Alphalive2Engine* newEngine = nullptr)
     }
 }
 
-Alphalive2Engine* AppData::getEnginePointer()
+void AppData::setAdvancedFeaturesEnabled(const bool enabled)
 {
-    return engine;
+    dataLock.enter();
+    advancedFeaturesEnabled = enabled;
+    dataLock.exit();
+    callListeners(DataIDs::AdvancedEnabled);
 }
 
-const int AppData::createNewSphereDataObject(const int withNumPads)
+bool AppData::setCurrentlyInspectingPad(const int sphereID, const int padID)
 {
-    sphereDataArray.add(new SphereData(withNumPads, 48));
-    return sphereDataArray.size()-1;
+    bool success = false;
+    if (sphereID > -1 && sphereID < sphereDataArray.size()) //if valid sphere ID
+    {
+        if (padID > -1 && padID < sphereDataArray.getUnchecked(sphereID)->getNumPadDataObjects()) //if valid pad ID
+        {
+            dataLock.enter();
+            currentlyInspectingPad.sphereID = sphereID;
+            currentlyInspectingPad.padID = padID;
+            dataLock.exit();
+            
+            callListeners(DataIDs::InspectingPad);
+        }
+    }
+    
+    
+    return success;
 }
 
-SphereData* AppData::getSphereData (const int forSphere)
-{
-    if (forSphere < sphereDataArray.size() && !sphereDataArray.isEmpty())
-    {
-        return sphereDataArray[forSphere];
-    }
-    else
-    {
-        jassert(false);
-        return nullptr;
-    }
-}

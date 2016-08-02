@@ -69,12 +69,11 @@ void Alphalive2Engine::pressPad (const int pad, const int pressure)
 
 void Alphalive2Engine::setHIDLinkedSphere(const int newSphereID)
 {
-    if (newSphereID < spheres.size())
+    if (newSphereID < spheres.size() && newSphereID > -1)
     {
         if (spheres[newSphereID] != nullptr)
         {
             hIDLinkedSphere = newSphereID;
-            
         }
     }
 }
@@ -82,6 +81,12 @@ void Alphalive2Engine::setHIDLinkedSphere(const int newSphereID)
 const int Alphalive2Engine::getHIDLinkedSphere()
 {
     return hIDLinkedSphere;
+}
+
+
+PlayableSphere* Alphalive2Engine::getHIDLinkedSpherePointer()
+{
+    return spheres[hIDLinkedSphere];
 }
 
 

@@ -15,8 +15,6 @@ AppData::AppData() : engine(nullptr)
     sphereDataArray.clear();
     createNewSphereDataObject(48);
     
-    globalScaleData = new ScaleData();
-
     //sphereDataArray.add(new SphereData(48));
 }
 
@@ -72,12 +70,6 @@ SphereData* AppData::getSphereData (const int forSphere)
         return nullptr;
     }
 }
-
-ScaleData* AppData::getGlobalScaleData()
-{
-    return globalScaleData;
-}
-
 
 void AppData::actionListenerCallback (const String& message)
 {

@@ -60,8 +60,10 @@ void PlayableSphere::mapSphere(const int rootNote, const MappedScale scale, cons
 {
     
     currentRootNote = rootNote;
-    AppData::Instance()->getGlobalScaleData()->setScale(scale);
-    currentScale = MappedScale(AppData::Instance()->getGlobalScaleData()->getScale());
+    if(sphereData->getScaleData()->setScale(scale))
+    {
+        currentScale = scale;
+    }
     currentRowConfig = config;
     AppData::Instance()->getGlobalScaleData()->setKey(rootNote % 12);
     AppData::Instance()->getGlobalScaleData()->setScale((rootNote/12) - 2);
@@ -249,6 +251,11 @@ void PlayableSphere::transposeMidiByNote(const int semiTonesToTranspose)
 {
     mapSphere(currentRootNote + semiTonesToTranspose, currentScale, currentRowConfig);
 
+}
+
+SphereData* PlayableSphere::getSphereDataObject()
+{
+    return sphereData;
 }
 
 

@@ -36,7 +36,9 @@ ScaleView::ScaleView()
     
     labelStrings = new StringArray(keyStrings);
     
-    scaleData = AppData::Instance()->getGlobalScaleData();
+    Alphalive2Engine* engine = AppData::Instance()->getEnginePointer();
+    
+    scaleData = engine->getHIDLinkedSpherePointer()->getSphereDataObject()->getScaleData();
     
     currentKey = scaleData->getKey();
     currentOctave = scaleData->getOctave();
@@ -109,7 +111,7 @@ void ScaleView::buttonClicked (Button* button)
         
         //keyLabel.setText(labelStrings->getReference(currentKey) + String(currentOctave), dontSendNotification);
         sphere->transposeMidiByNote(-1);
-        AppData::Instance()->getGlobalScaleData()->setKey(currentKey);
+        //AppData::Instance()->getGlobalScaleData()->setKey(currentKey);
 
     }
     else if (button == &octPlusButton)

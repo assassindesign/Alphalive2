@@ -21,68 +21,30 @@ public:
         Empty
     };
     
-    SphereData(int numPads = 48, const int _sphereID = -1) : sphereID(_sphereID)
-    {
-        for (int i = 0 ; i < numPads; i++)
-        {
-            padData.add(new PadData(this));
-            padData.getLast()->setPadID(i);
-        }
-    }
-    ~SphereData(){}
+    SphereData(int numPads = 48, const int _sphereID = -1);
+    ~SphereData();
     
-    ValueTree* toValueTree()
-    {
-        ValueTree* outputTree = new ValueTree("SphereData");
-        outputTree->setProperty("SphereID", sphereID, 0);
-        outputTree->setProperty("SphereType", int(sphereType), 0);
-        
-        for (int i = 0 ; i < padData.size(); i++)
-        {
-            outputTree->addChild(*padData[i]->toValueTree(), -1, 0);
-        }
-        
-        return outputTree;
-    }
+    ValueTree* toValueTree();
     
-    const int getSphereID()
-    {
-        return sphereID;
-    }
+    const int getSphereID();
     
-    PadData* getPadData(const int forPad)
-    {
-        if (forPad > -1 && forPad < padData.size())
-        {
-            return padData.getUnchecked(forPad);
-        }
-        else
-        {
-            return nullptr;
-        }
-    }
+    PadData* getPadData(const int forPad);
     
-    const int getNumPadDataObjects()
-    {
-        return padData.size();
-    }
+    const int getNumPadDataObjects();
+    
+    TempoData* getTempoData();
+    ScaleData* getScaleData();
     
 private:
     OwnedArray<PadData> padData;
     int sphereID = -1;
     SphereType sphereType = Empty;
+    
+    TempoData tempoData;
+    ScaleData scaleData;
 };
 
-class TempoData : public AppDataFormat
-{
-public:
-    TempoData(){}
-    ~TempoData(){};
-    
-    float tempo = 120;
-    int beatsPerBar = 4;
-    
-};
+
 
 
 

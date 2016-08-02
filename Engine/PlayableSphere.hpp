@@ -30,14 +30,16 @@ public:
         Natural,
         Harmonic,
         Hungarian,
-        Chromatic
+        Chromatic,
+        FINAL_SCALE
     };
     
     enum RowConfig
     {
         OneRow = 1,
         TwoRow,
-        CenterRow
+        CenterRow,
+        FINAL_ROW
     };
     
     PlayableSphere(const int numPads = 48, const int _sphereID = 0);
@@ -80,6 +82,8 @@ public:
     void transposeMidiByOctave(const int octavesToTranspose);
     
     void transposeMidiByNote(const int semiTonesToTranspose);
+    
+    SphereData* getSphereDataObject();
     
 private:
     OwnedArray<PlayablePad> playablePads;

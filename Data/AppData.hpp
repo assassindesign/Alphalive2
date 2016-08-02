@@ -42,7 +42,6 @@ public:
     
     SphereData* getSphereData (const int forSphere);
     
-    ScaleData* getGlobalScaleData();
     
     void actionListenerCallback (const String& message) override;
     
@@ -54,9 +53,7 @@ private:
     static AppData* pInstance;
     Alphalive2Engine* engine;
     
-    OwnedArray<SphereData> sphereDataArray;
-    ScopedPointer<ScaleData> globalScaleData;
-    
+    OwnedArray<SphereData> sphereDataArray;    
 };
 
 #endif /* AppData_hpp */

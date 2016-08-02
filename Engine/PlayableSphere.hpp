@@ -24,24 +24,6 @@ class PlayableSphere
 public:
     
     
-    enum MappedScale
-    {
-        Major = 1,
-        Natural,
-        Harmonic,
-        Hungarian,
-        Chromatic,
-        FINAL_SCALE
-    };
-    
-    enum RowConfig
-    {
-        OneRow = 1,
-        TwoRow,
-        CenterRow,
-        FINAL_ROW
-    };
-    
     PlayableSphere(const int numPads = 48, const int _sphereID = 0);
     
     ~PlayableSphere();
@@ -59,21 +41,20 @@ public:
     
     void setRootNote(const int newRootNote);
     
-    const int getRootNote();
     
-    const MappedScale getCurrentScale();
+    const SphereData::MappedScale getCurrentScale();
     
-    void setScale (MappedScale newScale);
+    void setScale (SphereData::MappedScale newScale);
     
-    void mapSphere(const int rootNote, const MappedScale scale, const RowConfig config);
+    void mapSphere(const int rootNote, const SphereData::MappedScale scale, const SphereData::RowConfig config);
     
-    void mapSphere(const int key, const int octave, const MappedScale scale, const RowConfig config);
+    void mapSphere(const int key, const int octave, const int scale, const int config);
 
     void setMidiThruEnabled (bool shouldBeEnabled);
     
     void setSphereMidiEnabled(bool shouldBeEnabled);
     
-    void setRowConfig(const RowConfig newConfig);
+    void setRowConfig(const SphereData::RowConfig newConfig);
     
     void setSphereID(const int newID);
     
@@ -90,14 +71,10 @@ private:
     InternalMidiRouter::MidiDestination destination;
     InternalMidiRouter* router;
     
-    int currentRootNote, currentKey, currentOctave;
-    MappedScale currentScale;
-    RowConfig currentRowConfig;
-    bool midiThruEnabled, sphereMidiEnabled;
+    int sphereID;
     
     SphereData* sphereData;
     
-    int sphereID;
 };
 
 #endif /* PlayableSphere_hpp */

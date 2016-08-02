@@ -159,22 +159,22 @@ void PadData::setPadID (const int newPadID)
 bool PadData::setMidiNote (const int newNote)
 {
     bool success = true;
-    dataLock.enter();
     if (newNote >= 0 && newNote < 128)
     {
+        dataLock.enter();
         if (midiNotes.size() == 0)
         {
             midiNotes.add(*new MidiNote());
         }
         midiNotes.getReference(0).noteNumber = newNote;
+        dataLock.exit();
+        callListeners(DataIDs::MidiNotes);
 
     }
     else{
-        jassertfalse; //value out of range
+        //jassertfalse; //value out of range
         success = false;
     }
-    dataLock.exit();
-    callListeners(DataIDs::MidiNotes);
     
     return success;
 }

@@ -112,9 +112,9 @@ void PlayablePad::pressPad(const float pressure)
     
 }
 
-void PlayablePad::setMidiNote(const int newMidiNote)
+bool PlayablePad::setMidiNote(const int newMidiNote)
 {
-    padData->setMidiNote(newMidiNote);
+    return padData->setMidiNote(newMidiNote);
 }
 
 const int PlayablePad::getMidiNote()

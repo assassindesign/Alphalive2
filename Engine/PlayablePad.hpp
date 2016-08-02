@@ -33,7 +33,7 @@ public:
     void hitPad(const int velocity);
     void pressPad(const float pressure);
     
-    void setMidiNote(const int newMidiNote);
+    bool setMidiNote(const int newMidiNote);
     const int getMidiNote();
     
     void setMidiChannel(const int newMidiChannel);

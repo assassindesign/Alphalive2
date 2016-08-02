@@ -80,8 +80,8 @@ SphereView::SphereView(const int _sphereID, MainContentComponent &ref) : sphereI
     colourSelector.setOpaque(true);
     colourSelector.setSize(300, 300);
     colourSelector.setTopLeftPosition(200, 200);
-    addAndMakeVisible(colourSelector);
-    colourSelector.addToDesktop(ComponentPeer::StyleFlags::windowHasCloseButton || ComponentPeer::StyleFlags::windowHasTitleBar);
+    //addAndMakeVisible(colourSelector);
+    //colourSelector.addToDesktop(ComponentPeer::StyleFlags::windowHasCloseButton || ComponentPeer::StyleFlags::windowHasTitleBar);
 
 
 }

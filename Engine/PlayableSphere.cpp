@@ -42,9 +42,6 @@ PlayableSphere::PlayableSphere(const int numPads, const int _sphereID) : sphereI
         //Can't route things to a router that doesn't exist..
     }
     
-   
-    
-    
 }
 
 

@@ -21,6 +21,12 @@ PadInspector::PadInspector()
     midiNoteSlider.setRange(0, 127, 1);
     addAndMakeVisible(midiNoteSlider);
     
+    addAndMakeVisible(mainInspectorPanel);
+    mainViewport.setViewedComponent(&mainInspectorPanel);
+    
+    mainViewport.setScrollBarsShown(false, false, true);
+    addAndMakeVisible(mainViewport);
+    
 }
 
 PadInspector::~PadInspector()
@@ -56,18 +62,15 @@ void PadInspector::resized()
     leftBumperBox.removeFromRight(getWidth()-10);
     titleBox.removeFromBottom(getHeight()-20);
     
+
     
-//    for (int i = 0; i < listEntrys.size(); i++)
-//    {
-//        if (i == 0) {
-//            listEntrys[0]->setBounds(leftBumperBox.getRight(), titleBox.getBottom() + 5, getWidth()-leftBumperBox.getWidth(), 50);
-//        }
-//        else
-//        {
-//            listEntrys[i]->setBounds(listEntrys[i-1]->getBounds().translated(0, 52));
-//        }
-//    }
+    mainViewportBox.setPosition(leftBumperBox.getRight(), titleBox.getBottom());
+    mainViewportBox.setSize(getWidth()-leftBumperBox.getWidth(), getHeight()-titleBox.getHeight());
     
+    
+    mainViewport.setBounds(mainViewportBox);
+    mainInspectorPanel.setSize(mainViewportBox.getWidth(), mainViewportBox.getHeight());
+
 }
 
 void PadInspector::setPadDataToInspect(PadData* newPadData)

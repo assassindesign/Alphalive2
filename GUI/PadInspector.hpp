@@ -12,7 +12,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AppData.hpp"
 #include "GUIColours.h"
-
+#include "PadInspectorPanels.hpp"
 
 class PadInspector : public AppDataListener,
                      public Component
@@ -43,13 +43,15 @@ private:
     
     Colour backgroundColour;
     
-    Rectangle<int> leftBumperBox, titleBox;
+    Rectangle<int> leftBumperBox, titleBox, mainViewportBox;
     
     //OwnedArray<ListEntry> listEntrys;
     
     Slider midiNoteSlider;
     
+    Viewport mainViewport;
     
+    MainInspectorPanel mainInspectorPanel;
     /*Midi note(s)
       Velocity
       Midi Channel

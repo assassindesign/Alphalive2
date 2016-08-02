@@ -22,9 +22,7 @@
 class Alphalive2Engine;
 
 
-class AppData : public DeletedAtShutdown,
-                public ActionBroadcaster,
-                public ActionListener
+class AppData : public DeletedAtShutdown
 {
 public:
     ~AppData();
@@ -41,9 +39,6 @@ public:
     const int createNewSphereDataObject(const int withNumPads);
     
     SphereData* getSphereData (const int forSphere);
-    
-    
-    void actionListenerCallback (const String& message) override;
     
 protected:
     AppData();

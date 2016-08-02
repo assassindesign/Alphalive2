@@ -69,9 +69,7 @@ public:
     
     void callListeners(const int changedData)
     {
-        dataLock.enter();
         changedDataIDs.add(changedData);
-        dataLock.exit();
         triggerAsyncUpdate();
     }
     
@@ -83,20 +81,20 @@ private:
     void handleAsyncUpdate() override
     {
         repaintListeners.call(&GUIRepaintListener::refreshUI);
-        dataLock.enter();
-        for (int i = 0; i < changedDataIDs.size(); i++)
+        while(changedDataIDs.size() != 0)
         {
-            appDataListeners.call(&AppDataListener::appDataChangeCallback, changedDataIDs.getUnchecked(i));
+            workingDataID = changedDataIDs.getUnchecked(0);
+            changedDataIDs.remove(0);
+            
+            appDataListeners.call(&AppDataListener::appDataChangeCallback, workingDataID);
         }
-        changedDataIDs.clearQuick();
-        dataLock.exit();
         
     }
 private:
     ListenerList<AppDataListener> appDataListeners;
     ListenerList<GUIRepaintListener> repaintListeners;
-    Array<int> changedDataIDs;
-    CriticalSection dataLock;
+    Array<int, CriticalSection> changedDataIDs;
+    int workingDataID = 0;
 };
 
 #endif /* AppDataListeners_h */

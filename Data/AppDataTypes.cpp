@@ -10,7 +10,7 @@
 //========================================================================================
 //      ScaleData
 //========================================================================================
-
+#include "SphereData.hpp"
 
 //==GETS=======================================================
 
@@ -34,23 +34,22 @@ const int ScaleData::getScale()
 bool ScaleData::setKey(const int newKey)
 {
     bool success = true;
-    dataLock.enter();
     if (newKey != key)
     {
         if (newKey > -1 && newKey < BaseKey::B)
+        {
+            dataLock.enter();
             key = newKey;
+            dataLock.exit();
+            callListeners(DataIDs::Key);
+        }
         else
+        {
+            //jassertfalse; //value out of range
             success = false;
+        }
         
     }
-    else{
-        success = false;
-    }
-    dataLock.exit();
-    
-    if(success)
-        callListeners(DataIDs::Key);
-    
     return success;
 }
 
@@ -61,20 +60,20 @@ bool ScaleData::setOctave(const int newOctave)
     if (newOctave != octave)
     {
         if (newOctave > -3 && newOctave < 6)
+        {
             octave = newOctave;
+            callListeners(DataIDs::Key);
+        }
         else
+        {
+            //jassertfalse; //value out of range
             success = false;
+
+        }
         
-    }
-    else
-    {
-        success = false;
     }
     
     dataLock.exit();
-    
-    if (success)
-        callListeners(DataIDs::Key);
     
     return success;
 }
@@ -82,20 +81,19 @@ bool ScaleData::setOctave(const int newOctave)
 bool ScaleData::setScale(const int newScale)
 {
     bool success = true;
-    dataLock.enter();
-    if (newScale != scale)
+    if (newScale > -1 && newScale < SphereData::FINAL_SCALE)
     {
+        dataLock.enter();
         scale = newScale;
+        callListeners(DataIDs::Scale);
+        dataLock.exit();
     }
     else
     {
-        jassertfalse; //value out of range
+        //jassertfalse; //value out of range
         success = false;
     }
-    dataLock.exit();
     
-    if (success)
-        callListeners(DataIDs::Key);
     
     return success;
 }

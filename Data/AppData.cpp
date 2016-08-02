@@ -70,8 +70,3 @@ SphereData* AppData::getSphereData (const int forSphere)
         return nullptr;
     }
 }
-
-void AppData::actionListenerCallback (const String& message)
-{
-    
-}

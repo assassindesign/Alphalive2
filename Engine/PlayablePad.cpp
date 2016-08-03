@@ -98,7 +98,7 @@ void PlayablePad::pressPad(const float pressure)
         {
             receivedPressure = (pressure / 511.0) * 127.0;
             
-            if (padData->setPadPressure(receivedPressure) == true);
+            if (padData->setPadPressure(receivedPressure));
             {
                 MidiMessage message;
                 message = MidiMessage::aftertouchChange(padData->getMidiChannel(), padData->getMidiNote(), receivedPressure);

@@ -18,14 +18,14 @@ class InspectorTopPanel : public Component,
                           public AppDataListener
 {
 public:
-    class AudioPanel : public AppDataListener
+    class MidiPanel : public AppDataListener
     {
     public:
-        AudioPanel()
+        MidiPanel()
         {
             
         }
-        ~AudioPanel(){}
+        ~MidiPanel(){}
         void resized(){}
         void paint(Graphics& g){}
     private:

@@ -141,24 +141,29 @@ bool PadData::fromValueTree(ValueTree* treeToImport)
 
 //============= SETS ===========================================
 
-void PadData::setPadID (const int newPadID)
+bool PadData::setPadID (const int newPadID)
 {
-    dataLock.enter();
+    bool success = false;
     if (newPadID >= 0)
     {
+        dataLock.enter();
         padID = newPadID;
+        dataLock.exit();
+        
+        callListeners(DataIDs::PadID);
+        success = true;
     }
     else{
         jassertfalse; //value out of range
     }
-    dataLock.exit();
-    callListeners(DataIDs::PadID);
+    
+    return success;
     
 }
 
 bool PadData::setMidiNote (const int newNote)
 {
-    bool success = true;
+    bool success = false;
     if (newNote >= 0 && newNote < 128)
     {
         dataLock.enter();
@@ -168,12 +173,12 @@ bool PadData::setMidiNote (const int newNote)
         }
         midiNotes.getReference(0).noteNumber = newNote;
         dataLock.exit();
-        callListeners(DataIDs::MidiNotes);
 
+        callListeners(DataIDs::MidiNotes);
+        success = true;
     }
     else{
         //jassertfalse; //value out of range
-        success = false;
     }
     
     return success;
@@ -181,17 +186,14 @@ bool PadData::setMidiNote (const int newNote)
 
 bool PadData::setMidiNote (const int newNote, const int velPercentage)
 {
-    bool success;
-    dataLock.enter();
+    bool success = false;
     if (newNote >= 0 && newNote < 128)
     {
+        dataLock.enter();
         if (midiNotes.size() == 0)
         {
             midiNotes.add(*new MidiNote());
-        }
-        else
-        {
-            success = false;
+            success = true;
         }
         
         midiNotes.getReference(0).noteNumber = newNote;
@@ -202,103 +204,117 @@ bool PadData::setMidiNote (const int newNote, const int velPercentage)
         }
         else
         {
+            jassertfalse; //percentages are between 0-100...
             success = false;
         }
         
+        dataLock.exit();
+        callListeners(DataIDs::MidiNotes);
 
     }
     else{
         jassertfalse; //value out of range
         success = false;
     }
-    dataLock.exit();
-    callListeners(DataIDs::MidiNotes);
     
     return success;
 }
 
-void PadData::setPadFunction (const int newFunction)
+bool PadData::setPadFunction (const int newFunction)
 {
-    dataLock.enter();
+    bool success = false;
     if (newFunction >= 0 && newFunction <= Controller)
     {
+        dataLock.enter();
         padFunction = newFunction;
+        dataLock.exit();
+        
+        callListeners(DataIDs::PadFunction);
+        success = true;
     }
     else{
         jassertfalse; //value out of range
     }
-    dataLock.exit();
-    callListeners(DataIDs::PadFunction);
-    
+    return success;
 }
 
 bool PadData::setVelocity (const int newVel)
 {
-    bool succeed = true;
-    dataLock.enter();
+    bool success = false;
     if (newVel >= 0 && newVel < 128)
     {
+        dataLock.enter();
         velocity = newVel;
+        dataLock.exit();
+        
+        callRepaintListeners();
+        success = true;
+        
     }
     else{
-        //jassertfalse; //value out of range
-        succeed = false;
+        jassertfalse; //value out of range
     }
-    dataLock.exit();
     //callListeners(DataIDs::Velocity);
-    callRepaintListeners();
-    return succeed;
+    return success;
 }
 
 bool PadData::setPadPressure (const float newPressure)
 {
-    bool succeed = true;
+    bool succeed = false;
 
-    dataLock.enter();
     if (newPressure >= 0 && newPressure < 128)
     {
+        dataLock.enter();
         padPressure = newPressure;
+        dataLock.exit();
+        //callListeners(DataIDs::Pressure);
+        callRepaintListeners();
+        succeed = true;
     }
     else{
         jassertfalse; //value out of range
-        succeed = false;
     }
-    dataLock.exit();
-    //callListeners(DataIDs::Pressure);
-    callRepaintListeners();
+    
     return succeed;
 
     
 }
 
-void PadData::setMidiChannel (const int newChannel)
+bool PadData::setMidiChannel (const int newChannel)
 {
-    dataLock.enter();
+    bool success = false;
     if (newChannel >= 1 && newChannel <= 16)
     {
+        dataLock.enter();
         midiChannel = newChannel;
+        dataLock.exit();
+        
+        callListeners(DataIDs::MidiChannel);
+        success = true;
+
     }
     else{
         jassertfalse; //value out of range
     }
-    dataLock.exit();
-    callListeners(DataIDs::MidiChannel);
-    
+    return success;
 }
 
-void PadData::setPressureMode(const int newMode)
+bool PadData::setPressureMode(const int newMode)
 {
-    dataLock.enter();
+    bool success = false;
     if (newMode >= 0 && newMode <= Sequence)
     {
+        dataLock.enter();
         pressureMode = newMode;
+        dataLock.exit();
+        callListeners(DataIDs::PressureMode);
+        success = true;
     }
     else{
         jassertfalse; //value out of range
     }
-    dataLock.exit();
-    callListeners(DataIDs::PressureMode);
-    
+
+    return success;
 }
 
 void PadData::setSticky(const bool shouldBeSticky)
@@ -335,56 +351,76 @@ void PadData::setReversePressure(const bool shouldReversePressure)
     
 }
     
-void PadData::setVelocityCurve(const int newCurve)
+bool PadData::setVelocityCurve(const int newCurve)
 {
-    dataLock.enter();
+    bool success = false;
     if (newCurve >= 0 && newCurve <= CurveType::StaticCurve)
     {
+        dataLock.enter();
         pressureMode = newCurve;
+        dataLock.exit();
+        callListeners(DataIDs::VelocityCurve);
+        success = true;
     }
     else{
         jassertfalse; //value out of range
     }
-    dataLock.exit();
-    callListeners(DataIDs::VelocityCurve);
+    return success;
     
 }
 
-void PadData::setPressureCurve(const int newCurve){
-    dataLock.enter();
+bool PadData::setPressureCurve(const int newCurve)
+{
+    bool success = false;
     if (newCurve >= 0 && newCurve <= CurveType::Logarithmic)
     {
+        dataLock.enter();
         pressureMode = newCurve;
+        dataLock.exit();
+        callListeners(DataIDs::PressureCurve);
+        success = true;
     }
     else{
         jassertfalse; //value out of range
     }
-    dataLock.exit();
-    callListeners(DataIDs::PressureCurve);
+    return success;
     
 }
-void PadData::setPadGroup(const int newGroup){
-    dataLock.enter();
+bool PadData::setPadGroup(const int newGroup)
+{
+    bool success = false;
     if (newGroup >= 0 && newGroup <= MAX_GROUPS)
     {
+        dataLock.enter();
         pressureMode = newGroup;
+        dataLock.exit();
+        callListeners(DataIDs::PadGroup);
+        success = true;
     }
     else{
         jassertfalse; //value out of range
     }
-    dataLock.exit();
-    callListeners(DataIDs::PadGroup);
+    return success;
     
 }
 
-void PadData::setMidiDestination(const int newDestination)
+bool PadData::setMidiDestination(const int newDestination)
 {
-    dataLock.enter();
+    bool success = false;
     
-    pressureMode = newDestination;
-    
-    dataLock.exit();
-    callListeners(DataIDs::MidiDestination);
+    if (newDestination >= 0)
+    {
+        dataLock.enter();
+        midiDestination = newDestination;
+        dataLock.exit();
+        callListeners(DataIDs::MidiDestination);
+        success = true;
+    }
+    else
+    {
+        jassertfalse; //value out of range
+    }
+    return success;
 }
 
 
@@ -409,10 +445,11 @@ bool PadData::addMidiNote(const int newNote)
 
 bool PadData::addMidiNote(const int newNote, const int velPercentage)
 {
-    bool success;
-    dataLock.enter();
+    bool success = true;
     if (newNote >= 0 && newNote < 128)
     {
+        dataLock.enter();
+
         midiNotes.add(*new MidiNote());
         midiNotes.getReference(midiNotes.size()-1).noteNumber = newNote;
         
@@ -424,20 +461,22 @@ bool PadData::addMidiNote(const int newNote, const int velPercentage)
         {
             success = false;
         }
+        dataLock.exit();
+        callListeners(DataIDs::MidiNotes);
         
     }
     else{
         jassertfalse; //value out of range
         success = false;
     }
-    dataLock.exit();
-    callListeners(DataIDs::MidiNotes);
+
     
     return success;
 }
 
-void PadData::removeMidiNote(const int noteToRemove)
+bool PadData::removeMidiNote(const int noteToRemove)
 {
+    bool success = false;
     dataLock.enter();
     
     for (int i = 0; i < midiNotes.size(); i++)
@@ -445,11 +484,16 @@ void PadData::removeMidiNote(const int noteToRemove)
         if (midiNotes[i].noteNumber == noteToRemove)
         {
             midiNotes.remove(i);
+            success = true;
         }
     }
     
     dataLock.exit();
-    callListeners(DataIDs::MidiNotes);
+    
+    if (success)
+        callListeners(DataIDs::MidiNotes);
+    
+    return success;
 }
 
 void PadData::clearAllMidiNotes()
@@ -461,6 +505,24 @@ void PadData::clearAllMidiNotes()
     dataLock.exit();
     callListeners(DataIDs::MidiNotes);
 }
+
+bool PadData::setPadColour(const int newColour)
+{
+    bool success = false;
+    
+    if (newColour > -1 && newColour < NUM_PAD_COLOURS)
+    {
+        dataLock.enter();
+        padColour = newColour;
+        dataLock.exit();
+        
+        callListeners(DataIDs::PadColour);
+        success = true;
+    }
+
+    return success;
+}
+
 
 //============= GETS ===========================================
 int PadData::getPadID()

@@ -10,9 +10,11 @@
 #define PadData_hpp
 
 #define MAX_GROUPS 16
+#define NUM_PAD_COLOURS 26
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AppDataTypes.h"
+
 
 class SphereData;
 class PadData : public AppDataFormat
@@ -60,8 +62,12 @@ public:
         VelocityCurve,
         PressureCurve,
         PadGroup,
-        MidiDestination
+        MidiDestination,
+        PadColour
+        
     };
+    
+    constexpr static int64 PadColours[NUM_PAD_COLOURS] = {0xffffffff, 0xffff0000, 0xffff4000, 0xffff8000, 0xffffc000, 0xffffff00, 0xffc0ff00, 0xff80ff00, 0xff80ff00, 0xff40ff00, 0xff00ff00, 0xff00ff40, 0xff00ff80, 0xff00ffc0, 0xff00ffff, 0xff00c0ff, 0xff0080ff, 0xff0040ff, 0xff0000ff, 0xff4000ff, 0xff8000ff, 0xffc000ff, 0xffff00ff, 0xff0000c0, 0xff000080, 0xff000040};
     
     struct MidiNote{
         int noteNumber = 0;
@@ -75,27 +81,28 @@ public:
 
     //============= SETS ===========================================
 
-    void setPadID (const int newID);
+    bool setPadID (const int newID);
     bool setMidiNote (const int newNote);
     bool setMidiNote (const int newNote, const int velPercentage);
-    void setPadFunction (const int newFunction);
+    bool setPadFunction (const int newFunction);
     bool setVelocity (const int newVel);
     bool setPadPressure (const float newPressure);
-    void setMidiChannel (const int newChannel);
-    void setPressureMode(const int newMode);
+    bool setMidiChannel (const int newChannel);
+    bool setPressureMode(const int newMode);
     void setSticky(const bool shouldBeSticky);
     void setEnabled(const bool shouldBeEnabled);
     void setQuantiseEnabled(const bool shouldBeQuantised);
     void setReversePressure(const bool shouldReversePressure);
-    void setVelocityCurve(const int newCurve);
-    void setPressureCurve(const int newCurve);
-    void setPadGroup(const int newGroup);
-    void setMidiDestination(const int newDestination);
+    bool setVelocityCurve(const int newCurve);
+    bool setPressureCurve(const int newCurve);
+    bool setPadGroup(const int newGroup);
+    bool setMidiDestination(const int newDestination);
+    bool setPadColour(const int newColour);
     
     bool addMidiNote(const int newNote);
     bool addMidiNote(const int newNote, const int velPercentage);
 
-    void removeMidiNote(const int noteToRemove);
+    bool removeMidiNote(const int noteToRemove);
     void clearAllMidiNotes();
     
     //============= GETS ===========================================
@@ -116,7 +123,7 @@ public:
     int getPressureCurve();
     int getPadGroup();
     int getMidiDestination();
-    
+    int getPadColour();
     
     SphereData* getParentSphere();
 
@@ -136,7 +143,8 @@ private:
     int pressureCurve = 0;
     int padGroup = 0;
     int midiDestination = 0;
-
+    int padColour = 0;
+    
     
     SphereData* parent;
     

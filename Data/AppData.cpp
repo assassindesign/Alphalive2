@@ -71,6 +71,12 @@ AppData::PadReference AppData::getcurrentlyInspectingPad()
     return currentlyInspectingPad;
 }
 
+PadData* AppData::getCurrentlyInspectingPadPtr()
+{
+    return sphereDataArray.getUnchecked(currentlyInspectingPad.sphereID)->getPadData(currentlyInspectingPad.padID);
+}
+
+
 
 //============= SETS ===========================================
 bool AppData::setEnginePointer(Alphalive2Engine* newEngine = nullptr)
@@ -91,7 +97,7 @@ void AppData::setAdvancedFeaturesEnabled(const bool enabled)
     dataLock.enter();
     advancedFeaturesEnabled = enabled;
     dataLock.exit();
-    callListeners(DataIDs::AdvancedEnabled);
+    callListeners(DataIDs::AdvancedEnabled, AppDataFormat::AppDataType);
 }
 
 bool AppData::setCurrentlyInspectingPad(const int sphereID, const int padID)
@@ -106,7 +112,7 @@ bool AppData::setCurrentlyInspectingPad(const int sphereID, const int padID)
             currentlyInspectingPad.padID = padID;
             dataLock.exit();
             
-            callListeners(DataIDs::InspectingPad);
+            callListeners(DataIDs::InspectingPad, AppDataFormat::AppDataType);
         }
     }
     

@@ -29,7 +29,7 @@ public:
     
     void resized() override;
     
-    void appDataChangeCallback(const int changedData) override;
+    void scaleDataChangeCallback(const int changedData) override;
     
     void buttonClicked (Button*) override;
 private:

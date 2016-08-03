@@ -118,7 +118,7 @@ bool SphereData::setSphereID(const int newID)
         dataLock.enter();
         sphereID = newID;
         dataLock.exit();
-        callListeners(DataIDS::SphereID);
+        callListeners(DataIDS::SphereID, AppDataFormat::SphereDataType);
     }
     else
     {
@@ -135,7 +135,7 @@ bool SphereData::setSphereType(const int newType)
         dataLock.enter();
         sphereType = SphereType(newType);
         dataLock.exit();
-        callListeners(DataIDS::SphereTypeData);
+        callListeners(DataIDS::SphereTypeData, AppDataFormat::SphereDataType);
     }
     else
     {
@@ -152,7 +152,7 @@ bool SphereData::setRootNote(const int newRootNote)
         dataLock.enter();
         rootNote = newRootNote;
         dataLock.exit();
-        callListeners(DataIDS::RootNote);
+        callListeners(DataIDS::RootNote, AppDataFormat::SphereDataType);
     }
     else
     {
@@ -169,7 +169,7 @@ bool SphereData::setOctave(const int newOctave)
         dataLock.enter();
         octave = newOctave;
         dataLock.exit();
-        callListeners(DataIDS::Octave);
+        callListeners(DataIDS::Octave, AppDataFormat::SphereDataType);
     }
     else
     {
@@ -186,7 +186,7 @@ bool SphereData::setScale(const int newScale)
         dataLock.enter();
         scale = MappedScale(newScale);
         dataLock.exit();
-        callListeners(DataIDS::SphereID);
+        callListeners(DataIDS::SphereID, AppDataFormat::SphereDataType);
     }
     else
     {
@@ -203,7 +203,7 @@ bool SphereData::setRowConfig(const int newConfig)
         dataLock.enter();
         rowConfig = RowConfig(newConfig);
         dataLock.exit();
-        callListeners(DataIDS::RowConfigData);
+        callListeners(DataIDS::RowConfigData, AppDataFormat::SphereDataType);
     }
     else
     {

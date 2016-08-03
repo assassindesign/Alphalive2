@@ -19,13 +19,6 @@
 class PlayablePad
 {
     
-    enum PadFunction
-    {
-        Midi = 0,
-        Chord,
-        Sequencer,
-    };
-    
 public:
     PlayablePad(PadData* dataForPad);
     ~PlayablePad();

@@ -73,12 +73,13 @@ void ScaleView::resized()
     keyLabel.setBounds(0, 0, getWidth()/2.0, getHeight());
 }
 
-void ScaleView::appDataChangeCallback(const int changedData)
+void ScaleView::scaleDataChangeCallback(const int changedData)
 {
+
     currentKey = scaleData->getKey();
     currentOctave = scaleData->getOctave();
     currentScale =  scaleData->getScale();
-    
+
     keyLabel.setText(labelStrings->getReference(currentKey) + String(currentOctave), dontSendNotification);
 }
 

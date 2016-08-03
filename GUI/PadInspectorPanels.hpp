@@ -12,34 +12,28 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "GUIColours.h"
 #include "AppData.hpp"
-
+#include "MidiIPanel.hpp"
+#include "AudioIPanel.hpp"
 
 class InspectorTopPanel : public Component,
-                          public AppDataListener
+                          public AppDataListener,
+                          public Button::Listener
 {
 public:
-    class MidiPanel : public AppDataListener
-    {
-    public:
-        MidiPanel()
-        {
-            
-        }
-        ~MidiPanel(){}
-        void resized(){}
-        void paint(Graphics& g){}
-    private:
-    };
+   
     
     InspectorTopPanel()
     {
         audioButton.setButtonText("Audio");
+        audioButton.addListener(this);
         addAndMakeVisible(&audioButton);
         
         midiButton.setButtonText("MIDI");
+        midiButton.addListener(this);
         addAndMakeVisible(&midiButton);
         
         systemButton.setButtonText("System");
+        systemButton.addListener(this);
         addChildComponent(&systemButton);
         
         if (AppData::Instance()->getAdvancedFeaturesEnabled())
@@ -48,6 +42,7 @@ public:
         }
         
         AppData::Instance()->addListener(this);
+        
         //AppData::Instance()->setAdvancedFeaturesEnabled(true);
         
     }
@@ -81,7 +76,29 @@ public:
             systemButton.setVisible(AppData::Instance()->getAdvancedFeaturesEnabled());
             
         }
+       
     }
+    
+    void buttonClicked (Button* button) override
+    {
+        if (button == &audioButton)
+        {
+            //set pad mode to audio
+            AppData::Instance()->getCurrentlyInspectingPadPtr()->setPadFunction(PadData::PadFunction::Audio);
+        }
+        else if (button == &midiButton)
+        {
+            //set pad mode to midi
+            AppData::Instance()->getCurrentlyInspectingPadPtr()->setPadFunction(PadData::PadFunction::Midi);
+
+        }
+        if (button == &systemButton)
+        {
+            //set pad mode to system
+            AppData::Instance()->getCurrentlyInspectingPadPtr()->setPadFunction(PadData::PadFunction::System);
+        }
+    }
+    
 private:
     TextButton audioButton, midiButton, systemButton;
     float buttonWidth;

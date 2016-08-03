@@ -22,7 +22,6 @@ PlayablePad::PlayablePad(PadData* dataForPad)
     }
     
     router = AppData::Instance()->getEnginePointer()->getMidiRouterPointer();
-    padData->setPadFunction(Midi);
     
     rawVelocity = 0;
 
@@ -60,7 +59,7 @@ void PlayablePad::hitPad(const int velocity)
         
         //===Pad Function================================================================================
         
-        if (padData->getPadFunction() == Midi)
+        if (padData->getPadFunction() == PadData::PadMidiFunction::SingleNote)
         {
             if (padData->setVelocity(recievedVelocity))
             {
@@ -69,20 +68,24 @@ void PlayablePad::hitPad(const int velocity)
 
             }
         }
-        else if (padData->getPadFunction() == Chord)
+        else if (padData->getPadFunction() == PadData::PadMidiFunction::MultiNote)
         {
-            if (padData->setVelocity(recievedVelocity))
+            if (padData->getMultiNoteMode() == PadData::MultiNoteMode::Chord)
             {
-                Array<PadData::MidiNote> midiNoteArray = padData->getMidiNotes();
-                
-                for (int i = 0; i < midiNoteArray.size(); i++)
+                if (padData->setVelocity(recievedVelocity))
                 {
-                    MidiMessage outputMessage = MidiMessage::noteOn (padData->getMidiChannel(), midiNoteArray[i].noteNumber, uint8((100/midiNoteArray[i].velocityPercentage)*recievedVelocity));
-                    router->sendMidiToDestination(padData->getMidiDestination(), &outputMessage);
+                    Array<PadData::MidiNote> midiNoteArray = padData->getMidiNotes();
+                    
+                    for (int i = 0; i < midiNoteArray.size(); i++)
+                    {
+                        MidiMessage outputMessage = MidiMessage::noteOn (padData->getMidiChannel(), midiNoteArray[i].noteNumber, uint8((100/midiNoteArray[i].velocityPercentage)*recievedVelocity));
+                        router->sendMidiToDestination(padData->getMidiDestination(), &outputMessage);
+                    }
+                    
+                    
                 }
-                
-                
             }
+           
         }
     }
     
@@ -94,7 +97,7 @@ void PlayablePad::pressPad(const float pressure)
     
     if (pressure != padData->getPadPressure()) //avoid unneccessary processing
     {
-        if (padData->getPressureMode() != PadData::PressureMode::OSC) // if pressure mode requires value between 0-127
+        if (padData->getPressureDestination() != PadData::PressureDestination::OSC) // if pressure mode requires value between 0-127
         {
             receivedPressure = (pressure / 511.0) * 127.0;
             

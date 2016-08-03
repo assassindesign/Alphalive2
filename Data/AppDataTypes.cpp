@@ -41,7 +41,7 @@ bool ScaleData::setKey(const int newKey)
             dataLock.enter();
             key = newKey;
             dataLock.exit();
-            callListeners(DataIDs::Key);
+            callListeners(DataIDs::Key, AppDataFormat::ScaleDataType);
         }
         else
         {
@@ -62,7 +62,7 @@ bool ScaleData::setOctave(const int newOctave)
         if (newOctave > -3 && newOctave < 6)
         {
             octave = newOctave;
-            callListeners(DataIDs::Key);
+            callListeners(DataIDs::Key, AppDataFormat::ScaleDataType);
         }
         else
         {
@@ -85,7 +85,7 @@ bool ScaleData::setScale(const int newScale)
     {
         dataLock.enter();
         scale = newScale;
-        callListeners(DataIDs::Scale);
+        callListeners(DataIDs::Scale, AppDataFormat::ScaleDataType);
         dataLock.exit();
     }
     else

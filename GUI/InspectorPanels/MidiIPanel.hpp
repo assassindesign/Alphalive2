@@ -10,5 +10,22 @@
 #define MidiIPanel_hpp
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "AppData.hpp"
+
+class MidiIPanel : public AppDataListener
+{
+public:
+    MidiIPanel()
+    {
+        
+    }
+    ~MidiIPanel(){}
+    void resized(){}
+    void paint(Graphics& g)
+    {
+        g.fillAll(Colours::blue);
+    }
+private:
+};
 
 #endif /* MidiIPanel_hpp */

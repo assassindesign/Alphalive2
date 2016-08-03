@@ -9,6 +9,23 @@
 #ifndef AudioIPanel_hpp
 #define AudioIPanel_hpp
 
-#include <stdio.h>
+#include "../JuceLibraryCode/JuceHeader.h"
+#include "AppData.hpp"
+
+class AudioIPanel : public AppDataListener
+{
+public:
+    AudioIPanel()
+    {
+        
+    }
+    ~AudioIPanel(){}
+    void resized(){}
+    void paint(Graphics& g)
+    {
+        g.fillAll(Colours::red);
+    }
+private:
+};
 
 #endif /* AudioIPanel_hpp */

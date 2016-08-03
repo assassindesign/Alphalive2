@@ -57,6 +57,7 @@ public:
     //Variables
     bool getAdvancedFeaturesEnabled();
     PadReference getcurrentlyInspectingPad();
+    PadData* getCurrentlyInspectingPadPtr();
     //============= SETS ===========================================
     //Objects
     bool setEnginePointer(Alphalive2Engine* newEngine);

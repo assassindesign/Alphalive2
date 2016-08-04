@@ -11,21 +11,28 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AppData.hpp"
+#include "PadInspectorPanelBase.h"
 
-class AudioIPanel : public AppDataListener
+class AudioIPanel : public PadInspectorPanelBase
 {
 public:
     AudioIPanel()
     {
         
     }
-    ~AudioIPanel(){}
-    void resized(){}
-    void paint(Graphics& g)
+    ~AudioIPanel() {}
+    void resized() override{}
+    void paint(Graphics& g) override
     {
         g.fillAll(Colours::red);
     }
+    
+    void refreshData() override
+    {
+        
+    }
 private:
+    PadInspectorPanelBase* panel;
 };
 
 #endif /* AudioIPanel_hpp */

@@ -107,7 +107,8 @@ void Pad::mouseDown (const MouseEvent &event)
     }
     else
     {
-        padInspector->setPadDataToInspect(padData);
+        //padInspector->setPadDataToInspect(padData);
+        AppData::Instance()->setCurrentlyInspectingPad(padData->getParentSphere()->getSphereID(), padData->getPadID());
     }
  
 }

@@ -36,7 +36,6 @@ public:
     void resized() override;
     void appDataChangeCallback(const int changedData) override;
     void setPadDataToInspect(PadData* newPadData);
-    void refreshData();
     
 private:
     PadData* padDataToInspect;

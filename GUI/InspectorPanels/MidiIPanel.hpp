@@ -11,8 +11,9 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AppData.hpp"
+#include "PadInspectorPanelBase.h"
 
-class MidiIPanel : public AppDataListener
+class MidiIPanel : public PadInspectorPanelBase
 {
 public:
     MidiIPanel()
@@ -20,10 +21,20 @@ public:
         
     }
     ~MidiIPanel(){}
-    void resized(){}
-    void paint(Graphics& g)
+    void resized() override{}
+    void paint(Graphics& g) override
     {
         g.fillAll(Colours::blue);
+    }
+    
+    void refreshData() override
+    {
+        
+    }
+    
+    void padDataChangeCallback(const int changedData) override
+    {
+        
     }
 private:
 };

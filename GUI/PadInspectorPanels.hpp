@@ -14,9 +14,10 @@
 #include "AppData.hpp"
 #include "MidiIPanel.hpp"
 #include "AudioIPanel.hpp"
+#include "PadInspectorPanelBase.h"
 
-class InspectorTopPanel : public Component,
-                          public AppDataListener,
+
+class InspectorTopPanel : public PadInspectorPanelBase,
                           public Button::Listener
 {
 public:
@@ -99,12 +100,21 @@ public:
         }
     }
     
+    void refreshData() override
+    {
+        audioPanel.setDataObject(getDataObject());
+        midiPanel.setDataObject(getDataObject());
+    }
+    
+    
 private:
     TextButton audioButton, midiButton, systemButton;
     float buttonWidth;
+    AudioIPanel audioPanel;
+    MidiIPanel midiPanel;
 };
 
-class InspectorBottomPanel : public Component
+class InspectorBottomPanel : public PadInspectorPanelBase
 {
 public:
     InspectorBottomPanel(){}
@@ -119,13 +129,18 @@ public:
     {
         g.fillAll(Colour(GUIColours::Background).brighter());
     }
+    
+    void refreshData() override
+    {
+        
+    }
 private:
     
     
 };
 
 
-class MainInspectorPanel : public Component
+class MainInspectorPanel : public PadInspectorPanelBase
 {
 public:
     MainInspectorPanel()
@@ -144,6 +159,12 @@ public:
     void paint (Graphics& g) override
     {
         g.fillAll(Colour(GUIColours::Background));
+    }
+    
+    void refreshData() override
+    {
+        top.setDataObject(getDataObject());
+        bottom.setDataObject(getDataObject());
     }
 private:
     InspectorTopPanel top;

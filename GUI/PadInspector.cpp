@@ -27,6 +27,8 @@ PadInspector::PadInspector()
     mainViewport.setScrollBarsShown(false, false, true);
     addAndMakeVisible(mainViewport);
     
+    AppData::Instance()->addListener(this);
+    
 }
 
 PadInspector::~PadInspector()
@@ -94,5 +96,11 @@ void PadInspector::setPadDataToInspect(PadData* newPadData)
 
 void PadInspector::appDataChangeCallback(const int changedData)
 {
-    
+    if (changedData == AppData::DataIDs::InspectingPad)
+    {
+        padDataToInspect = AppData::Instance()->getCurrentlyInspectingPadPtr();
+        
+        mainInspectorPanel.setDataObject(padDataToInspect);
+        
+    }
 }

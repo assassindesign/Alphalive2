@@ -138,6 +138,10 @@ bool PadData::fromValueTree(ValueTree* treeToImport)
 }
 
 
+SphereData* PadData::getParentSphere()
+{
+    return parent;
+}
 
 //============= SETS ===========================================
 
@@ -326,7 +330,6 @@ bool PadData::setVelocity (const int newVel)
     else{
         jassertfalse; //value out of range
     }
-    //callListeners(DataIDs::Velocity);
     return success;
 }
 

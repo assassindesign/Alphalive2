@@ -73,9 +73,9 @@ private:
     static AppData* pInstance;
     Alphalive2Engine* engine;
     OwnedArray<SphereData> sphereDataArray;
-    
+
     //Variables
-    bool advancedFeaturesEnabled = false;
+    bool advancedFeaturesEnabled = true;
     PadReference currentlyInspectingPad;
     CriticalSection dataLock;
 };

@@ -36,6 +36,7 @@ public:
     }
     
     virtual void refreshData() = 0;
+    
     AppDataFormat* getDataObject()
     {
         return dataObject;

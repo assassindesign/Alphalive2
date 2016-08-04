@@ -15,6 +15,8 @@
 
 SphereView::SphereView(const int _sphereID, MainContentComponent &ref) : sphereID(_sphereID), mainComponent(&ref)
 {
+    //setBufferedToImage(true);
+    
     sphereData = AppData::Instance()->getSphereData(sphereID);
     
     for (int i = 0 ; i < NUM_SEGEMENTS; i++)
@@ -334,21 +336,21 @@ void SphereView::mouseDown (const MouseEvent &event)
         {
             if (event.mods.isShiftDown())
             {
-                sourcePad->setSelected(!sourcePad->getSelected());
-                if (sourcePad->getSelected())
-                {
-                    selectedPads.add(sourcePad);
-                }
-                else
-                {
-                    for (int i = 0; i < selectedPads.size(); i++)
-                    {
-                        if (selectedPads[i] == sourcePad)
-                        {
-                            selectedPads.remove(i);
-                        }
-                    }
-                }
+//                sourcePad->setSelected(!sourcePad->getSelected());
+//                if (sourcePad->getSelected())
+//                {
+//                    selectedPads.add(sourcePad);
+//                }
+//                else
+//                {
+//                    for (int i = 0; i < selectedPads.size(); i++)
+//                    {
+//                        if (selectedPads[i] == sourcePad)
+//                        {
+//                            selectedPads.remove(i);
+//                        }
+//                    }
+//                }
             }
             else if (!event.mods.isAnyModifierKeyDown())
             {
@@ -359,6 +361,10 @@ void SphereView::mouseDown (const MouseEvent &event)
                 if (sourcePad->getSelected())
                 {
                     selectedPads.add(sourcePad);
+                }
+                else
+                {
+                    AppData::Instance()->setCurrentlyInspectingPad(-1, -1);
                 }
 
             }

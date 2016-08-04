@@ -296,6 +296,24 @@ bool PadData::setPadSystemFunction (const int newFunction)
     return success;
 }
 
+bool PadData::setNoteTriggerMode(const int newMode)
+{
+    bool success = false;
+    if (newMode >= 0 && newMode <= FINAL_SINGLENOTEMODE)
+    {
+        dataLock.enter();
+        noteTriggerMode = newMode;
+        dataLock.exit();
+        
+        callListeners(DataIDs::NoteTriggerMode, AppDataFormat::PadDataType);
+        success = true;
+    }
+    else{
+        jassertfalse; //value out of range
+    }
+    return success;
+}
+
 bool PadData::setMultiNoteMode(const int newMode)
 {
     bool success = false;
@@ -447,7 +465,7 @@ void PadData::setReversePressure(const bool shouldReversePressure)
 bool PadData::setVelocityCurve(const int newCurve)
 {
     bool success = false;
-    if (newCurve >= 0 && newCurve <= CurveType::StaticCurve)
+    if (newCurve >= 0 && newCurve <= CurveTypes::StaticCurve)
     {
         dataLock.enter();
         pressureMode = newCurve;
@@ -675,6 +693,11 @@ int PadData::getPadMidiFunction()
 int PadData::getPadSystemFunction()
 {
     return padSystemFunction;
+}
+
+int PadData::getNoteTriggerMode()
+{
+    return noteTriggerMode;
 }
 
 int PadData::getMultiNoteMode()

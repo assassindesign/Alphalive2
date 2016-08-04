@@ -42,7 +42,7 @@ void PlayablePad::hitPad(const int velocity)
         static float recievedVelocity;;
         switch (padData->getVelocityCurve())
         {
-            case PadData::CurveType::Logarithmic:
+            case PadData::CurveTypes::Logarithmic:
                 //logarithmic mapping of velocity
                 recievedVelocity = log(velocity+1);
                 recievedVelocity = recievedVelocity * (MAX_VELOCITY/4.85); // not sure why 4.85 here!
@@ -59,7 +59,7 @@ void PlayablePad::hitPad(const int velocity)
         
         //===Pad Function================================================================================
         
-        if (padData->getPadFunction() == PadData::PadMidiFunction::SingleNote)
+        if (padData->getPadFunction() == PadData::PadMidiFunctions::SingleNote)
         {
             if (padData->setVelocity(recievedVelocity))
             {
@@ -68,9 +68,9 @@ void PlayablePad::hitPad(const int velocity)
 
             }
         }
-        else if (padData->getPadFunction() == PadData::PadMidiFunction::MultiNote)
+        else if (padData->getPadFunction() == PadData::PadMidiFunctions::MultiNote)
         {
-            if (padData->getMultiNoteMode() == PadData::MultiNoteMode::Chord)
+            if (padData->getMultiNoteMode() == PadData::MultiNoteModes::Chord)
             {
                 if (padData->setVelocity(recievedVelocity))
                 {
@@ -97,7 +97,7 @@ void PlayablePad::pressPad(const float pressure)
     
     if (pressure != padData->getPadPressure()) //avoid unneccessary processing
     {
-        if (padData->getPressureDestination() != PadData::PressureDestination::OSC) // if pressure mode requires value between 0-127
+        if (padData->getPressureDestination() != PadData::PressureDestinations::OSC) // if pressure mode requires value between 0-127
         {
             receivedPressure = (pressure / 511.0) * 127.0;
             

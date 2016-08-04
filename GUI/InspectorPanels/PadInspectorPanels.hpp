@@ -14,6 +14,7 @@
 #include "AppData.hpp"
 #include "MidiIPanel.hpp"
 #include "AudioIPanel.hpp"
+#include "SystemIPanel.hpp"
 #include "PadInspectorPanelBase.h"
 
 
@@ -37,13 +38,23 @@ public:
         systemButton.addListener(this);
         addChildComponent(&systemButton);
         
+        audioButton.setEnabled(false);
+        midiButton.setEnabled(false);
+        systemButton.setEnabled(false);
+        
+        addChildComponent(audioPanel);
+        addChildComponent(midiPanel);
+        addChildComponent(sysPanel);
+
+        
         if (AppData::Instance()->getAdvancedFeaturesEnabled())
         {
             systemButton.setVisible(true);
         }
         
-        AppData::Instance()->addListener(this);
+        //padDataChangeCallback(PadData::DataIDs::PadFunction); //pull currenly inspected pad function from appdata
         
+        AppData::Instance()->addListener(this);
         //AppData::Instance()->setAdvancedFeaturesEnabled(true);
         
     }
@@ -62,6 +73,10 @@ public:
         
         if (AppData::Instance()->getAdvancedFeaturesEnabled())
             systemButton.setBounds(midiButton.getBounds().translated(buttonWidth, 0));
+        
+        audioPanel.setBounds(0, audioButton.getBottom(), getWidth(), getHeight() - audioButton.getBottom());
+        midiPanel.setBounds(audioPanel.getBounds());
+        sysPanel.setBounds(audioPanel.getBounds());
 
     }
     
@@ -75,7 +90,6 @@ public:
         if (changedData == AppData::DataIDs::AdvancedEnabled)
         {
             systemButton.setVisible(AppData::Instance()->getAdvancedFeaturesEnabled());
-            
         }
        
     }
@@ -85,11 +99,30 @@ public:
         if (changedData == PadData::DataIDs::PadFunction)
         {
             switch (AppData::Instance()->getCurrentlyInspectingPadPtr()->getPadFunction()) {
-                case PadData::PadFunction::Audio:
+                case PadData::PadFunctions::Audio:
                     audioPanel.setVisible(true);
                     midiPanel.setVisible(false);
+                    sysPanel.setVisible(false);
+                    audioButton.setToggleState(true, dontSendNotification);
+                    midiButton.setToggleState(false, dontSendNotification);
+                    systemButton.setToggleState(false, dontSendNotification);
                     break;
-                    
+                case PadData::PadFunctions::Midi:
+                    audioPanel.setVisible(false);
+                    midiPanel.setVisible(true);
+                    sysPanel.setVisible(false);
+                    audioButton.setToggleState(false, dontSendNotification);
+                    midiButton.setToggleState(true, dontSendNotification);
+                    systemButton.setToggleState(false, dontSendNotification);
+                    break;
+                case PadData::PadFunctions::System:
+                    audioPanel.setVisible(false);
+                    midiPanel.setVisible(false);
+                    sysPanel.setVisible(true);
+                    audioButton.setToggleState(false, dontSendNotification);
+                    midiButton.setToggleState(false, dontSendNotification);
+                    systemButton.setToggleState(true, dontSendNotification);
+                    break;
                 default:
                     break;
             }
@@ -102,17 +135,17 @@ public:
         if (button == &audioButton)
         {
             //set pad mode to audio
-            AppData::Instance()->getCurrentlyInspectingPadPtr()->setPadFunction(PadData::PadFunction::Audio);
+            AppData::Instance()->getCurrentlyInspectingPadPtr()->setPadFunction(PadData::PadFunctions::Audio);
         }
         else if (button == &midiButton)
         {
             //set pad mode to midi
-            AppData::Instance()->getCurrentlyInspectingPadPtr()->setPadFunction(PadData::PadFunction::Midi);
+            AppData::Instance()->getCurrentlyInspectingPadPtr()->setPadFunction(PadData::PadFunctions::Midi);
         }
         if (button == &systemButton)
         {
             //set pad mode to system
-            AppData::Instance()->getCurrentlyInspectingPadPtr()->setPadFunction(PadData::PadFunction::System);
+            AppData::Instance()->getCurrentlyInspectingPadPtr()->setPadFunction(PadData::PadFunctions::System);
         }
     }
     
@@ -120,14 +153,31 @@ public:
     {
         audioPanel.setDataObject(getDataObject());
         midiPanel.setDataObject(getDataObject());
+        padDataChangeCallback(PadData::DataIDs::PadFunction);
     }
     
+    void setPanelEnabled(bool enabled)
+    {
+        audioPanel.setVisible(enabled);
+        midiPanel.setVisible(enabled);
+        sysPanel.setVisible(enabled);
+
+        audioButton.setEnabled(enabled);
+        midiButton.setEnabled(enabled);
+        systemButton.setEnabled(enabled);
+        
+        audioButton.setToggleState(false, dontSendNotification);
+        midiButton.setToggleState(false, dontSendNotification);
+        systemButton.setToggleState(false, dontSendNotification);
+    }
     
 private:
     TextButton audioButton, midiButton, systemButton;
     float buttonWidth;
     AudioIPanel audioPanel;
     MidiIPanel midiPanel;
+    SystemIPanel sysPanel;
+    bool panelEnabled = false;
 };
 
 class InspectorBottomPanel : public PadInspectorPanelBase
@@ -150,6 +200,10 @@ public:
     {
         
     }
+    
+
+    
+
 private:
     
     
@@ -182,6 +236,16 @@ public:
         top.setDataObject(getDataObject());
         bottom.setDataObject(getDataObject());
     }
+    
+    void setTopPanelEnabled(bool enabled)
+    {
+        top.setPanelEnabled(enabled);
+        if (enabled)
+        {
+            top.AppDataListener::padDataChangeCallback(PadData::DataIDs::PadFunction);
+        }
+    }
+    
 private:
     InspectorTopPanel top;
     InspectorBottomPanel bottom;

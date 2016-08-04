@@ -73,7 +73,14 @@ AppData::PadReference AppData::getcurrentlyInspectingPad()
 
 PadData* AppData::getCurrentlyInspectingPadPtr()
 {
-    return sphereDataArray.getUnchecked(currentlyInspectingPad.sphereID)->getPadData(currentlyInspectingPad.padID);
+    if (currentlyInspectingPad.sphereID == -1 || currentlyInspectingPad.padID == -1)
+    {
+        return nullptr;
+    }
+    else
+    {
+        return sphereDataArray.getUnchecked(currentlyInspectingPad.sphereID)->getPadData(currentlyInspectingPad.padID);
+    }
 }
 
 
@@ -115,6 +122,16 @@ bool AppData::setCurrentlyInspectingPad(const int sphereID, const int padID)
             callListeners(DataIDs::InspectingPad, AppDataFormat::AppDataType);
             success = true;
         }
+    }
+    
+    if (!success)
+    {
+        dataLock.enter();
+        currentlyInspectingPad.sphereID = -1;
+        currentlyInspectingPad.padID = -1;
+        dataLock.exit();
+        
+        callListeners(DataIDs::InspectingPad, AppDataFormat::AppDataType);
     }
     
     

@@ -75,24 +75,6 @@ void PadInspector::resized()
 
 }
 
-void PadInspector::setPadDataToInspect(PadData* newPadData)
-{
-    if (newPadData != padDataToInspect)
-    {
-        if (padDataToInspect != nullptr)
-        {
-            padDataToInspect->removeListener(this);
-        }
-        
-        if (newPadData != nullptr)
-        {
-            padDataToInspect = newPadData;
-            padDataToInspect->addListener(this);
-            
-        }
-        repaint();
-    }
-}
 
 void PadInspector::appDataChangeCallback(const int changedData)
 {
@@ -100,7 +82,15 @@ void PadInspector::appDataChangeCallback(const int changedData)
     {
         padDataToInspect = AppData::Instance()->getCurrentlyInspectingPadPtr();
         
-        mainInspectorPanel.setDataObject(padDataToInspect);
+        if (padDataToInspect == nullptr)
+        {
+            mainInspectorPanel.setTopPanelEnabled(false);
+        }
+        else
+        {
+            mainInspectorPanel.setTopPanelEnabled(true);
+            mainInspectorPanel.setDataObject(padDataToInspect);
+        }
         
     }
 }

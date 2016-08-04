@@ -1,39 +1,40 @@
 //
-//  AudioIPanel.hpp
+//  SystemIPanel.hpp
 //  Alphalive 2
 //
-//  Created by Luke Saxton on 03/08/2016.
+//  Created by Luke Saxton on 04/08/2016.
 //
 //
 
-#ifndef AudioIPanel_hpp
-#define AudioIPanel_hpp
+#ifndef SystemIPanel_hpp
+#define SystemIPanel_hpp
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AppData.hpp"
 #include "PadInspectorPanelBase.h"
 
-class AudioIPanel : public PadInspectorPanelBase
+class SystemIPanel : public PadInspectorPanelBase
 {
 public:
-    AudioIPanel()
+    SystemIPanel()
     {
         
     }
-    ~AudioIPanel() {}
+    ~SystemIPanel() {}
     void resized() override{}
     void paint(Graphics& g) override
     {
-        g.fillAll(Colours::red);
+        g.fillAll(Colours::green);
     }
     
     void refreshData() override
     {
         
     }
+
+    
     
 private:
-    PadInspectorPanelBase* panel;
 };
 
-#endif /* AudioIPanel_hpp */
+#endif /* SystemIPanel_hpp */

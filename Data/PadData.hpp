@@ -21,7 +21,7 @@ class PadData : public AppDataFormat
 {
     
 public:
-    enum PadFunction
+    enum PadFunctions
     {
         Midi = 0,
         Audio,
@@ -29,7 +29,7 @@ public:
         FINAL_PADFUNCTION
     };
     
-    enum PadAudioFunction
+    enum PadAudioFunctions
     {
         OneShot = 0,
         StandardAF,
@@ -37,13 +37,13 @@ public:
         FINAL_PADAUDIOFUNCTION
     };
     
-    enum PadMidiFunction{
+    enum PadMidiFunctions{
         SingleNote = 0,
         MultiNote,
         FINAL_PADMIDIFUNCTION
     };
     
-    enum PadSystemFunction{
+    enum PadSystemFunctions{
         TransposeScene = 0,
         SwitchScene,
         MidiPgmChange,
@@ -52,20 +52,26 @@ public:
         FINAL_PADSYSFUNCTION
     };
     
-    enum MultiNoteMode{
+    enum NoteTriggerModes{
+        StandardNoteMode = 0,
+        ToggleNoteMode,
+        FINAL_SINGLENOTEMODE
+    };
+    
+    enum MultiNoteModes{
         Chord = 0,
         StepThrough,
         Arpeggiate,
         FINAL_MULTINOTEMODE
     };
     
-    enum PressureMode{
+    enum PressureModes{
         StandardPM = 0,
         LFO,
         FINAL_PRESSUREMODE
     };
     
-    enum LFOCurveType{
+    enum LFOCurveTypes{
         Sine = 0,
         Square,
         Triangle,
@@ -74,7 +80,7 @@ public:
         FINAL_LFOCURVETYPE
     };
     
-    enum PressureDestination
+    enum PressureDestinations
     {
         PolyAT = 0,
         ChannetAT,
@@ -86,7 +92,7 @@ public:
     };
     
     
-    enum CurveType{
+    enum CurveTypes{
         Exponential = 0,
         Linear,
         Logarithmic,
@@ -103,6 +109,7 @@ public:
         PadAudioFunction,
         PadMidiFunction,
         PadSystemFunction,
+        NoteTriggerMode,
         MultiNoteMode,
         Velocity,
         Pressure,
@@ -142,6 +149,7 @@ public:
     bool setPadAudioFunction (const int newFunction);
     bool setPadMidiFunction (const int newFunction);
     bool setPadSystemFunction (const int newFunction);
+    bool setNoteTriggerMode (const int newMode);
     bool setMultiNoteMode (const int newMode);
     bool setVelocity (const int newVel);
     bool setPadPressure (const float newPressure);
@@ -174,6 +182,7 @@ public:
     int getPadAudioFunction();
     int getPadMidiFunction();
     int getPadSystemFunction();
+    int getNoteTriggerMode();
     int getMultiNoteMode();
     int getVelocity();
     float getPadPressure();
@@ -200,6 +209,7 @@ private:
     int padAudioFunction = 0;
     int padMidiFunction = 0;
     int padSystemFunction = 0;
+    int noteTriggerMode = 0;
     int multiNoteMode = 0;
     int velocity = 0;
     float padPressure = 0;
@@ -210,7 +220,7 @@ private:
     bool enabled = true;
     bool quantiseEnabled = false;
     bool reversePressure = false;
-    int velocityCurve = CurveType::Logarithmic;
+    int velocityCurve = CurveTypes::Logarithmic;
     int pressureCurve = 0;
     int padGroup = 0;
     int midiDestination = 0;

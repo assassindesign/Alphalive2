@@ -39,6 +39,7 @@ SphereView::SphereView(const int _sphereID, MainContentComponent &ref) : sphereI
     for (int i = 0 ; i < numRows; i++)
     {
         rowRadii.add(0.0);
+        backgroundCircleBoxes.add(*new Rectangle<float>());
     }
     
     
@@ -115,32 +116,32 @@ void SphereView::sliderValueChanged (Slider* slider)
 void SphereView::paint(Graphics& g)
 {
   
-    
+    //draw outer circle
     g.setColour(*new Colour(0x33FFFFFF));
-
     
     g.drawEllipse(segmentLines[12]->getEnd().x+3, segmentLines[0]->getEnd().y+3, (segmentLines[0]->getLength()*2.0)-6, (segmentLines[0]->getLength()*2.0)-6, 3);
     
+    //draw sphere background
     Colour backgroundColour = Colour(GUIColours::Background);
     backgroundColour = backgroundColour.withBrightness(backgroundColour.getBrightness()+0.03);
     g.setColour(backgroundColour);
-    g.fillEllipse(segmentLines[12]->getEnd().x+3, segmentLines[0]->getEnd().y+3, (segmentLines[0]->getLength()*2.0)-6, (segmentLines[0]->getLength()*2.0)-6);
+    g.fillEllipse(backgroundCircleBoxes[0]);
     
-    for (int i = numRows; i >= 0; i--)
+    //draw inner stacking circles
+    for (int i = numRows; i >= 1; i--)
     {
         backgroundColour = backgroundColour.withBrightness(backgroundColour.getBrightness()+0.02);
         g.setColour(backgroundColour);
-        g.fillEllipse(segmentLines[12]->getPointAlongLine(rowRadii[i]).getX(), segmentLines[0]->getPointAlongLine(rowRadii[i]).getY(), rowRadii[i]*2, rowRadii[i]*2);
+        g.fillEllipse(backgroundCircleBoxes[i]);
     }
     
+    //draw positioning lines
     g.setColour(*new Colour(0x15FFFFFF));
     
     for (int i = 0 ; i < segmentLines.size(); i++)
     {
         g.drawLine(*segmentLines[i],1);
-        
     }
-    
 }
 
 void SphereView::resized()
@@ -181,9 +182,15 @@ void SphereView::resized()
     for (int i = 0; i < numRows; i++)
     {
         rowRadii.set(i, circleRadius*rowRadiusModifiers[i]);
+        backgroundCircleBoxes.getReference(i).setBounds(segmentLines[12]->getPointAlongLine(rowRadii[i]).getX(), segmentLines[0]->getPointAlongLine(rowRadii[i]).getY(), rowRadii[i]*2, rowRadii[i]*2);
     }
-
     
+    //set background circle bounds
+    backgroundCircleBoxes.getReference(0).setBounds(segmentLines[12]->getEnd().x+3, segmentLines[0]->getEnd().y+3, (segmentLines[0]->getLength()*2.0)-6, (segmentLines[0]->getLength()*2.0)-6);
+    for (int i = 1; i < numRows; i++)
+    {
+        backgroundCircleBoxes.getReference(i).setBounds(segmentLines[12]->getPointAlongLine(rowRadii[i]).getX(), segmentLines[0]->getPointAlongLine(rowRadii[i]).getY(), rowRadii[i]*2, rowRadii[i]*2);
+    }
     
     //position first row of pads
     positionPad(pads[47], 3, 0);
@@ -244,6 +251,8 @@ void SphereView::resized()
     positionPad(pads[2], 14, 5);
     positionPad(pads[1], 0, 5);
     positionPad(pads[0], 2, 5);
+    
+    
     
     
     

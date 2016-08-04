@@ -80,6 +80,23 @@ public:
        
     }
     
+    void padDataChangeCallback(const int changedData) override
+    {
+        if (changedData == PadData::DataIDs::PadFunction)
+        {
+            switch (AppData::Instance()->getCurrentlyInspectingPadPtr()->getPadFunction()) {
+                case PadData::PadFunction::Audio:
+                    audioPanel.setVisible(true);
+                    midiPanel.setVisible(false);
+                    break;
+                    
+                default:
+                    break;
+            }
+        }
+    }
+
+    
     void buttonClicked (Button* button) override
     {
         if (button == &audioButton)
@@ -91,7 +108,6 @@ public:
         {
             //set pad mode to midi
             AppData::Instance()->getCurrentlyInspectingPadPtr()->setPadFunction(PadData::PadFunction::Midi);
-
         }
         if (button == &systemButton)
         {

@@ -63,6 +63,8 @@ private:
     float padSpacing, circleRadius;
     
     Array<float> rowRadii, padSizeModifiers, rowRadiusModifiers;
+    Array<Rectangle<float>> backgroundCircleBoxes;
+    Array<Path> backgroundCirclePaths;
     
     OwnedArray<Slider> ratioSliders;
     

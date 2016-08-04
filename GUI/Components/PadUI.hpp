@@ -40,6 +40,8 @@ private:
     bool emulatingPadPress;
     PadInspector* padInspector;
     bool isSelected;
+    
+    
 };
 
 #endif /* PadUI_hpp */

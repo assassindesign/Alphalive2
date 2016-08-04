@@ -37,7 +37,7 @@ AppData* AppData::Instance()
 
 const int AppData::createNewSphereDataObject(const int withNumPads)
 {
-    sphereDataArray.add(new SphereData(withNumPads, 48));
+    sphereDataArray.add(new SphereData(withNumPads, sphereDataArray.size()));
     return sphereDataArray.size()-1;
 }
 
@@ -113,6 +113,7 @@ bool AppData::setCurrentlyInspectingPad(const int sphereID, const int padID)
             dataLock.exit();
             
             callListeners(DataIDs::InspectingPad, AppDataFormat::AppDataType);
+            success = true;
         }
     }
     

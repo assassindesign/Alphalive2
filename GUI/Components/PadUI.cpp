@@ -78,6 +78,8 @@ void Pad::setSelected(const bool padIsSelected)
     {
         padColour = actualColour;
     }
+    lightColour = padColour.brighter();
+    
     repaint();
 }
 

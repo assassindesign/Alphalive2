@@ -16,7 +16,6 @@ MasterClock::MasterClock() : metronomeTimeslice(new TimeSliceThread("Metro Times
     currentSampleRate = 44100;
     beatsInBar = 4;
     
-    
     addActionListener(this);
     
     //open threadqueue
@@ -25,12 +24,23 @@ MasterClock::MasterClock() : metronomeTimeslice(new TimeSliceThread("Metro Times
     //settempo
     setTempoInternal(80);
     
-    audioBufferSource = new SimpleAudioBufferSource();
-    //int fileSize;
-    //audioBufferSource->loadBinaryResource(BinaryData::getNamedResource("_96_wav", fileSize), fileSize);
-    //audioBufferSource->setNextReadPosition(audioBufferSource->getTotalLength());
     
-    metronomeEnabled = false;
+    tickBufferSource = new SimpleAudioBufferSource();
+    int fileSize;
+    tickBufferSource->loadBinaryResource(BinaryData::getNamedResource("Tick_wav", fileSize), fileSize);
+    tickTransportSource = new AudioTransportSource();
+    tickTransportSource->setSource(tickBufferSource, 65536, metronomeTimeslice, currentSampleRate.get());
+    
+    tockBufferSource = new SimpleAudioBufferSource();
+    tockBufferSource->loadBinaryResource(BinaryData::getNamedResource("Tock_wav", fileSize), fileSize);
+    tockTransportSource = new AudioTransportSource();
+    tockTransportSource->setSource(tockBufferSource, 65536, metronomeTimeslice, currentSampleRate.get());
+    
+    mixer = new MixerAudioSource();
+    mixer->addInputSource(tickTransportSource, false);
+    mixer->addInputSource(tockTransportSource, false);
+    
+    metronomeEnabled = true;
     
     isRunning = false;
     //isRunning = true;
@@ -55,16 +65,16 @@ void MasterClock::setTempoInternal(const float newTempo) // Maybe an alert windo
     //isRunning = true;
     
     tempo.set(newTempo);
-//    beatDivisions.set(4);
-//    beatsInBar.set(4);
-//    barsInLoop.set(4);
-//    beatsInLoop = beatsInBar.get() * barsInLoop.get();
+    beatDivisions.set(4);
+    beatsInBar.set(4);
+    barsInLoop.set(4);
+    beatsInLoop = beatsInBar.get() * barsInLoop.get();
     
     samplesPerTick.set(currentSampleRate.get() * (60.0 /tempo.get())); /// beatDivisions.get()); beat divisions currently not useful as quantizing to the bar;
     
     
-    //currentPositionInLoop.set(0);
-    //currentSample.set(0);
+    currentPositionInLoop.set(0);
+    currentSample.set(0);
     
     sendActionMessage("TempoUpdate");
 }
@@ -81,7 +91,7 @@ void MasterClock::actionListenerCallback (const String& message)
     
     if (message == "TICK")
     {
-        DBG("tick");
+        //DBG("tick");
 
         masterClockListeners.call(&MasterClock::Listener::stepClockCallback, (int) currentPositionInLoop.get());
         
@@ -89,7 +99,7 @@ void MasterClock::actionListenerCallback (const String& message)
         if ((currentPositionInLoop.get() % beatsInBar.get() == 0))
         {
             masterClockListeners.call(&MasterClock::Listener::barClockCallback);
-            //DBG("BAR");
+            DBG("BAR");
         }
 
     }
@@ -125,6 +135,12 @@ void MasterClock::resetAndStopClock()
 void MasterClock::startClock()
 {
     isRunning = true;
+    
+    if (metronomeEnabled)
+    {
+        tickTransportSource->setPosition(0);
+        tickTransportSource->start();
+    }
     sendActionMessage("TICK");
 }
 
@@ -138,6 +154,8 @@ float MasterClock::getTempo() const
 //====Audio================================================================
 void MasterClock::prepareToPlay (int samplesPerBlockExpected, double newSampleRate)
 {
+    metronomeTimeslice->startThread();
+    
     if (newSampleRate > 0)
     {
         currentSampleRate = newSampleRate;
@@ -145,6 +163,7 @@ void MasterClock::prepareToPlay (int samplesPerBlockExpected, double newSampleRa
         DBG("Sample Rate : " + String(newSampleRate));
     }
     
+    mixer->prepareToPlay(samplesPerBlockExpected, newSampleRate);
 }
 
 void MasterClock::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
@@ -159,10 +178,22 @@ void MasterClock::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
             if (currentSample.get() > samplesPerTick.get())
             {
                 currentSample = 0;
+                currentPositionInLoop.set(currentPositionInLoop.get()+1);
                 if (metronomeEnabled)
                 {
-                    audioBufferSource->setNextReadPosition(0);
-                    //transportSource->start();
+                    //audioBufferSource->setNextReadPosition(0);
+                    if (currentPositionInLoop.get() % beatsInBar.get() == 0)
+                    {
+                        tickTransportSource->setPosition(0);
+                        tickTransportSource->start();
+                        currentPositionInLoop.set(0);
+                    }
+                    else
+                    {
+                        tockTransportSource->setPosition(0);
+                        tockTransportSource->start();
+                    }
+                    
                 }
                 sendActionMessage ("TICK");
 
@@ -171,12 +202,17 @@ void MasterClock::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
     }
     bufferToFill.clearActiveBufferRegion();
     
-    audioBufferSource->getNextAudioBlock(bufferToFill);
+    mixer->getNextAudioBlock(bufferToFill);
+    //tockTransportSource->getNextAudioBlock(bufferToFill);
+
+    //audioBufferSource->getNextAudioBlock(bufferToFill);
 }
 
 void MasterClock::releaseResources()
 {
+    mixer->releaseResources();
     
+    metronomeTimeslice->stopThread(500);
 }
 
 void MasterClock::setMetronomeEnabled(bool enabled)

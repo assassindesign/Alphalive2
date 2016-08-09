@@ -84,8 +84,8 @@ public:
       }
 
     protected:
-      virtual void signal ();
-      virtual void reset ();
+      void signal ();
+      void reset ();
 
     private:
       void lock ();

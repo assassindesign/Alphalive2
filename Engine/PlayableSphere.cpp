@@ -34,7 +34,7 @@ PlayableSphere::PlayableSphere(const int numPads, const int _sphereID) : sphereI
     if (AppData::Instance()->getEnginePointer()->getMidiRouterPointer() != 0)
     {
         router = AppData::Instance()->getEnginePointer()->getMidiRouterPointer();
-        mapSphere(36, SphereData::MappedScale::Natural, SphereData::RowConfig::CenterRow);
+        mapSphere(36, SphereData::MappedScale::Natural, SphereData::RowConfig::TwoRow);          
     }
     else
     {

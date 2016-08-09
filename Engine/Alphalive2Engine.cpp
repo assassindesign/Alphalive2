@@ -11,7 +11,6 @@
 
 Alphalive2Engine::Alphalive2Engine()
 {
-    
 }
 
 Alphalive2Engine::~Alphalive2Engine()
@@ -34,6 +33,8 @@ void Alphalive2Engine::initialise()
     masterClock = new MasterClock();
     
     setAudioChannels(0, 2);
+    
+    masterMixer.addInputSource(masterClock, false);
     
     //masterClock->startClock();
     
@@ -115,16 +116,18 @@ InternalMidiRouter* Alphalive2Engine::getMidiRouterPointer()
 
 void Alphalive2Engine::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
-    masterClock->prepareToPlay(samplesPerBlockExpected, sampleRate);
+    masterMixer.prepareToPlay(samplesPerBlockExpected, sampleRate);
 }
 
 void Alphalive2Engine::releaseResources()
 {
-    masterClock->releaseResources();
+    masterMixer.releaseResources();
 }
 
 void Alphalive2Engine::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-    masterClock->getNextAudioBlock(bufferToFill);
+    bufferToFill.clearActiveBufferRegion();
+    
+    masterMixer.getNextAudioBlock(bufferToFill);
 }
 

@@ -39,7 +39,6 @@ public:
     void setHIDLinkedSphere(const int newSphereID);
     const int getHIDLinkedSphere();
     PlayableSphere* getHIDLinkedSpherePointer();
-    
     PlayableSphere* getSpherePointer(const int sphereID);
     MasterClock* getMasterClockPointer();
     InternalMidiRouter* getMidiRouterPointer();
@@ -64,6 +63,9 @@ private:
     ScopedPointer<AlphaSphereConnection> sphereConnection;
     
     ScopedPointer<MasterClock> masterClock;
+    
+    //Audio Classes
+    MixerAudioSource masterMixer;
     
     int hIDLinkedSphere;
 };

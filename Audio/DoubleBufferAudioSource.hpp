@@ -52,25 +52,16 @@ public:
 
     //===Audio Source===========================================
     void getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) override;
-
     void prepareToPlay(int samplesPerBlock, double sampleRate) override;
-
     void releaseResources() override;
-
     bool isPlaying() const;
-
     bool loadFileIntoBuffer(File fileToLoad, BufferType bufferToSet);
-
     void changeListenerCallback (ChangeBroadcaster *source) override;
 
     //===Master Clock Listener===========================================
-
     void barClockCallback() override;
-
     void stepClockCallback(const int currentPositionInLoop) override;
-
     void masterClockStopped() override;
-
     void masterTempoChanged(const int beatsInLoop, const float newTempo) override;
 
     //===Internal===============================================
@@ -82,54 +73,35 @@ public:
 //    int64 getNextReadPosition() const override;
 
     bool isLooping() const;
-
     void setLooping(bool shouldLoop);
-
     void setPlaying(bool newState);
 
     class Listener
     {
     public:
         virtual ~Listener() {}
-
         virtual void sourceStartedOrStopped(DoubleBufferAudioSource* changedSource) = 0;
-
     private:
     };
 
     void addListener(DoubleBufferAudioSource::Listener* const listenerToAdd);
-
     void removeListener(DoubleBufferAudioSource::Listener* const listenerToRemove);
-
     void setGain(const float newGain);
 
 private:
 
     void commonInit();
-
     void start();
-
     void stop();
-
-    void startFromZero ();
-
     void start(ReadHead readerToStart);
-
     void stop(ReadHead readerToStop);
 
-
-
     AudioFormatReader* getAudioFormatReader(BufferType bufferToGet) const;
-
     AudioFormatReaderSource* getAudioFormatReaderSource(BufferType bufferToGet) const;
-
     AudioTransportSource* getAudioTransportSource(BufferType bufferToGet) const;
 
-
     bool shouldBePlaying, playing, looping, shouldStart, shouldStop;
-
     float tempo;
-
 
     ReadHead currentReadHead;
 

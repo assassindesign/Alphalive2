@@ -98,7 +98,6 @@ bool DoubleBufferAudioSource::loadFileIntoBuffer(File fileToLoad, BufferType buf
     AudioFormatManager formatManager;
     formatManager.registerBasicFormats();
     
-    
     formatReaders.set(bufferToSet, formatManager.createReaderFor (fileToLoad));
     
     FileInfo* infoForThisFile = fileInfo.getUnchecked(bufferToSet);
@@ -188,10 +187,6 @@ void DoubleBufferAudioSource::start()
 }
 
 
-void DoubleBufferAudioSource::startFromZero ()
-{
-    start();
-}
 
 void DoubleBufferAudioSource::stop()
 {
@@ -280,7 +275,7 @@ void DoubleBufferAudioSource::setPlaying(bool newState)
         }
         else
         {
-            startFromZero();
+            start();
         }
     }
     else

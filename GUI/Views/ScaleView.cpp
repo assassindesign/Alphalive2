@@ -44,7 +44,6 @@ ScaleView::ScaleView()
     currentOctave = scaleData->getOctave();
     scaleData->addListener(this);
     
-    
     //AppData::Instance()->getGlobalScaleData()->addListener(this);
     //addToDesktop(0);
 }

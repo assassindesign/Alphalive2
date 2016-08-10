@@ -26,6 +26,8 @@ public:
     void setColour(const Colour newColour);
     void setSelected(const bool padIsSelected);
     bool getSelected();
+    
+    bool isPointInsideCircle(const Point<int> point);
     //Mouse Listener============================
     void mouseEnter (const MouseEvent &event) override;
     void mouseExit (const MouseEvent &event) override;
@@ -40,8 +42,8 @@ private:
     bool emulatingPadPress;
     PadInspector* padInspector;
     bool isSelected;
-    
-    
+    Point<int> centerPoint;
+    int halfWidth;
 };
 
 #endif /* PadUI_hpp */

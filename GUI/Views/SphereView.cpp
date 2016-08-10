@@ -37,6 +37,7 @@ SphereView::SphereView(const int _sphereID, MainContentComponent &ref) : sphereI
     }
     
     numRows = 6;
+    mouseCurrentlyOverCircle = -1;
     
     for (int i = 0 ; i < numRows; i++)
     {
@@ -125,6 +126,7 @@ void SphereView::paint(Graphics& g)
     
     //draw sphere background
     Colour backgroundColour = Colour(GUIColours::Background);
+    
     backgroundColour = backgroundColour.withBrightness(backgroundColour.getBrightness()+0.03);
     g.setColour(backgroundColour);
     g.fillEllipse(backgroundCircleBoxes[0]);
@@ -254,10 +256,6 @@ void SphereView::resized()
     positionPad(pads[1], 0, 5);
     positionPad(pads[0], 2, 5);
     
-    
-    
-    
-    
     //temp slider positioning
     //ratioSliders[0]->setBounds(getWidth() - getWidth()/3.0, 0, getWidth()/3.0, 30);
     for (int i = 1; i < ratioSliders.size(); i++)
@@ -320,37 +318,40 @@ void SphereView::mouseExit (const MouseEvent &event)
 
 void SphereView::mouseDown (const MouseEvent &event)
 {
-    if (event.eventComponent != this)
+    bool clickOnPad = false;
+    
+    Pad* sourcePad = nullptr;
+    for (int i = 0; i < pads.size(); i++)
     {
-        Pad* sourcePad = nullptr;
-        for (int i = 0; i < pads.size(); i++)
+        if (event.eventComponent == pads[i])
         {
-            if (event.eventComponent == pads[i])
-            {
-                sourcePad = pads[i];
-                break;
-            }
+            sourcePad = pads[i];
+            break;
         }
-        
-        if (sourcePad != nullptr)
+    }
+    
+    if (sourcePad != nullptr) //if the source component was a pad
+    {
+        if (sourcePad->isPointInsideCircle(event.getMouseDownPosition())) //if mouse is actually in the circle of the padUI
         {
+            DBG("Click in Pad");
             if (event.mods.isShiftDown())
             {
-//                sourcePad->setSelected(!sourcePad->getSelected());
-//                if (sourcePad->getSelected())
-//                {
-//                    selectedPads.add(sourcePad);
-//                }
-//                else
-//                {
-//                    for (int i = 0; i < selectedPads.size(); i++)
-//                    {
-//                        if (selectedPads[i] == sourcePad)
-//                        {
-//                            selectedPads.remove(i);
-//                        }
-//                    }
-//                }
+                //                sourcePad->setSelected(!sourcePad->getSelected());
+                //                if (sourcePad->getSelected())
+                //                {
+                //                    selectedPads.add(sourcePad);
+                //                }
+                //                else
+                //                {
+                //                    for (int i = 0; i < selectedPads.size(); i++)
+                //                    {
+                //                        if (selectedPads[i] == sourcePad)
+                //                        {
+                //                            selectedPads.remove(i);
+                //                        }
+                //                    }
+                //                }
             }
             else if (!event.mods.isAnyModifierKeyDown())
             {
@@ -366,17 +367,24 @@ void SphereView::mouseDown (const MouseEvent &event)
                 {
                     AppData::Instance()->setCurrentlyInspectingPad(-1, -1);
                 }
-
+                
             }
+            clickOnPad = true;
         }
         
-       
     }
-    else
+    
+    if (!clickOnPad)
     {
-        DBG("Click in Sphere");
-        //clearSelectedPads();
+        if (isMouseInCircle(event) > -1) //if a ring has been selected
+        {
+            DBG("Clicked Within Circle: " + String(isMouseInCircle(event)));
+            
+        }
     }
+
+    
+    
     
 }
 
@@ -424,4 +432,36 @@ void SphereView::mouseDoubleClick (const MouseEvent &event)
     
 }
 
+void SphereView::mouseMove (const MouseEvent& event)
+{
+    mouseCurrentlyOverCircle = isMouseInCircle(event);
+    //repaint();
+}
+
+
+int SphereView::isMouseInCircle(const MouseEvent &event)
+{
+    Point<int> centerPointOnScreen = getScreenPosition();
+    centerPointOnScreen.addXY(centerPoint.getX(), centerPoint.getY());
+    for (int i = 0; i < rowRadii.size() + 1; i++)
+    {
+        int radius;
+        if (i < rowRadii.size())
+        {
+            radius = rowRadii[i];
+        }
+        else
+        {
+            radius = getWidth()/2.0;
+        }
+        
+        if (event.getMouseDownScreenPosition().getDistanceFrom(centerPointOnScreen) < radius)
+        {
+            return i;
+        }
+        
+    }
+    
+    return -1;
+}
 

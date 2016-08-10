@@ -44,6 +44,9 @@ private:
     void mouseDrag (const MouseEvent &event) override;
     void mouseUp (const MouseEvent &event) override;
     void mouseDoubleClick (const MouseEvent &event) override;
+    void mouseMove (const MouseEvent&) override;
+    
+    int isMouseInCircle(const MouseEvent &event);
     
     void clearSelectedPads();
     
@@ -59,6 +62,7 @@ private:
     Point<int> centerPoint;
     
     int numRows;
+    int mouseCurrentlyOverCircle;
     
     float padSpacing, circleRadius;
     

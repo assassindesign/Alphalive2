@@ -53,7 +53,9 @@ void Pad::paint(Graphics& g)
 }
 void Pad::resized()
 {
-
+    halfWidth = getWidth()/2.0;
+    //centerPoint = getScreenPosition();
+    centerPoint.setXY(halfWidth, getHeight()/2.0);
 }
 
 void Pad::setColour(const Colour newColour)
@@ -86,6 +88,18 @@ void Pad::setSelected(const bool padIsSelected)
 bool Pad::getSelected()
 {
     return isSelected;
+}
+
+bool Pad::isPointInsideCircle(const Point<int> point)
+{
+    if (point.getDistanceFrom(centerPoint) < halfWidth)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 

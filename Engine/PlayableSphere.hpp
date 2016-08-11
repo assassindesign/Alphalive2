@@ -19,7 +19,7 @@
  
     @see PlayablePad
 */
-class PlayableSphere
+class PlayableSphere : public AudioSource
 {
 public:
     
@@ -66,6 +66,16 @@ public:
     
     SphereData* getSphereDataObject();
     
+    //=====================================================================
+    //  Audio callbacks
+    //=====================================================================
+    
+    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
+    
+    void releaseResources() override;
+    
+    void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)override;
+    
 private:
     OwnedArray<PlayablePad> playablePads;
     InternalMidiRouter::MidiDestination destination;
@@ -73,6 +83,8 @@ private:
     
     int sphereID;
     
+    MixerAudioSource mixer;
+        
     SphereData* sphereData;
     
 };

@@ -259,4 +259,23 @@ SphereData* PlayableSphere::getSphereDataObject()
     return sphereData;
 }
 
+//=====================================================================
+//  Audio callbacks
+//=====================================================================
+
+void PlayableSphere::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
+{
+    
+}
+
+void PlayableSphere::releaseResources()
+{
+    
+}
+
+void PlayableSphere::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
+{
+    
+}
+
 

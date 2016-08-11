@@ -102,6 +102,11 @@ bool Pad::isPointInsideCircle(const Point<int> point)
     }
 }
 
+void Pad::setAsCurrentlyInspectedPad()
+{
+    AppData::Instance()->setCurrentlyInspectingPad(padData->getParentSphere()->getSphereID(), padData->getPadID());
+}
+
 
 //Mouse Listener============================
 void Pad::mouseEnter (const MouseEvent &event)
@@ -116,33 +121,40 @@ void Pad::mouseExit (const MouseEvent &event)
 
 void Pad::mouseDown (const MouseEvent &event)
 {
-    if (event.mods.isAltDown())
+    if (isPointInsideCircle(event.getMouseDownPosition()))
     {
-        AppData::Instance()->getEnginePointer()->hitPad(padData->getPadID(), 110);
-        emulatingPadPress = true;
+        if (event.mods.isAltDown())
+        {
+            AppData::Instance()->getEnginePointer()->hitPad(padData->getPadID(), 110);
+            emulatingPadPress = true;
+        }
+        else
+        {
+            //padInspector->setPadDataToInspect(padData);
+            //AppData::Instance()->setCurrentlyInspectingPad(padData->getParentSphere()->getSphereID(), padData->getPadID());
+        }
     }
-    else
-    {
-        //padInspector->setPadDataToInspect(padData);
-        AppData::Instance()->setCurrentlyInspectingPad(padData->getParentSphere()->getSphereID(), padData->getPadID());
-    }
+    
  
 }
 
 void Pad::mouseDrag (const MouseEvent &event)
 {
-    if (event.mods.isAltDown())
+    if (isPointInsideCircle(event.getMouseDownPosition()))
     {
-        int pressureValue = abs((getHeight()/2) - event.y) * 3 + 1;
-        if (pressureValue > MAX_PRESSURE)
+        if (event.mods.isAltDown())
         {
-            pressureValue = MAX_PRESSURE;
-        }
-        
-        AppData::Instance()->getEnginePointer()->pressPad(padData->getPadID(), pressureValue);
+            int pressureValue = abs((getHeight()/2) - event.y) * 3 + 1;
+            if (pressureValue > MAX_PRESSURE)
+            {
+                pressureValue = MAX_PRESSURE;
+            }
+            
+            AppData::Instance()->getEnginePointer()->pressPad(padData->getPadID(), pressureValue);
 
-        emulatingPadPress = true;
-        
+            emulatingPadPress = true;
+            
+        }
     }
 }
 

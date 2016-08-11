@@ -38,13 +38,14 @@ SphereView::SphereView(const int _sphereID, MainContentComponent &ref) : sphereI
     
     numRows = 6;
     mouseCurrentlyOverCircle = -1;
+    allPadsSelected = false;
     
     for (int i = 0 ; i < numRows; i++)
     {
         rowRadii.add(0.0);
         backgroundCircleBoxes.add(*new Rectangle<float>());
+        padRowSelected.add(false);
     }
-    
     
     //set size and radius ratios for each row
     padSizeModifiers.add(0.68);
@@ -301,7 +302,7 @@ void SphereView::clearSelectedPads()
     {
         selectedPads[i]->setSelected(false);
     }
-    selectedPads.clear();
+    selectedPads.clearQuick();
 }
 
 
@@ -321,7 +322,7 @@ void SphereView::mouseDown (const MouseEvent &event)
     bool clickOnPad = false;
     
     Pad* sourcePad = nullptr;
-    for (int i = 0; i < pads.size(); i++)
+    for (int i = 0; i < pads.size(); i++) //search pad array to fetch padUI object for clicked pad
     {
         if (event.eventComponent == pads[i])
         {
@@ -330,38 +331,51 @@ void SphereView::mouseDown (const MouseEvent &event)
         }
     }
     
-    if (sourcePad != nullptr) //if the source component was a pad
+    if (sourcePad != nullptr) //if the source component was a pad that exists
     {
         if (sourcePad->isPointInsideCircle(event.getMouseDownPosition())) //if mouse is actually in the circle of the padUI
         {
             DBG("Click in Pad");
-            if (event.mods.isShiftDown())
+            clickOnPad = true;
+
+            if (event.mods.isShiftDown()) // clicking single pad with shift down - add/remove from selected
             {
-                //                sourcePad->setSelected(!sourcePad->getSelected());
-                //                if (sourcePad->getSelected())
-                //                {
-                //                    selectedPads.add(sourcePad);
-                //                }
-                //                else
-                //                {
-                //                    for (int i = 0; i < selectedPads.size(); i++)
-                //                    {
-                //                        if (selectedPads[i] == sourcePad)
-                //                        {
-                //                            selectedPads.remove(i);
-                //                        }
-                //                    }
-                //                }
-            }
-            else if (!event.mods.isAnyModifierKeyDown())
-            {
-                sourcePad->setSelected(!sourcePad->getSelected());
+                sourcePad->setSelected(!sourcePad->getSelected()); // toggle boolean value
                 
-                clearSelectedPads();
-                
-                if (sourcePad->getSelected())
+                if (sourcePad->getSelected()) //either add pad to selected group
                 {
                     selectedPads.add(sourcePad);
+                }
+                else // or remove it
+                {
+                    for (int i = 0; i < selectedPads.size(); i++)
+                    {
+                        if (selectedPads[i] == sourcePad)
+                        {
+                            selectedPads.remove(i);
+                        }
+                    }
+                }
+                
+                if (selectedPads.size() != 1) //if there is more than one pad selcted at the moment, don't display inspector. This will probably change later to switch padinspector to group edit mode
+                {
+                    AppData::Instance()->setCurrentlyInspectingPad(-1, -1);
+                }
+            }
+            else if (!event.mods.isAnyModifierKeyDown()) // clicking in single pad with no modifiers
+            {
+                clearSelectedPads();
+                for (int i = 0; i < padRowSelected.size(); i++) // reset any padRowSelected flags
+                {
+                    padRowSelected.set(i, false);
+                }
+                
+                sourcePad->setSelected(!sourcePad->getSelected());
+                
+                if (sourcePad->getSelected()) // clicked pad is now selected
+                {
+                    selectedPads.add(sourcePad);
+                    sourcePad->setAsCurrentlyInspectedPad();//AppData::Instance()->setCurrentlyInspectingPad(sourcePad->, <#const int padID#>)
                 }
                 else
                 {
@@ -369,18 +383,83 @@ void SphereView::mouseDown (const MouseEvent &event)
                 }
                 
             }
-            clickOnPad = true;
         }
         
     }
     
-    if (!clickOnPad)
+    if (!clickOnPad) // if click was not on a pad
     {
-        if (isMouseInCircle(event) > -1) //if a ring has been selected
+        
+        if (!event.mods.isAltDown())
         {
-            DBG("Clicked Within Circle: " + String(isMouseInCircle(event)));
-            
+            int circleID = isMouseInCircle(event);
+            if (circleID > -1) //if a ring has been selected
+            {
+                DBG("Clicked Within Circle: " + String(circleID));
+                selectedPads.clearQuick();
+                
+                for (int i = 0; i < padRowSelected.size(); i++)
+                {
+                    if (i == circleID-1)
+                    {
+                        padRowSelected.set(i, !padRowSelected[i]);
+                    }
+                    else
+                    {
+                        padRowSelected.set(i, false);
+                    }
+                }
+                
+                if (circleID == 0) //center - select all pads
+                {
+                    allPadsSelected = !allPadsSelected;
+                    
+                    for (int i = 0; i < pads.size(); i++)
+                    {
+                        pads[i]->setSelected(allPadsSelected);
+                        if (pads[i]->getSelected())
+                        {
+                            selectedPads.add(pads[i]);
+                        }
+                    }
+                    
+                }
+                else // select a ring of pads
+                {
+                    allPadsSelected = false;
+                    int rangeMin = ((numRows - circleID)*8);
+                    int rangeMax = rangeMin + 8;
+                    for (int i = 0; i < pads.size(); i++)
+                    {
+                        
+                        if (i >= rangeMin && i < rangeMax)
+                        {
+                            pads[i]->setSelected(padRowSelected[circleID-1]);
+                        }
+                        else
+                        {
+                            if (!event.mods.isShiftDown())
+                            {
+                                pads[i]->setSelected(false);
+                            }
+                        }
+                        
+                        
+                        if (pads[i]->getSelected())
+                        {
+                            selectedPads.addIfNotAlreadyThere(pads[i]);
+                        }
+                        
+                    }
+                }
+                
+                if (selectedPads.size() == 0)
+                {
+                    AppData::Instance()->setCurrentlyInspectingPad(-1, -1);
+                }
+            }
         }
+        
     }
 
     

@@ -26,6 +26,8 @@ public:
     void setColour(const Colour newColour);
     void setSelected(const bool padIsSelected);
     bool getSelected();
+    void setAsCurrentlyInspectedPad();
+    
     
     bool isPointInsideCircle(const Point<int> point);
     //Mouse Listener============================

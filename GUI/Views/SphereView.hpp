@@ -80,7 +80,10 @@ private:
     
     MainContentComponent* mainComponent;
     
-    Array<Pad*> selectedPads;
+    Array<Pad*> selectedPads, prevSelectedPads;
+    
+    bool allPadsSelected;
+    Array<bool> padRowSelected;
 };
 
 #endif /* SphereView_hpp */

@@ -13,6 +13,5 @@
 #define MAX_VELOCITY 127.0
 #define NULLSTRING "NULL"
 #define DEFAULT_SAMPLE_RATE 44100
-#define M_PI 3.14159265359
 
 #endif /* Constants_h */

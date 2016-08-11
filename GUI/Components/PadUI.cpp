@@ -9,12 +9,12 @@
 #include "PadUI.hpp"
 #include "MainComponent.h"
 
-Pad::Pad(PadData* _padData, MainContentComponent &ref) : padData(_padData)
+Pad::Pad(PadData* _padData) : padData(_padData)
 {
     setColour(Colours::whitesmoke);
     emulatingPadPress = false;
-    
-    padInspector = ref.getPadInspector();
+    isSelected = false;
+    halfWidth = 0;
 }
 
 Pad::~Pad()

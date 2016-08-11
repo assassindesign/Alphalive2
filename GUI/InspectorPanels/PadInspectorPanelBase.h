@@ -41,6 +41,7 @@ public:
     {
         return dataObject;
     }
+
 private:
     AppDataFormat* dataObject = nullptr;
 };

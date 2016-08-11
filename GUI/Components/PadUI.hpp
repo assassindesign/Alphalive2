@@ -19,7 +19,7 @@ class MainContentComponent;
 class Pad : public GUIRepaintListener
 {
 public:
-    Pad(PadData* _padData, MainContentComponent &ref);
+    Pad(PadData* _padData);
     ~Pad();
     void paint(Graphics& g) override;
     void resized()override;
@@ -42,7 +42,6 @@ private:
     PadData* padData;
     Colour padColour, lightColour, darkColour, actualColour;
     bool emulatingPadPress;
-    PadInspector* padInspector;
     bool isSelected;
     Point<int> centerPoint;
     int halfWidth;

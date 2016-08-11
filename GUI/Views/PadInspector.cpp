@@ -64,7 +64,6 @@ void PadInspector::resized()
     leftBumperBox.removeFromRight(getWidth()-10);
     titleBox.removeFromBottom(getHeight()-20);
     
-
     
     mainViewportBox.setPosition(leftBumperBox.getRight(), titleBox.getBottom());
     mainViewportBox.setSize(getWidth()-leftBumperBox.getWidth(), getHeight()-titleBox.getHeight());

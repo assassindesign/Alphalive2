@@ -14,6 +14,7 @@
 namespace GUIColours {
     const int32 Background = 0xFF222222;
     const int32 Main = 0xFFFFFFFF;
+    const int32 MainBlue = 0xff1d8378;
 }
 
 

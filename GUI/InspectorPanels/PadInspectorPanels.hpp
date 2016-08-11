@@ -28,14 +28,19 @@ public:
     {
         audioButton.setButtonText("Audio");
         audioButton.addListener(this);
+        audioButton.setColour(TextButton::ColourIds::buttonOnColourId, Colour(GUIColours::MainBlue));
         addAndMakeVisible(&audioButton);
         
         midiButton.setButtonText("MIDI");
         midiButton.addListener(this);
+        midiButton.setColour(TextButton::ColourIds::buttonOnColourId, Colour(GUIColours::MainBlue));
+
         addAndMakeVisible(&midiButton);
         
         systemButton.setButtonText("System");
         systemButton.addListener(this);
+        systemButton.setColour(TextButton::ColourIds::buttonOnColourId, Colour(GUIColours::MainBlue));
+
         addChildComponent(&systemButton);
         
         audioButton.setEnabled(false);

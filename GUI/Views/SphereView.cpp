@@ -26,7 +26,7 @@ SphereView::SphereView(const int _sphereID, MainContentComponent &ref) : sphereI
     
     for (int i = 0 ; i < sphereData->getNumPadDataObjects(); i++)
     {
-        pads.add(new Pad(sphereData->getPadData(i), ref));
+        pads.add(new Pad(sphereData->getPadData(i)));
         pads.getLast()->setSize(50,50);
         
         addAndMakeVisible(pads.getLast());
@@ -335,7 +335,7 @@ void SphereView::mouseDown (const MouseEvent &event)
     {
         if (sourcePad->isPointInsideCircle(event.getMouseDownPosition())) //if mouse is actually in the circle of the padUI
         {
-            DBG("Click in Pad");
+            //DBG("Click in Pad");
             clickOnPad = true;
 
             if (event.mods.isShiftDown()) // clicking single pad with shift down - add/remove from selected
@@ -395,7 +395,7 @@ void SphereView::mouseDown (const MouseEvent &event)
             int circleID = isMouseInCircle(event);
             if (circleID > -1) //if a ring has been selected
             {
-                DBG("Clicked Within Circle: " + String(circleID));
+                //DBG("Clicked Within Circle: " + String(circleID));
                 selectedPads.clearQuick();
                 
                 for (int i = 0; i < padRowSelected.size(); i++)
@@ -422,6 +422,8 @@ void SphereView::mouseDown (const MouseEvent &event)
                             selectedPads.add(pads[i]);
                         }
                     }
+                    
+                    AppData::Instance()->setCurrentlyInspectingPad(-1, -1);
                     
                 }
                 else // select a ring of pads

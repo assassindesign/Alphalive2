@@ -32,10 +32,13 @@ public:
     void setMidiChannel(const int newMidiChannel);
     const int getMidiChannel();
     
+    void killPad();
+    
 private:    
     PadData* padData;
     InternalMidiRouter* router;
     int rawVelocity;
+    bool killingPad;
 };
 
 #endif /* PlayablePad_hpp */

@@ -20,26 +20,34 @@ class NoteSettingsPanel : public PadInspectorPanelBase,
 {
 public:
     class NoteSelectPanel : public PadInspectorPanelBase,
-    public Slider::Listener
+                            public Slider::Listener,
+                            public Button::Listener
     {
     public:
         NoteSelectPanel()
         {
-            noteNumberSlider.setSliderStyle(Slider::SliderStyle::IncDecButtons);
-            noteNumberSlider.setRange(0, 127, 1);
-            //noteNumberSlider.setColour(Slider::ColourIds::, )
-            addAndMakeVisible(noteNumberSlider);
-            
-            noteNumberSlider.addListener(this);
+            addNewNoteNumberSlider();
+            //addNewNoteNumberSlider();
+
+            plusButton.setButtonText("+");
+            plusButton.addListener(this);
+            addAndMakeVisible(plusButton);
         }
         ~NoteSelectPanel(){}
         void resized() override
         {
-            noteNumberSlider.setBounds(0,0,getWidth(),getHeight());
+            noteNumberSliders[0]->setBounds(0,0,getWidth(),25);
+            
+            for (int i = 1; i < noteNumberSliders.size(); i++)
+            {
+                noteNumberSliders[i]->setBounds(noteNumberSliders[i-1]->getBounds().translated(0, 30));
+            }
+            
+            plusButton.setBounds(getWidth() - 25, noteNumberSliders.getLast()->getBottom() + 5, 20, 20);
         }
         void paint(Graphics& g) override
         {
-            //g.fillAll(Colours::red);
+            g.fillAll(Colours::red);
         }
         
         void refreshData() override
@@ -49,11 +57,41 @@ public:
         
         void sliderValueChanged (Slider* slider) override
         {
-            if(slider == &noteNumberSlider)
+            bool isNoteNumberSlider = false;
+            for (int i = 0; i < noteNumberSliders.size(); i++)
             {
-                PadData* padData = AppData::Instance()->getCurrentlyInspectingPadPtr();
-                AppData::Instance()->getEnginePointer()->hitPad(padData->getPadID(), 0);
-                padData->setMidiNote(noteNumberSlider.getValue());
+                if(slider == noteNumberSliders[i])
+                {
+                    isNoteNumberSlider = true;
+                    break;
+                }
+            }
+            
+            if (isNoteNumberSlider)
+            {
+                PadData* tempPadData = AppData::Instance()->getCurrentlyInspectingPadPtr();
+                
+                AppData::Instance()->getEnginePointer()->getSpherePointer(tempPadData->getParentSphere()->getSphereID())->killPad(tempPadData->getPadID());
+                
+                tempPadData->clearAllMidiNotes();
+                
+                tempPadData->setMidiNote(noteNumberSliders[0]->getValue(), 100);
+                
+                for (int i = 1; i < noteNumberSliders.size(); i++)
+                {
+                    tempPadData->addMidiNote(noteNumberSliders[i]->getValue(), 60);
+                }
+
+            }
+            
+        }
+        
+        void buttonClicked (Button* button) override
+        {
+            if (button == &plusButton)
+            {
+                PadData* tempPadData = AppData::Instance()->getCurrentlyInspectingPadPtr();
+                tempPadData->addMidiNote(60, 50);
             }
         }
         
@@ -61,17 +99,37 @@ public:
         {
             if (changedData == PadData::DataIDs::MidiNotes)
             {
-                int newNoteNumber = AppData::Instance()->getCurrentlyInspectingPadPtr()->getMidiNote();
+                Array<PadData::MidiNote> newNoteNumbers = AppData::Instance()->getCurrentlyInspectingPadPtr()->getMidiNotes();
                 
-                if (newNoteNumber != noteNumberSlider.getValue())
+                for (int i = 0; i < newNoteNumbers.size(); i++)
                 {
-                    noteNumberSlider.setValue(newNoteNumber);
+                    if (i < noteNumberSliders.size())
+                    {
+                        noteNumberSliders[i]->setValue(newNoteNumbers[i].noteNumber, dontSendNotification);
+                    }
+                    else
+                    {
+                        addNewNoteNumberSlider();
+                        noteNumberSliders.getLast()->setValue(newNoteNumbers[i].noteNumber, dontSendNotification);
+                    }
                 }
             }
         }
         
+        void addNewNoteNumberSlider(const int withValue = 0)
+        {
+            noteNumberSliders.add(new Slider());
+            noteNumberSliders.getLast()->setSliderStyle(Slider::SliderStyle::IncDecButtons);
+            noteNumberSliders.getLast()->setRange(0, 127, 1);
+            addAndMakeVisible(noteNumberSliders.getLast());
+            noteNumberSliders.getLast()->addListener(this);
+            
+            resized();
+        }
+        
     private:
-        Slider noteNumberSlider;
+        OwnedArray<Slider> noteNumberSliders;
+        TextButton plusButton;
     };
     
     class MultiNotePanel : public PadInspectorPanelBase,

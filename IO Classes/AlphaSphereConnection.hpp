@@ -62,8 +62,8 @@ private:
     int recievedPad;
     float recievedValue,recievedVelocity;
     
-    //int padVelocity[48];
-    //int padPressure[48];
+    int padVelocity[48];
+    int padPressure[48];
     
     int pressureCurve;
     int velocityCurve;

@@ -24,6 +24,7 @@ PlayablePad::PlayablePad(PadData* dataForPad)
     router = AppData::Instance()->getEnginePointer()->getMidiRouterPointer();
     
     rawVelocity = 0;
+    killingPad = false;
 
 }
 PlayablePad::~PlayablePad()
@@ -33,25 +34,55 @@ PlayablePad::~PlayablePad()
 
 void PlayablePad::hitPad(const int velocity)
 {
-    
-    if (rawVelocity != velocity) //avoid unneccessary processing
+    //===Note Trigger Mode===============================================================================
+
+    bool ignoreHit = false;
+    if (padData->getNoteTriggerMode() == PadData::NoteTriggerModes::ToggleNoteMode)
+    {
+        if (velocity > 0) // is a note on message
+        {
+            if (rawVelocity <= 0) // pad is currently off
+            {
+                rawVelocity = velocity;
+            }
+            else if (rawVelocity > 0) // pad is currently on
+            {
+                rawVelocity = 0;
+            }
+        }
+        else
+        {
+            ignoreHit = true;
+        }
+        
+    }
+    else if (padData->getNoteTriggerMode() == PadData::NoteTriggerModes::StandardNoteMode)
     {
         rawVelocity = velocity;
+    }
+    
+    if (killingPad)
+    {
+        rawVelocity = 0;
+    }
+    
+    if (!ignoreHit || killingPad) // if pad should trigger
+    {
         //===Velocity Curve===============================================================================
         
-        static float recievedVelocity;;
+        static float recievedVelocity;
         switch (padData->getVelocityCurve())
         {
             case PadData::CurveTypes::Logarithmic:
                 //logarithmic mapping of velocity
-                recievedVelocity = log(velocity+1);
+                recievedVelocity = log(rawVelocity+1);
                 recievedVelocity = recievedVelocity * (MAX_VELOCITY/4.85); // not sure why 4.85 here!
                 if (recievedVelocity > MAX_VELOCITY)
                     recievedVelocity = MAX_VELOCITY;
                 break;
                 
             default:
-                recievedVelocity = velocity;
+                recievedVelocity = rawVelocity;
                 break;
         }
         
@@ -59,16 +90,16 @@ void PlayablePad::hitPad(const int velocity)
         
         //===Pad Function================================================================================
         
-        if (padData->getPadFunction() == PadData::PadMidiFunctions::SingleNote)
+        if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::SingleNote)
         {
             if (padData->setVelocity(recievedVelocity))
             {
                 MidiMessage outputMessage = MidiMessage::noteOn(padData->getMidiChannel(), padData->getMidiNote(), uint8(recievedVelocity));
                 router->sendMidiToDestination(padData->getMidiDestination(), &outputMessage);
-
+                
             }
         }
-        else if (padData->getPadFunction() == PadData::PadMidiFunctions::MultiNote)
+        else if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::MultiNote)
         {
             if (padData->getMultiNoteMode() == PadData::MultiNoteModes::Chord)
             {
@@ -78,15 +109,27 @@ void PlayablePad::hitPad(const int velocity)
                     
                     for (int i = 0; i < midiNoteArray.size(); i++)
                     {
-                        MidiMessage outputMessage = MidiMessage::noteOn (padData->getMidiChannel(), midiNoteArray[i].noteNumber, uint8((100/midiNoteArray[i].velocityPercentage)*recievedVelocity));
+                        
+                        DBG(midiNoteArray[i].noteNumber);
+                        DBG(midiNoteArray[i].velocityPercentage);
+
+                        MidiMessage outputMessage = MidiMessage::noteOn (padData->getMidiChannel(),
+                                                                         midiNoteArray[i].noteNumber,
+                                                                         uint8((midiNoteArray[i].velocityPercentage / 100.0)*recievedVelocity));
+                        
                         router->sendMidiToDestination(padData->getMidiDestination(), &outputMessage);
                     }
                     
                     
                 }
             }
-           
+            
         }
+    }
+    
+    if (killingPad)
+    {
+        killingPad = !killingPad;
     }
     
 }
@@ -141,3 +184,10 @@ const int PlayablePad::getMidiChannel()
 {
     return padData->getMidiChannel();
 }
+
+void PlayablePad::killPad()
+{
+    killingPad = true;
+    hitPad(0);
+}
+

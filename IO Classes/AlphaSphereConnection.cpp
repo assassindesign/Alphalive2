@@ -66,6 +66,12 @@ AlphaSphereConnection::AlphaSphereConnection()
     setLedColour(0, Colours::orangered);
     setLedColour(1, Colours::blue);
     setLedColour(2, Colours::green);
+    
+    for (int i = 0; i < 48; i++)
+    {
+        padVelocity[i] = 0;
+        padPressure[i] = 0;
+    }
 
 }
 
@@ -86,19 +92,28 @@ void AlphaSphereConnection::hidInputCallback (int pad, int value, int velocity)
 
     if (pad < 48)
     {
-        //insert pad velocity curve mapping here
-        
-//            //exponential mapping of velocity
-//            recievedVelocity = exp((float)recievedVelocity/MAX_VELOCITY)-1;
-//            recievedVelocity = recievedVelocity * (MAX_VELOCITY/1.71828);
-//            if (recievedVelocity > MAX_VELOCITY)
-//                recievedVelocity = MAX_VELOCITY;
-//            if (recievedVelocity > 0 && recievedVelocity < 1) //value 1 = 0.6, which is rounded to 0
-//                recievedVelocity = 1;
+        if (padVelocity[pad] != velocity)
+        {
+            //insert pad velocity curve mapping here
+            
+            //            //exponential mapping of velocity
+            //            recievedVelocity = exp((float)recievedVelocity/MAX_VELOCITY)-1;
+            //            recievedVelocity = recievedVelocity * (MAX_VELOCITY/1.71828);
+            //            if (recievedVelocity > MAX_VELOCITY)
+            //                recievedVelocity = MAX_VELOCITY;
+            //            if (recievedVelocity > 0 && recievedVelocity < 1) //value 1 = 0.6, which is rounded to 0
+            //                recievedVelocity = 1;
+            
+            engine->hitPad(recievedPad, recievedVelocity);
+            padVelocity[pad] = velocity;
+        }
 
+        if (padPressure[pad] != value)
+        {
+            engine->pressPad(pad, recievedValue);
+            padPressure[pad] = value;
+        }
 
-        engine->hitPad(recievedPad, recievedVelocity);
-        engine->pressPad(pad, recievedValue);
   
     }
 

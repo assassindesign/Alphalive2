@@ -32,6 +32,10 @@ public:
     
     void pressPad(const int padID, const float pressure);
     
+    void killPad(const int padID);
+    
+    void killAllPads();
+        
     void midiThruToDestination (const int note, const int vel);
     
     void setDestination (const InternalMidiRouter::MidiDestination);
@@ -65,6 +69,7 @@ public:
     void transposeMidiByNote(const int semiTonesToTranspose);
     
     SphereData* getSphereDataObject();
+    
     
     //=====================================================================
     //  Audio callbacks

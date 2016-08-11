@@ -47,13 +47,15 @@ void NoteSettingsPanel::resized()
     
     float halfWidth = getWidth()/2.0;
     
-    singleNoteBtn.setBounds(0, 0, halfWidth, 20);
-    multiNoteBtn.setBounds(singleNoteBtn.getBounds().translated(halfWidth, 0));
-
-    standardTriggerBtn.setBounds(singleNoteBtn.getBounds().translated(0, singleNoteBtn.getHeight()));
-    toggleTriggerBtn.setBounds(multiNoteBtn.getBounds().translated(0, multiNoteBtn.getHeight()));
+    standardTriggerBtn.setBounds(0, 0, halfWidth, 20);
+    toggleTriggerBtn.setBounds(standardTriggerBtn.getBounds().translated(halfWidth, 0));
     
-    noteSelectPanel->setBounds(0,standardTriggerBtn.getBottom(), getWidth(), 40);
+    singleNoteBtn.setBounds(standardTriggerBtn.getBounds().translated(0, standardTriggerBtn.getHeight()));
+    multiNoteBtn.setBounds(singleNoteBtn.getBounds().translated(singleNoteBtn.getWidth(), 0));
+
+    
+    
+    noteSelectPanel->setBounds(0,singleNoteBtn.getBottom()+5, getWidth(), getHeight() - singleNoteBtn.getBottom());
 }
 
 void NoteSettingsPanel::paint(Graphics& g)
@@ -106,18 +108,22 @@ void NoteSettingsPanel::buttonClicked (Button* button)
     padData = AppData::Instance()->getCurrentlyInspectingPadPtr();
     if (button == &singleNoteBtn)
     {
+        AppData::Instance()->getEnginePointer()->getSpherePointer(padData->getParentSphere()->getSphereID())->killPad(padData->getPadID());
         padData->setPadMidiFunction(PadData::PadMidiFunctions::SingleNote);
     }
     else if (button == &multiNoteBtn)
     {
+        AppData::Instance()->getEnginePointer()->getSpherePointer(padData->getParentSphere()->getSphereID())->killPad(padData->getPadID());
         padData->setPadMidiFunction(PadData::PadMidiFunctions::MultiNote);
     }
     else if (button == &standardTriggerBtn)
     {
+        AppData::Instance()->getEnginePointer()->getSpherePointer(padData->getParentSphere()->getSphereID())->killPad(padData->getPadID());
         padData->setNoteTriggerMode(PadData::NoteTriggerModes::StandardNoteMode);
     }
     else if (button == &toggleTriggerBtn)
     {
+        AppData::Instance()->getEnginePointer()->getSpherePointer(padData->getParentSphere()->getSphereID())->killPad(padData->getPadID());
         padData->setNoteTriggerMode(PadData::NoteTriggerModes::ToggleNoteMode);
     }
     

@@ -176,7 +176,7 @@ void PlayableSphere::hitPad(const int padID, const int vel)
 {
     if (sphereData->getSphereMidiEnabled())
     {
-        if (padID < playablePads.size())
+        if (padID < playablePads.size() && padID > -1)
         {
             playablePads[padID]->hitPad(vel);
         }
@@ -187,12 +187,28 @@ void PlayableSphere::pressPad(const int padID, const float pressure)
 {
     if (sphereData->getSphereMidiEnabled())
     {
-        if (padID < playablePads.size())
+        if (padID < playablePads.size() && padID > -1)
         {
             playablePads[padID]->pressPad(pressure);
         }
     }
     
+}
+
+void PlayableSphere::killPad(const int padID)
+{
+    if (padID < playablePads.size() && padID > -1)
+    {
+        playablePads[padID]->killPad();
+    }
+}
+
+void PlayableSphere::killAllPads()
+{
+    for (int i = 0; i < playablePads.size(); i++)
+    {
+        playablePads[i]->killPad();
+    }
 }
 
 void PlayableSphere::midiThruToDestination (const int note, const int vel)

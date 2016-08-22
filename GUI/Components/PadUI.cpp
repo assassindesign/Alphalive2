@@ -29,16 +29,21 @@ void Pad::paint(Graphics& g)
     
     float alpha = 0.15 + (padData->getPadPressure()/127.0) * 0.75;
     if (emulatingPadPress) {
-        alpha += 0.05;
+        alpha += 0.07;
     }
-    
+
     g.setColour(padColour.withAlpha(alpha));
     
     g.fillEllipse(2, 2, getWidth()-4, getHeight()-4);
     
-    
     if (padData->getVelocity() > 0)
     {
+        if (padData->getNoteTriggerMode() == PadData::NoteTriggerModes::ToggleNoteMode)
+        {
+            g.setColour(lightColour.withAlpha(float(0.5)));
+            g.drawEllipse(6, 6, getWidth()-12, getHeight()-12, 3);
+        }
+        
         g.setColour(lightColour);
         g.drawEllipse(3, 3, getWidth()-6, getHeight()-6, 3);
 
@@ -49,6 +54,8 @@ void Pad::paint(Graphics& g)
         g.drawEllipse(2, 2, getWidth()-4, getHeight()-4, 2);
 
     }
+    
+    
     
 }
 void Pad::resized()

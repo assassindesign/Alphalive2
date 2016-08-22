@@ -47,7 +47,7 @@ public:
         }
         void paint(Graphics& g) override
         {
-            g.fillAll(Colours::red);
+            //g.fillAll(Colours::red);
         }
         
         void refreshData() override
@@ -71,6 +71,7 @@ public:
             {
                 PadData* tempPadData = AppData::Instance()->getCurrentlyInspectingPadPtr();
                 
+                bool wasPlaying = (tempPadData->getVelocity() > 0);
                 AppData::Instance()->getEnginePointer()->getSpherePointer(tempPadData->getParentSphere()->getSphereID())->killPad(tempPadData->getPadID());
                 
                 tempPadData->clearAllMidiNotes();
@@ -81,7 +82,11 @@ public:
                 {
                     tempPadData->addMidiNote(noteNumberSliders[i]->getValue(), 60);
                 }
-
+                
+                if (tempPadData->getPadFunction() == PadData::PadFunctions::Midi && wasPlaying)
+                {
+                    AppData::Instance()->getEnginePointer()->hitPad(tempPadData->getParentSphere()->getSphereID(), tempPadData->getVelocity());
+                }
             }
             
         }

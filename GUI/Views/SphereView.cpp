@@ -85,8 +85,8 @@ SphereView::SphereView(const int _sphereID, MainContentComponent &ref) : sphereI
     colourSelector.setOpaque(true);
     colourSelector.setSize(300, 300);
     colourSelector.setTopLeftPosition(200, 200);
-    //addAndMakeVisible(colourSelector);
-    //colourSelector.addToDesktop(ComponentPeer::StyleFlags::windowHasCloseButton || ComponentPeer::StyleFlags::windowHasTitleBar);
+    addAndMakeVisible(colourSelector);
+    colourSelector.addToDesktop(ComponentPeer::StyleFlags::windowHasCloseButton || ComponentPeer::StyleFlags::windowHasTitleBar);
 
 
 }
@@ -364,7 +364,6 @@ void SphereView::mouseDown (const MouseEvent &event)
             }
             else if (!event.mods.isAnyModifierKeyDown()) // clicking in single pad with no modifiers
             {
-                clearSelectedPads();
                 for (int i = 0; i < padRowSelected.size(); i++) // reset any padRowSelected flags
                 {
                     padRowSelected.set(i, false);
@@ -372,6 +371,8 @@ void SphereView::mouseDown (const MouseEvent &event)
                 
                 sourcePad->setSelected(!sourcePad->getSelected());
                 
+                clearSelectedPads();
+
                 if (sourcePad->getSelected()) // clicked pad is now selected
                 {
                     selectedPads.add(sourcePad);

@@ -43,6 +43,7 @@ public:
     MasterClock* getMasterClockPointer();
     InternalMidiRouter* getMidiRouterPointer();
     
+    void killAllPads();
     //===========================================================================
     //  Audio callbacks for MasterClock
     //===========================================================================

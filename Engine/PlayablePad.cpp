@@ -188,6 +188,6 @@ const int PlayablePad::getMidiChannel()
 void PlayablePad::killPad()
 {
     killingPad = true;
-    hitPad(0);
+    hitPad(0); 
 }
 

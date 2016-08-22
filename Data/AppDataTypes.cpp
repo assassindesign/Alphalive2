@@ -34,6 +34,7 @@ const int ScaleData::getScale()
 bool ScaleData::setKey(const int newKey)
 {
     bool success = true;
+    int moduloKey = newKey % BaseKey::B;
     if (newKey != key)
     {
         if (newKey > -1 && newKey < BaseKey::B)
@@ -45,8 +46,12 @@ bool ScaleData::setKey(const int newKey)
         }
         else
         {
+            dataLock.enter();
+            key = abs(moduloKey);
+            dataLock.exit();
+            callListeners(DataIDs::Key, AppDataFormat::ScaleDataType);
             //jassertfalse; //value out of range
-            success = false;
+            //success = false;
         }
         
     }

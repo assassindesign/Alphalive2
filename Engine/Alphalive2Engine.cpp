@@ -114,6 +114,16 @@ InternalMidiRouter* Alphalive2Engine::getMidiRouterPointer()
 }
 
 
+void Alphalive2Engine::killAllPads()
+{
+    for (int i = 0; i < spheres.size(); i++)
+    {
+        spheres[i]->killAllPads();
+    }
+}
+
+
+
 void Alphalive2Engine::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
     masterMixer.prepareToPlay(samplesPerBlockExpected, sampleRate);

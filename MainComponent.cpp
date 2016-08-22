@@ -40,6 +40,10 @@ MainContentComponent::MainContentComponent()
     scaleView = new ScaleView();
     addAndMakeVisible(scaleView);
     
+    killButton = new TextButton();
+    killButton->setButtonText("Kill");
+    killButton->addListener(this);
+    addAndMakeVisible(killButton);
     
     setSize (1200, 700);
     
@@ -64,6 +68,8 @@ void MainContentComponent::resized()
     tempoView->setBounds(0, 0, getWidth()/8.0, getHeight()/10.0);
     scaleView->setBounds(tempoView->getBounds().translated(getWidth()/8.0, 0));
     padInspector->setBounds(sphereView->getRight() + 15, 0, (getWidth()/4.0) - 15, getHeight());
+    
+    killButton->setBounds(sphereView->getRight()-40, sphereView->getBottom()-20, 40, 20);
 }
 
 PadInspector* MainContentComponent::getPadInspector()
@@ -71,6 +77,13 @@ PadInspector* MainContentComponent::getPadInspector()
     return padInspector;
 }
 
+void MainContentComponent::buttonClicked (Button* button)
+{
+    if (button == killButton)
+    {
+        alphalive2Engine->killAllPads();
+    }
+}
 
     //==============================================================================
 

@@ -34,112 +34,114 @@ PlayablePad::~PlayablePad()
 
 void PlayablePad::hitPad(const int velocity)
 {
-    //===Note Trigger Mode===============================================================================
-
-    bool ignoreHit = false;
-    if (padData->getNoteTriggerMode() == PadData::NoteTriggerModes::ToggleNoteMode)
+    if (padData->getNoteEnabled() || killingPad)
     {
-        if (velocity > 0) // is a note on message
+        //===Note Trigger Mode===============================================================================
+        
+        bool ignoreHit = false;
+        if (padData->getNoteTriggerMode() == PadData::NoteTriggerModes::ToggleNoteMode)
         {
-            if (rawVelocity <= 0) // pad is currently off
+            if (velocity > 0) // is a note on message
             {
-                rawVelocity = velocity;
-            }
-            else if (rawVelocity > 0) // pad is currently on
-            {
-                rawVelocity = 0;
-            }
-        }
-        else
-        {
-            ignoreHit = true;
-        }
-        
-    }
-    else if (padData->getNoteTriggerMode() == PadData::NoteTriggerModes::StandardNoteMode)
-    {
-        rawVelocity = velocity;
-    }
-    
-    if (killingPad)
-    {
-        rawVelocity = 0;
-    }
-    
-    if (!ignoreHit || killingPad) // if pad should trigger
-    {
-        //===Velocity Curve===============================================================================
-        
-        static float recievedVelocity;
-        switch (padData->getVelocityCurve())
-        {
-            case PadData::CurveTypes::Logarithmic:
-                //logarithmic mapping of velocity
-                recievedVelocity = log(rawVelocity+1);
-                recievedVelocity = recievedVelocity * (MAX_VELOCITY/4.85); // not sure why 4.85 here!
-                if (recievedVelocity > MAX_VELOCITY)
-                    recievedVelocity = MAX_VELOCITY;
-                break;
-                
-            default:
-                recievedVelocity = rawVelocity;
-                break;
-        }
-        
-        //recievedVelocity = scaleValue (recievedVelocity, 0, 127.0, 0, 127.0);
-        
-        //===Pad Function================================================================================
-        
-        if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::SingleNote)
-        {
-            if (padData->setVelocity(recievedVelocity))
-            {
-                MidiMessage outputMessage = MidiMessage::noteOn(padData->getMidiChannel(), padData->getMidiNote(), uint8(recievedVelocity));
-                router->sendMidiToDestination(padData->getMidiDestination(), &outputMessage);
-                
-            }
-        }
-        else if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::MultiNote)
-        {
-            if (padData->getMultiNoteMode() == PadData::MultiNoteModes::Chord)
-            {
-                if (padData->setVelocity(recievedVelocity))
+                if (rawVelocity <= 0) // pad is currently off
                 {
-                    Array<PadData::MidiNote> midiNoteArray = padData->getMidiNotes();
-                    
-                    for (int i = 0; i < midiNoteArray.size(); i++)
-                    {
-                        
-                        DBG(midiNoteArray[i].noteNumber);
-                        DBG(midiNoteArray[i].velocityPercentage);
-
-                        MidiMessage outputMessage = MidiMessage::noteOn (padData->getMidiChannel(),
-                                                                         midiNoteArray[i].noteNumber,
-                                                                         uint8((midiNoteArray[i].velocityPercentage / 100.0)*recievedVelocity));
-                        
-                        router->sendMidiToDestination(padData->getMidiDestination(), &outputMessage);
-                    }
-                    
-                    
+                    rawVelocity = velocity;
                 }
+                else if (rawVelocity > 0) // pad is currently on
+                {
+                    rawVelocity = 0;
+                }
+            }
+            else
+            {
+                ignoreHit = true;
             }
             
         }
+        else if (padData->getNoteTriggerMode() == PadData::NoteTriggerModes::StandardNoteMode)
+        {
+            rawVelocity = velocity;
+        }
+        
+        if (killingPad)
+        {
+            rawVelocity = 0;
+        }
+        
+        if (!ignoreHit || killingPad) // if pad should trigger
+        {
+            //===Velocity Curve===============================================================================
+            
+            static float recievedVelocity;
+            switch (padData->getVelocityCurve())
+            {
+                case PadData::CurveTypes::Logarithmic:
+                    //logarithmic mapping of velocity
+                    recievedVelocity = log(rawVelocity+1);
+                    recievedVelocity = recievedVelocity * (MAX_VELOCITY/4.85); // not sure why 4.85 here!
+                    if (recievedVelocity > MAX_VELOCITY)
+                        recievedVelocity = MAX_VELOCITY;
+                    break;
+                    
+                default:
+                    recievedVelocity = rawVelocity;
+                    break;
+            }
+            
+            //recievedVelocity = scaleValue (recievedVelocity, 0, 127.0, 0, 127.0);
+            
+            //===Pad Function================================================================================
+            
+            if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::SingleNote)
+            {
+                if (padData->setVelocity(recievedVelocity))
+                {
+                    MidiMessage outputMessage = MidiMessage::noteOn(padData->getMidiChannel(), padData->getMidiNote(), uint8(recievedVelocity));
+                    router->sendMidiToDestination(padData->getMidiDestination(), &outputMessage);
+                    
+                }
+            }
+            else if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::MultiNote)
+            {
+                if (padData->getMultiNoteMode() == PadData::MultiNoteModes::Chord)
+                {
+                    if (padData->setVelocity(recievedVelocity))
+                    {
+                        Array<PadData::MidiNote> midiNoteArray = padData->getMidiNotes();
+                        
+                        for (int i = 0; i < midiNoteArray.size(); i++)
+                        {
+                            
+                            //DBG(midiNoteArray[i].noteNumber);
+                            // DBG(midiNoteArray[i].velocityPercentage);
+                            
+                            MidiMessage outputMessage = MidiMessage::noteOn (padData->getMidiChannel(),
+                                                                             midiNoteArray[i].noteNumber,
+                                                                             uint8((midiNoteArray[i].velocityPercentage / 100.0)*recievedVelocity));
+                            
+                            router->sendMidiToDestination(padData->getMidiDestination(), &outputMessage);
+                        }
+                        
+                    }
+                }                
+            }
+        }
+        
+        if (killingPad)
+        {
+            killingPad = !killingPad;
+        }
     }
     
-    if (killingPad)
-    {
-        killingPad = !killingPad;
-    }
     
 }
 
 void PlayablePad::pressPad(const float pressure)
 {
-    float receivedPressure = pressure;
-    
-    if (pressure != padData->getPadPressure()) //avoid unneccessary processing
+    if (padData->getPressureEnabled() || killingPad)
     {
+        float receivedPressure = pressure;
+        
         if (padData->getPressureDestination() != PadData::PressureDestinations::OSC) // if pressure mode requires value between 0-127
         {
             receivedPressure = (pressure / 511.0) * 127.0;
@@ -152,9 +154,6 @@ void PlayablePad::pressPad(const float pressure)
             }
         }
     }
-    
-    
-    
     
 }
 
@@ -188,6 +187,7 @@ const int PlayablePad::getMidiChannel()
 void PlayablePad::killPad()
 {
     killingPad = true;
+    pressPad(0);
     hitPad(0); 
 }
 

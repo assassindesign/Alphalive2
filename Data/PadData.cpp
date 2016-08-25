@@ -31,7 +31,8 @@ ValueTree* PadData::toValueTree()
     outputTree->setProperty("padPressure", padPressure, 0);
     outputTree->setProperty("pressureMode", pressureMode, 0);
     outputTree->setProperty("sticky", sticky, 0);
-    outputTree->setProperty("enabled", enabled, 0);
+    outputTree->setProperty("noteEnabled", noteEnabled, 0);
+    outputTree->setProperty("pressureEnabled", pressureEnabled, 0);
     outputTree->setProperty("quantiseEnabled", quantiseEnabled, 0);
     outputTree->setProperty("reversePressure", reversePressure, 0);
     outputTree->setProperty("velocityCurve", velocityCurve, 0);
@@ -81,9 +82,13 @@ bool PadData::fromValueTree(ValueTree* treeToImport)
                 {
                     setSticky(treeToImport->getProperty(pName));
                 }
-                else if (pName == "enabled")
+                else if (pName == "noteEnabled")
                 {
-                    setEnabled(treeToImport->getProperty(pName));
+                    setNoteEnabled(treeToImport->getProperty(pName));
+                }
+                else if (pName == "pressureEnabled")
+                {
+                    setPressureEnabled(treeToImport->getProperty(pName));
                 }
                 else if (pName == "quantiseEnabled")
                 {
@@ -219,6 +224,41 @@ bool PadData::setMidiNote (const int newNote, const int velPercentage)
     else{
         jassertfalse; //value out of range
         success = false;
+    }
+    
+    return success;
+}
+
+bool PadData::setMidiNote (const int arrayIndex, const int newNote, const int velPercentage = 100)
+{
+    bool success = false;
+    if (arrayIndex > -1 && arrayIndex < midiNotes.size()) //if array index is in range
+    {
+        if (newNote >= 0 && newNote < 128) //and note value is in range
+        {
+            dataLock.enter();
+            
+            midiNotes.getReference(arrayIndex).noteNumber = newNote;
+            success = true;
+            
+            if (velPercentage > -1 && velPercentage < 101)
+            {
+                midiNotes.getReference(arrayIndex).velocityPercentage = velPercentage;
+            }
+            else
+            {
+                jassertfalse; //percentages are between 0-100...
+                success = false;
+            }
+            
+            dataLock.exit();
+            callListeners(DataIDs::MidiNotes, AppDataFormat::PadDataType);
+            
+        }
+        else{
+            jassertfalse; //value out of range
+            success = false;
+        }
     }
     
     return success;
@@ -437,14 +477,24 @@ void PadData::setSticky(const bool shouldBeSticky)
     
 }
 
-void PadData::setEnabled(const bool shouldBeEnabled)
+void PadData::setNoteEnabled(const bool shouldBeEnabled)
 {
     dataLock.enter();
-    enabled = shouldBeEnabled;
+    noteEnabled = shouldBeEnabled;
     dataLock.exit();
-    callListeners(DataIDs::Enabled, AppDataFormat::PadDataType);
+    callListeners(DataIDs::NoteEnabled, AppDataFormat::PadDataType);
     
 }
+
+void PadData::setPressureEnabled(const bool shouldBeEnabled)
+{
+    dataLock.enter();
+    pressureEnabled = shouldBeEnabled;
+    dataLock.exit();
+    callListeners(DataIDs::PressureEnabled, AppDataFormat::PadDataType);
+    
+}
+
 void PadData::setQuantiseEnabled(const bool shouldBeQuantised)
 {
     dataLock.enter();
@@ -611,7 +661,7 @@ void PadData::clearAllMidiNotes()
 {
     dataLock.enter();
     
-    midiNotes.clear();
+    midiNotes.clearQuick();
     
     dataLock.exit();
     callListeners(DataIDs::MidiNotes, AppDataFormat::PadDataType);
@@ -734,9 +784,14 @@ bool PadData::getSticky()
     return sticky;
 }
 
-bool PadData::getEnabled()
+bool PadData::getNoteEnabled()
 {
-    return enabled;
+    return noteEnabled;
+}
+
+bool PadData::getPressureEnabled()
+{
+    return pressureEnabled;
 }
 
 bool PadData::getQuantiseEnabled()

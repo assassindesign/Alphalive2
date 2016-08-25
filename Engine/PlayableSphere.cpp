@@ -34,7 +34,7 @@ PlayableSphere::PlayableSphere(const int numPads, const int _sphereID) : sphereI
     if (AppData::Instance()->getEnginePointer()->getMidiRouterPointer() != 0)
     {
         router = AppData::Instance()->getEnginePointer()->getMidiRouterPointer();
-        mapSphere(36, SphereData::MappedScale::Natural, SphereData::RowConfig::TwoRow);          
+        mapSphere(36, SphereData::MappedScale::Natural, SphereData::RowConfig::OneRow);
     }
     else
     {
@@ -281,7 +281,15 @@ void PlayableSphere::transposeMidiByOctave(const int octavesToTranspose)
                 
             }
             
-            playablePads[i]->setMidiNote(workingPData->getMidiNote()+12 * octavesToTranspose);
+            
+            Array<PadData::MidiNote> midiNotes = workingPData->getMidiNotes();
+            for (int j = 0; j < midiNotes.size(); j++)
+            {
+                workingPData->setMidiNote(j, midiNotes[j].noteNumber+12 * octavesToTranspose, midiNotes[j].velocityPercentage);
+                
+            }
+            
+            
             if (workingPData->getPadFunction() == PadData::PadFunctions::Midi && hadVelocity > 0);
             {
                 hitPad(i, hadVelocity);
@@ -309,7 +317,13 @@ void PlayableSphere::transposeMidiByNote(const int semiTonesToTranspose)
                 
             }
             
-            playablePads[i]->setMidiNote(workingPData->getMidiNote()+semiTonesToTranspose);
+            Array<PadData::MidiNote> midiNotes = workingPData->getMidiNotes();
+            for (int j = 0; j < midiNotes.size(); j++)
+            {
+                workingPData->setMidiNote(j, midiNotes[j].noteNumber+semiTonesToTranspose, midiNotes[j].velocityPercentage);
+
+            }
+            
             if (workingPData->getPadFunction() == PadData::PadFunctions::Midi && hadVelocity > 0)
             {
                 hitPad(i, hadVelocity);

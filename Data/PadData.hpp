@@ -87,6 +87,7 @@ public:
         PBup,
         PBDown,
         ControlMessage,
+        MidiCC,
         OSC,
         FINAL_PRESSUREDESTINATION
     };
@@ -117,7 +118,8 @@ public:
         PressureMode,
         PressureDestination,
         Sticky,
-        Enabled,
+        NoteEnabled,
+        PressureEnabled,
         QuantiseEnabled,
         ReversePressure,
         VelocityCurve,
@@ -145,6 +147,7 @@ public:
     bool setPadID (const int newID);
     bool setMidiNote (const int newNote);
     bool setMidiNote (const int newNote, const int velPercentage);
+    bool setMidiNote (const int arrayIndex, const int newNote, const int velPercentage);
     bool setPadFunction (const int newFunction);
     bool setPadAudioFunction (const int newFunction);
     bool setPadMidiFunction (const int newFunction);
@@ -157,7 +160,8 @@ public:
     bool setPressureMode(const int newMode);
     bool setPressureDestination(const int newDestination);
     void setSticky(const bool shouldBeSticky);
-    void setEnabled(const bool shouldBeEnabled);
+    void setNoteEnabled(const bool shouldBeEnabled);
+    void setPressureEnabled(const bool shouldBeEnabled);
     void setQuantiseEnabled(const bool shouldBeQuantised);
     void setReversePressure(const bool shouldReversePressure);
     bool setVelocityCurve(const int newCurve);
@@ -190,7 +194,8 @@ public:
     int getPressureMode();
     int getPressureDestination();
     bool getSticky();
-    bool getEnabled();
+    bool getNoteEnabled();
+    bool getPressureEnabled();
     bool getQuantiseEnabled();
     bool getReversePressure();
     int getVelocityCurve();
@@ -217,10 +222,11 @@ private:
     int pressureMode = 0;
     int pressureDestination = 0;
     bool sticky = false;
-    bool enabled = true;
+    bool noteEnabled = true;
+    bool pressureEnabled = true;
     bool quantiseEnabled = false;
     bool reversePressure = false;
-    int velocityCurve = CurveTypes::Logarithmic;
+    int velocityCurve = CurveTypes::Linear;
     int pressureCurve = 0;
     int padGroup = 0;
     int midiDestination = 0;

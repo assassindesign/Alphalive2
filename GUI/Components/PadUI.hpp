@@ -45,6 +45,8 @@ private:
     bool isSelected;
     Point<int> centerPoint;
     int halfWidth;
+    GlowEffect ringGlowEffect;
+
 };
 
 #endif /* PadUI_hpp */

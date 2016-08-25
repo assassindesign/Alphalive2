@@ -134,6 +134,7 @@ public:
         
     private:
         OwnedArray<Slider> noteNumberSliders;
+        OwnedArray<Slider> noteVelocitySliders;
         TextButton plusButton;
     };
     
@@ -235,7 +236,7 @@ private:
     PadData* padData;
     
     ScopedPointer<NoteSelectPanel> noteSelectPanel;
-
+    ScopedPointer<MultiNotePanel> multiNotePanel;
 };
 
 

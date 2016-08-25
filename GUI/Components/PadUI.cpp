@@ -15,6 +15,11 @@ Pad::Pad(PadData* _padData) : padData(_padData)
     emulatingPadPress = false;
     isSelected = false;
     halfWidth = 0;
+    
+    ringGlowEffect.setGlowProperties(0, Colours::whitesmoke);
+    setComponentEffect(&ringGlowEffect);
+    
+    
 }
 
 Pad::~Pad()
@@ -71,6 +76,12 @@ void Pad::setColour(const Colour newColour)
     {
         actualColour = padColour = newColour;//.withMultipliedBrightness(1.5);
         lightColour = padColour.brighter().withAlpha(float(1.0));
+        if (isSelected)
+        {
+            ringGlowEffect.setGlowProperties(1, actualColour);
+        }
+        
+
         repaint();
     }
 }
@@ -81,13 +92,15 @@ void Pad::setSelected(const bool padIsSelected)
     
     if (padIsSelected)
     {
-        padColour = Colours::slategrey;
+        //padColour = Colours::slategrey;
+        ringGlowEffect.setGlowProperties(1.5, actualColour);
     }
     else
     {
-        padColour = actualColour;
+        ringGlowEffect.setGlowProperties(0, actualColour);
+        //padColour = actualColour;
     }
-    lightColour = padColour.brighter();
+    //lightColour = padColour.brighter();
     
     repaint();
 }

@@ -35,6 +35,10 @@ NoteSettingsPanel::NoteSettingsPanel()
     noteSelectPanel->setDataObject(getDataObject());
     addAndMakeVisible(noteSelectPanel);
     
+    multiNotePanel = new MultiNotePanel();
+    multiNotePanel->setDataObject(getDataObject());
+    addAndMakeVisible(multiNotePanel);
+    
 
 }
 NoteSettingsPanel::~NoteSettingsPanel()
@@ -52,10 +56,8 @@ void NoteSettingsPanel::resized()
     
     singleNoteBtn.setBounds(standardTriggerBtn.getBounds().translated(0, standardTriggerBtn.getHeight()));
     multiNoteBtn.setBounds(singleNoteBtn.getBounds().translated(singleNoteBtn.getWidth(), 0));
-
     
-    
-    noteSelectPanel->setBounds(0,singleNoteBtn.getBottom()+5, getWidth(), getHeight() - singleNoteBtn.getBottom());
+    multiNotePanel->setBounds(0,singleNoteBtn.getBottom()+5, getWidth(), 20);
 }
 
 void NoteSettingsPanel::paint(Graphics& g)

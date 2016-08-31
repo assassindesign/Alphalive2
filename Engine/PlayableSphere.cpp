@@ -34,7 +34,7 @@ PlayableSphere::PlayableSphere(const int numPads, const int _sphereID) : sphereI
     if (AppData::Instance()->getEnginePointer()->getMidiRouterPointer() != 0)
     {
         router = AppData::Instance()->getEnginePointer()->getMidiRouterPointer();
-        mapSphere(36, SphereData::MappedScale::Natural, SphereData::RowConfig::OneRow);
+        mapSphere(36, SphereData::MappedScale::Natural, SphereData::RowConfig::TwoRow);
     }
     else
     {
@@ -50,7 +50,7 @@ PlayableSphere::~PlayableSphere()
     
 }
 
-void PlayableSphere::mapSphere(const int rootNote, const SphereData::MappedScale scale, const SphereData::RowConfig config = SphereData::OneRow)
+void PlayableSphere::mapSphere(const int rootNote, const SphereData::MappedScale scale, const SphereData::RowConfig config)
 {
     if (rootNote != sphereData->getRootNote())
     {
@@ -152,18 +152,8 @@ void PlayableSphere::mapSphere(const int rootNote, const SphereData::MappedScale
             }
         }
     }
-    
-    
-    
 }
 
-
-void PlayableSphere::mapSphere(const int key, const int octave, const int scale, const int config = SphereData::OneRow)
-{
-    int rootNote = 36 + (key + 12*octave); //C3 = 60; C-2 = 0;
-    
-    mapSphere(rootNote, scale, config);
-}
 
 void PlayableSphere::setRootNote(const int newRootNote)
 {

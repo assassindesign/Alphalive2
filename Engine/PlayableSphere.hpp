@@ -50,9 +50,7 @@ public:
     
     void setScale (SphereData::MappedScale newScale);
     
-    void mapSphere(const int rootNote, const SphereData::MappedScale scale, const SphereData::RowConfig config);
-    
-    void mapSphere(const int key, const int octave, const int scale, const int config);
+    void mapSphere(const int rootNote, const SphereData::MappedScale scale, const SphereData::RowConfig config = SphereData::OneRow);
 
     void setMidiThruEnabled (bool shouldBeEnabled);
     

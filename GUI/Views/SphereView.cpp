@@ -85,8 +85,8 @@ SphereView::SphereView(const int _sphereID, MainContentComponent &ref) : sphereI
     colourSelector.setOpaque(true);
     colourSelector.setSize(300, 300);
     colourSelector.setTopLeftPosition(200, 200);
-    addAndMakeVisible(colourSelector);
-    colourSelector.addToDesktop(ComponentPeer::StyleFlags::windowHasCloseButton || ComponentPeer::StyleFlags::windowHasTitleBar);
+    //addAndMakeVisible(colourSelector);
+    //colourSelector.addToDesktop(ComponentPeer::StyleFlags::windowHasCloseButton || ComponentPeer::StyleFlags::windowHasTitleBar);
 
 
 }
@@ -319,78 +319,79 @@ void SphereView::mouseExit (const MouseEvent &event)
 
 void SphereView::mouseDown (const MouseEvent &event)
 {
-    bool clickOnPad = false;
-    
-    Pad* sourcePad = nullptr;
-    for (int i = 0; i < pads.size(); i++) //search pad array to fetch padUI object for clicked pad
+    if (event.eventComponent != this)
     {
-        if (event.eventComponent == pads[i])
+        bool clickOnPad = false;
+        
+        Pad* sourcePad = nullptr;
+        for (int i = 0; i < pads.size(); i++) //search pad array to fetch padUI object for clicked pad
         {
-            sourcePad = pads[i];
-            break;
-        }
-    }
-    
-    if (sourcePad != nullptr) //if the source component was a pad that exists
-    {
-        if (sourcePad->isPointInsideCircle(event.getMouseDownPosition())) //if mouse is actually in the circle of the padUI
-        {
-            //DBG("Click in Pad");
-            clickOnPad = true;
-
-            if (event.mods.isShiftDown()) // clicking single pad with shift down - add/remove from selected
+            if (event.eventComponent == pads[i])
             {
-                sourcePad->setSelected(!sourcePad->getSelected()); // toggle boolean value
+                sourcePad = pads[i];
+                break;
+            }
+        }
+        
+        if (sourcePad != nullptr) //if the source component was a pad that exists
+        {
+            if (sourcePad->isPointInsideCircle(event.getMouseDownPosition())) //if mouse is actually in the circle of the padUI
+            {
+                //DBG("Click in Pad");
+                clickOnPad = true;
                 
-                if (sourcePad->getSelected()) //either add pad to selected group
+                if (event.mods.isShiftDown()) // clicking single pad with shift down - add/remove from selected
                 {
-                    selectedPads.add(sourcePad);
-                }
-                else // or remove it
-                {
-                    for (int i = 0; i < selectedPads.size(); i++)
+                    sourcePad->setSelected(!sourcePad->getSelected()); // toggle boolean value
+                    
+                    if (sourcePad->getSelected()) //either add pad to selected group
                     {
-                        if (selectedPads[i] == sourcePad)
+                        selectedPads.add(sourcePad);
+                    }
+                    else // or remove it
+                    {
+                        for (int i = 0; i < selectedPads.size(); i++)
                         {
-                            selectedPads.remove(i);
+                            if (selectedPads[i] == sourcePad)
+                            {
+                                selectedPads.remove(i);
+                            }
                         }
                     }
+                    
+                    if (selectedPads.size() != 1) //if there is more than one pad selcted at the moment, don't display inspector. This will probably change later to switch padinspector to group edit mode
+                    {
+                        AppData::Instance()->setCurrentlyInspectingPad(-1, -1);
+                    }
                 }
-                
-                if (selectedPads.size() != 1) //if there is more than one pad selcted at the moment, don't display inspector. This will probably change later to switch padinspector to group edit mode
+                else if (!event.mods.isAnyModifierKeyDown()) // clicking in single pad with no modifiers
                 {
-                    AppData::Instance()->setCurrentlyInspectingPad(-1, -1);
+                    for (int i = 0; i < padRowSelected.size(); i++) // reset any padRowSelected flags
+                    {
+                        padRowSelected.set(i, false);
+                    }
+                    
+                    sourcePad->setSelected(!sourcePad->getSelected());
+                    
+                    clearSelectedPads();
+                    
+                    if (sourcePad->getSelected()) // clicked pad is now selected
+                    {
+                        selectedPads.add(sourcePad);
+                        sourcePad->setAsCurrentlyInspectedPad();//AppData::Instance()->setCurrentlyInspectingPad(sourcePad->, <#const int padID#>)
+                    }
+                    else
+                    {
+                        AppData::Instance()->setCurrentlyInspectingPad(-1, -1);
+                    }
+                    
                 }
             }
-            else if (!event.mods.isAnyModifierKeyDown()) // clicking in single pad with no modifiers
-            {
-                for (int i = 0; i < padRowSelected.size(); i++) // reset any padRowSelected flags
-                {
-                    padRowSelected.set(i, false);
-                }
-                
-                sourcePad->setSelected(!sourcePad->getSelected());
-                
-                clearSelectedPads();
-
-                if (sourcePad->getSelected()) // clicked pad is now selected
-                {
-                    selectedPads.add(sourcePad);
-                    sourcePad->setAsCurrentlyInspectedPad();//AppData::Instance()->setCurrentlyInspectingPad(sourcePad->, <#const int padID#>)
-                }
-                else
-                {
-                    AppData::Instance()->setCurrentlyInspectingPad(-1, -1);
-                }
-                
-            }
+            
         }
-        
     }
-    
-    if (!clickOnPad) // if click was not on a pad
+    else // if click was not on a pad
     {
-        
         if (!event.mods.isAltDown())
         {
             int circleID = isMouseInCircle(event);
@@ -462,9 +463,8 @@ void SphereView::mouseDown (const MouseEvent &event)
                 }
             }
         }
-        
     }
-
+    
     
     
     

@@ -39,17 +39,25 @@ NoteSettingsPanel::NoteSettingsPanel()
     multiNotePanel->setDataObject(getDataObject());
     addAndMakeVisible(multiNotePanel);
     
+    noteSelectKeyboard = new NoteSelectKBComponent();
+    //addAndMakeVisible(noteSelectKeyboard);
+    
+    noteSelectViewPort = new Viewport();
+    noteSelectViewPort->setViewedComponent(noteSelectKeyboard);
+    noteSelectViewPort->setScrollBarsShown(false, true);
+    addAndMakeVisible(noteSelectViewPort);
 
 }
 NoteSettingsPanel::~NoteSettingsPanel()
 {
-
+    //noteSelectViewPort->setViewedComponent(nullptr);
 }
 
 void NoteSettingsPanel::resized()
 {
     
     float halfWidth = getWidth()/2.0;
+    float thirdHeight = getHeight()/3.0;
     
     standardTriggerBtn.setBounds(0, 0, halfWidth, 20);
     toggleTriggerBtn.setBounds(standardTriggerBtn.getBounds().translated(halfWidth, 0));
@@ -57,7 +65,12 @@ void NoteSettingsPanel::resized()
     singleNoteBtn.setBounds(standardTriggerBtn.getBounds().translated(0, standardTriggerBtn.getHeight()));
     multiNoteBtn.setBounds(singleNoteBtn.getBounds().translated(singleNoteBtn.getWidth(), 0));
     
-    multiNotePanel->setBounds(0,singleNoteBtn.getBottom()+5, getWidth(), 20);
+    //multiNotePanel->setBounds(0,singleNoteBtn.getBottom()+5, getWidth(), 20);
+    
+    
+    noteSelectViewPort->setBounds(0, multiNoteBtn.getBottom() + 5, getWidth(), thirdHeight+noteSelectViewPort->getScrollBarThickness());
+
+    noteSelectKeyboard->setBounds(0, multiNoteBtn.getBottom() + 5, noteSelectKeyboard->getWidthNeeded(thirdHeight), thirdHeight);
 }
 
 void NoteSettingsPanel::paint(Graphics& g)
@@ -68,6 +81,7 @@ void NoteSettingsPanel::paint(Graphics& g)
 void NoteSettingsPanel::refreshData()
 {
     noteSelectPanel->setDataObject(getDataObject());
+    noteSelectKeyboard->setDataObject(getDataObject());
     
     padDataChangeCallback(PadData::DataIDs::PadMidiFunction);
     padDataChangeCallback(PadData::DataIDs::NoteTriggerMode);

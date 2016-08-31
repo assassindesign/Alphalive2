@@ -14,6 +14,7 @@
 #include "PadInspectorPanelBase.h"
 #include "GUIColours.h"
 #include "Alphalive2Engine.hpp"
+#include "NoteSelectKBComponent.hpp"
 
 class NoteSettingsPanel : public PadInspectorPanelBase,
                           public Button::Listener
@@ -155,7 +156,7 @@ public:
         }
         void paint(Graphics& g) override
         {
-            g.fillAll(Colours::blue);
+            //g.fillAll(Colours::blue);
         }
         
         void refreshData() override
@@ -237,6 +238,8 @@ private:
     
     ScopedPointer<NoteSelectPanel> noteSelectPanel;
     ScopedPointer<MultiNotePanel> multiNotePanel;
+    ScopedPointer<NoteSelectKBComponent> noteSelectKeyboard;
+    ScopedPointer<Viewport> noteSelectViewPort;
 };
 
 

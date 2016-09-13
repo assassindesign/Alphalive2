@@ -264,6 +264,37 @@ bool PadData::setMidiNote (const int arrayIndex, const int newNote, const int ve
     return success;
 }
 
+bool PadData::setVelPercentForNote(const int noteToFind, const int newVelPercentage)
+{
+    bool success = false;
+    
+    if (newVelPercentage > -1 && newVelPercentage < 101)
+    {
+        if (noteToFind > -1 && noteToFind < 128)
+        {
+            dataLock.enter();
+            for (int i = 0 ; i < midiNotes.size(); i++)
+            {
+                if (midiNotes[i].noteNumber == noteToFind)
+                {
+                    midiNotes.getReference(i).velocityPercentage = newVelPercentage;
+                    success = true;
+                    break;
+                }
+            }
+            
+            dataLock.exit();
+            if (success)
+            {
+                callListeners(DataIDs::MidiNotes, AppDataFormat::PadDataType);
+            }
+        }
+       
+    }
+    
+    return success;
+}
+
 bool PadData::setPadFunction (const int newFunction)
 {
     bool success = false;

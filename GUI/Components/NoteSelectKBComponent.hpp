@@ -23,6 +23,7 @@ public:
     void resized() override;
     void paint(Graphics& g) override;
     const bool getIsBlackKey();
+    const bool getIsCNote();
     const int getVelPercentage();
     void setVelPercentage(const int newPercentage);
     
@@ -34,16 +35,28 @@ public:
 private:
     const int blackKeys[5] = {1,3,6,8,10};
     
-    bool isBlackKey;
+    bool isBlackKey, isCNote;
     int noteNumber;
     int velPercentage;
     bool selected;
     Colour velPercentageColour;
     Label noteLabel;
-    Font labelFont;
+    ScopedPointer<Font> labelFont;
 };
 
-class NoteSelectKBComponent : public PadInspectorPanelBase
+class NoteSelectPositionerComponent : public Component
+{
+public:
+    NoteSelectPositionerComponent();
+    ~NoteSelectPositionerComponent();
+    void resized() override;
+    void paint(Graphics& g) override;
+private:
+    
+};
+
+class NoteSelectKBComponent : public PadInspectorPanelBase,
+                              public Timer
 {
 public:
     NoteSelectKBComponent();
@@ -55,13 +68,20 @@ public:
     void paint(Graphics& g) override;
     void mouseDown(const MouseEvent &event) override;
     void mouseDrag (const MouseEvent &event) override;
+    
+    void timerCallback() override;
 
-    const float getWidthNeeded(const int forHeight);
 private:
     OwnedArray<KBComponentKey> keys;
     float halfHeight;
     float whiteKeyWidth, blackKeyWidth;
     PadData* padData;
+    ScopedPointer<NoteSelectPositionerComponent> keyPositioner;
+    Viewport mainViewport;
+    
+    int lowestKeyToDisplayX, lowestKeytoDisplay;
+    int totalXDistanceToMove;
+    bool scrollingKeys;
 };
 
 #endif /* NoteSelectKBComponent_hpp */

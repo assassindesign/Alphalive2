@@ -79,7 +79,7 @@ void PadInspector::appDataChangeCallback(const int changedData)
 {
     if (changedData == AppData::DataIDs::InspectingPad)
     {
-        padDataToInspect = AppData::Instance()->getCurrentlyInspectingPadPtr();
+        padDataToInspect = AppData::Instance()->getCurrentlyInspectingPadDataPtr();
         
         if (padDataToInspect == nullptr)
         {

@@ -69,6 +69,8 @@ private:
     MixerAudioSource masterMixer;
     
     int hIDLinkedSphere;
+    
+
 };
 
 #endif /* Alphalive2Engine_hpp */

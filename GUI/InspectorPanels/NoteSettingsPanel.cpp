@@ -40,12 +40,12 @@ NoteSettingsPanel::NoteSettingsPanel()
     addAndMakeVisible(multiNotePanel);
     
     noteSelectKeyboard = new NoteSelectKBComponent();
-    //addAndMakeVisible(noteSelectKeyboard);
+    addAndMakeVisible(noteSelectKeyboard);
     
-    noteSelectViewPort = new Viewport();
-    noteSelectViewPort->setViewedComponent(noteSelectKeyboard);
-    noteSelectViewPort->setScrollBarsShown(false, true);
-    addAndMakeVisible(noteSelectViewPort);
+//    noteSelectViewPort = new Viewport();
+//    noteSelectViewPort->setViewedComponent(noteSelectKeyboard);
+//    noteSelectViewPort->setScrollBarsShown(false, true);
+//    addAndMakeVisible(noteSelectViewPort);
 
 }
 NoteSettingsPanel::~NoteSettingsPanel()
@@ -68,9 +68,9 @@ void NoteSettingsPanel::resized()
     //multiNotePanel->setBounds(0,singleNoteBtn.getBottom()+5, getWidth(), 20);
     
     
-    noteSelectViewPort->setBounds(0, multiNoteBtn.getBottom() + 5, getWidth(), thirdHeight+noteSelectViewPort->getScrollBarThickness());
+    //noteSelectViewPort->setBounds(0, multiNoteBtn.getBottom() + 5, getWidth(), thirdHeight+noteSelectViewPort->getScrollBarThickness());
 
-    noteSelectKeyboard->setBounds(0, multiNoteBtn.getBottom() + 5, noteSelectKeyboard->getWidthNeeded(thirdHeight), thirdHeight);
+    noteSelectKeyboard->setBounds(0, multiNoteBtn.getBottom() + 5, getWidth(), thirdHeight);
 }
 
 void NoteSettingsPanel::paint(Graphics& g)
@@ -89,7 +89,7 @@ void NoteSettingsPanel::refreshData()
 
 void NoteSettingsPanel::padDataChangeCallback(const int changedData)
 {
-    padData = AppData::Instance()->getCurrentlyInspectingPadPtr();
+    padData = AppData::Instance()->getCurrentlyInspectingPadDataPtr();
     if (changedData == PadData::DataIDs::PadMidiFunction)
     {
         if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::SingleNote)
@@ -121,7 +121,7 @@ void NoteSettingsPanel::padDataChangeCallback(const int changedData)
 
 void NoteSettingsPanel::buttonClicked (Button* button)
 {
-    padData = AppData::Instance()->getCurrentlyInspectingPadPtr();
+    padData = AppData::Instance()->getCurrentlyInspectingPadDataPtr();
     if (button == &singleNoteBtn)
     {
         AppData::Instance()->getEnginePointer()->getSpherePointer(padData->getParentSphere()->getSphereID())->killPad(padData->getPadID());

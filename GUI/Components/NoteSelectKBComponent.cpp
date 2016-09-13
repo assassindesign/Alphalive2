@@ -20,7 +20,7 @@
 KBComponentKey::KBComponentKey(const int noteNumber, const String labelText)
 {
     
-    isBlackKey = selected = false;
+    isCNote = isBlackKey = selected = false;
     velPercentage = 100;
     
     int moduloNoteNumber = noteNumber % 12;
@@ -31,17 +31,21 @@ KBComponentKey::KBComponentKey(const int noteNumber, const String labelText)
         {
             isBlackKey = true;
         }
+        else if (moduloNoteNumber == 0)
+        {
+            isCNote = true;
+        }
     }
     velPercentageColour = *new Colour(GUIColours::MainBlue);
     
-    labelFont = * new Font("Roboto", "sans-serif", 12.0);
-    
+    labelFont = new Font("Roboto", "sans-serif", 12.0);
     
     if (labelText != NULLSTRING)
     {
         noteLabel.setText(labelText, dontSendNotification);
         noteLabel.setJustificationType(Justification::centred);
-        noteLabel.setFont(labelFont);
+        noteLabel.setFont(*labelFont);
+        noteLabel.setEditable(false);
         addAndMakeVisible(noteLabel);
     }
 }
@@ -53,7 +57,7 @@ KBComponentKey::~KBComponentKey()
 
 void KBComponentKey::resized()
 {
-    labelFont.setHeight(getHeight()*0.3);
+    labelFont->setHeight(getHeight()*0.3);
     noteLabel.setBounds(getLocalBounds().withTrimmedTop(getHeight()*0.75));
 }
 
@@ -94,6 +98,11 @@ const bool KBComponentKey::getIsBlackKey()
     return isBlackKey;
 }
 
+const bool KBComponentKey::getIsCNote()
+{
+    return isCNote;
+}
+
 const int KBComponentKey::getVelPercentage()
 {
     return velPercentage;
@@ -106,7 +115,7 @@ void KBComponentKey::setVelPercentage(const int newPercentage)
         if (newPercentage > -1 && newPercentage < 101)
         {
             velPercentage = newPercentage;
-            DBG(velPercentage);
+            //DBG(velPercentage);
             repaint();
         }
     }
@@ -131,6 +140,34 @@ void KBComponentKey::setSelected(const bool shouldBeSelected)
     }
 }
 
+
+//============================================================================================
+//
+// NoteSelectPositionerComponent
+//
+//============================================================================================
+
+NoteSelectPositionerComponent::NoteSelectPositionerComponent()
+{
+    
+}
+
+NoteSelectPositionerComponent::~NoteSelectPositionerComponent()
+{
+    
+}
+
+void NoteSelectPositionerComponent::resized()
+{
+    
+}
+
+void NoteSelectPositionerComponent::paint(Graphics& g)
+{
+    g.fillAll(Colours::limegreen);
+}
+
+
 //============================================================================================
 //
 // NOTESELECTKBCOMPONENT
@@ -140,6 +177,14 @@ void KBComponentKey::setSelected(const bool shouldBeSelected)
 
 NoteSelectKBComponent::NoteSelectKBComponent()
 {
+    keyPositioner = new NoteSelectPositionerComponent();
+    //addAndMakeVisible(keyPositioner);
+    addChildComponent(keyPositioner);
+    mainViewport.setViewedComponent(keyPositioner, false);
+    addAndMakeVisible(mainViewport);
+    
+    lowestKeyToDisplayX = 0;
+    
     for (int i = 0; i < 128; i++)
     {
         if (i%12 == 0)
@@ -152,10 +197,13 @@ NoteSelectKBComponent::NoteSelectKBComponent()
 
         }
         keys.getLast()->addMouseListener(this, true);
-        addAndMakeVisible(keys.getLast());
-        //mainViewPort.addChildComponent(keys.getLast());
+        keyPositioner->addAndMakeVisible(keys.getLast());
     }
     
+    scrollingKeys = false;
+    
+    setInterceptsMouseClicks(true, true);
+    lowestKeytoDisplay = 0;
 }
 
 NoteSelectKBComponent::~NoteSelectKBComponent()
@@ -165,45 +213,98 @@ NoteSelectKBComponent::~NoteSelectKBComponent()
 
 void NoteSelectKBComponent::refreshData()
 {
-    
+    padDataChangeCallback(PadData::DataIDs::MidiNotes);
 }
 
 void NoteSelectKBComponent::padDataChangeCallback(const int changedData)
 {
-    padData = AppData::Instance()->getCurrentlyInspectingPadPtr();
+    padData = AppData::Instance()->getCurrentlyInspectingPadDataPtr();
     
-    if (changedData == PadData::DataIDs::MidiNotes)
+    if (changedData == PadData::DataIDs::MidiNotes || changedData == PadData::DataIDs::PadMidiFunction)
     {
         Array<PadData::MidiNote> newMidiNotes = padData->getMidiNotes();
-        for (int i = 0; i < keys.size(); i++)
+        if (newMidiNotes.size() > 0)
         {
-            for (int j = 0; j < newMidiNotes.size(); j++)
+            if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::SingleNote)
             {
-                if (newMidiNotes[j].noteNumber == i)
+                for (int i = 0; i < keys.size(); i++)
                 {
-                    keys[i]->setSelected(true);
-                    keys[i]->setVelPercentage(newMidiNotes[j].velocityPercentage);
-                }
-                else
-                {
-                    keys[i]->setSelected(false);
+                    if (newMidiNotes[0].noteNumber == i)
+                    {
+                        keys[i]->setSelected(true);
+                        keys[i]->setVelPercentage(newMidiNotes[0].velocityPercentage);
+                    }
+                    else
+                    {
+                        keys[i]->setSelected(false);
+                    }
                 }
             }
+            else if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::MultiNote)
+            {
+                for (int i = 0; i < keys.size(); i++)
+                {
+                    keys[i]->setSelected(false);
+
+                    for (int j = 0; j < newMidiNotes.size(); j++)
+                    {
+                        if (newMidiNotes[j].noteNumber == i)
+                        {
+                            keys[i]->setSelected(true);
+                            keys[i]->setVelPercentage(newMidiNotes[j].velocityPercentage);
+                        }
+                    }
+                }
+            }
+
+            
+            
+            int lowestNote = 128;
+            for (int i = 0; i < newMidiNotes.size(); i++)
+            {
+                if (newMidiNotes[i].noteNumber < lowestNote)
+                    lowestNote = newMidiNotes[i].noteNumber;
+            }
+            
+            if (lowestNote < 128)
+            {
+                while (!keys[lowestNote]->getIsCNote())
+                {
+                    lowestNote--;
+                }
+                
+                if (lowestNote>0)
+                {
+                    lowestNote = lowestNote -1;
+                }
+                
+                lowestKeytoDisplay = lowestNote;
+                lowestKeyToDisplayX = keys[lowestNote]->getBounds().getX();
+                scrollingKeys = true;
+                startTimer(10);
+            }
+            
         }
+        
     }
 }
 
 void NoteSelectKBComponent::resized()
 {
+    static int x, y;
+    x = getWidth();
+    y = getHeight() - mainViewport.getScrollBarThickness();
+    
     Component* lastWhiteKey = keys[0];
-    halfHeight = getHeight()*0.55;
-    
-    
+    halfHeight = y*0.55;
+
     whiteKeyWidth = getHeight()*0.2;
     blackKeyWidth = whiteKeyWidth*0.6;
     
+    keyPositioner->setBounds(0,0, (whiteKeyWidth * 75.0), y);
+    mainViewport.setBounds(getLocalBounds());
     
-    keys[0]->setBounds(0, 0, whiteKeyWidth, getHeight());
+    keys[0]->setBounds(0, 0, whiteKeyWidth, y);
     
     for (int i = 1; i < 128; i++)
     {
@@ -232,21 +333,81 @@ void NoteSelectKBComponent::resized()
             lastWhiteKey = keys[i];
         }
     }
-
+    mainViewport.setViewPosition(keys[lowestKeytoDisplay]->getBounds().getX() , 0);
+    
 }
 
 void NoteSelectKBComponent::mouseDown(const MouseEvent &event)
 {
-    if (!event.mods.isAnyModifierKeyDown())
+    if (!scrollingKeys)
     {
-        if (event.eventComponent != this)
+        if (!event.mods.isAnyModifierKeyDown())
+        {
+            if (event.eventComponent != this) // if one of the keys has been clicked
+            {
+                //padData = AppData::Instance()->getCurrentlyInspectingPadPtr();
+                static Array<PadData::MidiNote> midiNotes;
+                midiNotes = padData->getMidiNotes(); //get midi notes from paddata
+
+                
+                if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::SingleNote)
+                {
+                    for (int i = 0; i < keys.size(); i++) //loop through the keys - SHOULD BE OPTIMISED AT SOME POINT
+                    {
+                        if (event.eventComponent == keys[i]) //when we find the key that has been pressed
+                        {
+                            padData->setMidiNote(i, keys[i]->getVelPercentage());
+                        }
+                    }
+                }
+                else if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::MultiNote)
+                {
+                    for (int i = 0; i < keys.size(); i++) //loop through the keys - SHOULD BE OPTIMISED AT SOME POINT
+                    {
+                        if (event.eventComponent == keys[i]) //when we find the key that has been pressed
+                        {
+                            if (!keys[i]->getSelected())
+                            {
+                                padData->addMidiNote(i);
+                            }
+                            else
+                            {
+                                padData->removeMidiNote(i);
+                            }
+                            
+                        }
+                    }
+                }
+        
+            }
+        }
+    }
+}
+
+void NoteSelectKBComponent::mouseDrag (const MouseEvent &event)
+{
+    if (!scrollingKeys)
+    {
+        if (event.mods.isAltDown())
         {
             for (int i = 0; i < keys.size(); i++)
             {
                 if (event.eventComponent == keys[i])
                 {
+                    static int dragDistance;
+                    dragDistance = event.getDistanceFromDragStartY();
+                    if (dragDistance < 0)
+                    {
+                        dragDistance = 0;
+                    }
+                    else if (dragDistance > 100)
+                    {
+                        dragDistance = 100;
+                    }
                     
-                    keys[i]->setSelected(!keys[i]->getSelected());
+                    keys[i]->setVelPercentage(100-dragDistance);
+                    
+                    padData->setVelPercentForNote(i, 100-dragDistance);
                 }
             }
         }
@@ -254,39 +415,51 @@ void NoteSelectKBComponent::mouseDown(const MouseEvent &event)
     
 }
 
-void NoteSelectKBComponent::mouseDrag (const MouseEvent &event)
-{
-    if (event.mods.isAltDown())
-    {
-        for (int i = 0; i < keys.size(); i++)
-        {
-            if (event.eventComponent == keys[i])
-            {
-                static int dragDistance;
-                dragDistance = event.getDistanceFromDragStartY();
-                if (dragDistance < 0)
-                {
-                    dragDistance = 0;
-                }
-                else if (dragDistance > 100)
-                {
-                    dragDistance = 100;
-                }
-                
-                keys[i]->setVelPercentage(100-dragDistance);
-            }
-        }
-    }
-}
-
 
 void NoteSelectKBComponent::paint(Graphics& g)
 {
-    g.fillAll(Colours::hotpink);
+    //g.fillAll(Colours::hotpink);
 }
 
-const float NoteSelectKBComponent::getWidthNeeded(const int forHeight)
+
+void NoteSelectKBComponent::timerCallback()
 {
-    return (forHeight * 0.2) * (128.0 * (7.0/12.0));
+    static int targetXposition;
+    static int increment, currentXPosition;
+    
+    currentXPosition = mainViewport.getViewPosition().x;
+    targetXposition = lowestKeyToDisplayX;
+    
+    
+    increment = 8;//(pow(2, abs(currentXPosition - targetXposition)));
+    
+    if (currentXPosition > targetXposition)
+    {
+        mainViewport.setViewPosition(currentXPosition-increment, 0);
+        
+        if (currentXPosition - targetXposition < increment)
+        {
+            mainViewport.setViewPosition(targetXposition, 0);
+            stopTimer();
+            scrollingKeys = false;
+        }
+    }
+    else if (currentXPosition < targetXposition)
+    {
+        mainViewport.setViewPosition(currentXPosition+increment, 0);
+        
+        if (targetXposition - currentXPosition < increment)
+        {
+            mainViewport.setViewPosition(targetXposition, 0);
+            stopTimer();
+            scrollingKeys = false;
+        }
+    }
+    else
+    {
+        stopTimer();
+        scrollingKeys = false;
+    }
+    
 }
 

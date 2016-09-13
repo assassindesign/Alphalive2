@@ -103,7 +103,7 @@ public:
     {
         if (changedData == PadData::DataIDs::PadFunction)
         {
-            switch (AppData::Instance()->getCurrentlyInspectingPadPtr()->getPadFunction()) {
+            switch (AppData::Instance()->getCurrentlyInspectingPadDataPtr()->getPadFunction()) {
                 case PadData::PadFunctions::Audio:
                     audioPanel.setVisible(true);
                     midiPanel.setVisible(false);
@@ -140,17 +140,17 @@ public:
         if (button == &audioButton)
         {
             //set pad mode to audio
-            AppData::Instance()->getCurrentlyInspectingPadPtr()->setPadFunction(PadData::PadFunctions::Audio);
+            AppData::Instance()->getCurrentlyInspectingPadDataPtr()->setPadFunction(PadData::PadFunctions::Audio);
         }
         else if (button == &midiButton)
         {
             //set pad mode to midi
-            AppData::Instance()->getCurrentlyInspectingPadPtr()->setPadFunction(PadData::PadFunctions::Midi);
+            AppData::Instance()->getCurrentlyInspectingPadDataPtr()->setPadFunction(PadData::PadFunctions::Midi);
         }
         if (button == &systemButton)
         {
             //set pad mode to system
-            AppData::Instance()->getCurrentlyInspectingPadPtr()->setPadFunction(PadData::PadFunctions::System);
+            AppData::Instance()->getCurrentlyInspectingPadDataPtr()->setPadFunction(PadData::PadFunctions::System);
         }
     }
     

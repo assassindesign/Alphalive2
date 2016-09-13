@@ -70,7 +70,7 @@ public:
             
             if (isNoteNumberSlider)
             {
-                PadData* tempPadData = AppData::Instance()->getCurrentlyInspectingPadPtr();
+                PadData* tempPadData = AppData::Instance()->getCurrentlyInspectingPadDataPtr();
                 
                 bool wasPlaying = (tempPadData->getVelocity() > 0);
                 AppData::Instance()->getEnginePointer()->getSpherePointer(tempPadData->getParentSphere()->getSphereID())->killPad(tempPadData->getPadID());
@@ -96,7 +96,7 @@ public:
         {
             if (button == &plusButton)
             {
-                PadData* tempPadData = AppData::Instance()->getCurrentlyInspectingPadPtr();
+                PadData* tempPadData = AppData::Instance()->getCurrentlyInspectingPadDataPtr();
                 tempPadData->addMidiNote(60, 50);
             }
         }
@@ -105,7 +105,7 @@ public:
         {
             if (changedData == PadData::DataIDs::MidiNotes)
             {
-                Array<PadData::MidiNote> newNoteNumbers = AppData::Instance()->getCurrentlyInspectingPadPtr()->getMidiNotes();
+                Array<PadData::MidiNote> newNoteNumbers = AppData::Instance()->getCurrentlyInspectingPadDataPtr()->getMidiNotes();
                 
                 for (int i = 0; i < newNoteNumbers.size(); i++)
                 {
@@ -167,7 +167,7 @@ public:
         
         void refreshModeButton()
         {
-            switch (AppData::Instance()->getCurrentlyInspectingPadPtr()->getMultiNoteMode())
+            switch (AppData::Instance()->getCurrentlyInspectingPadDataPtr()->getMultiNoteMode())
             {
                 case PadData::MultiNoteModes::Chord:
                     multiNoteModeBtn.setButtonText("Chord");
@@ -193,7 +193,7 @@ public:
         
         void buttonClicked (Button* button) override
         {
-            PadData* padData = AppData::Instance()->getCurrentlyInspectingPadPtr();
+            PadData* padData = AppData::Instance()->getCurrentlyInspectingPadDataPtr();
             if (button == &multiNoteModeBtn)
             {
                 if (!padData->setMultiNoteMode(padData->getMultiNoteMode() +1))
@@ -239,7 +239,6 @@ private:
     ScopedPointer<NoteSelectPanel> noteSelectPanel;
     ScopedPointer<MultiNotePanel> multiNotePanel;
     ScopedPointer<NoteSelectKBComponent> noteSelectKeyboard;
-    ScopedPointer<Viewport> noteSelectViewPort;
 };
 
 

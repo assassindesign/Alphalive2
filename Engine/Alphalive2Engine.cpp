@@ -55,6 +55,21 @@ void Alphalive2Engine::midiThru(const MidiMessage& message)
 void Alphalive2Engine::hitPad (const int pad, const int velocity)
 {
     //DBG("Hit Pad : " + String(pad) + " : " + String(velocity));
+    if (AppData::Instance()->getPadPressSwitchesInspectedPad());
+    {
+        if (velocity > 0)
+        {
+            static AppData::PadReference currentReference;
+            currentReference = AppData::Instance()->getcurrentlyInspectingPad();
+            
+            if (currentReference.sphereID != hIDLinkedSphere || currentReference.padID != pad)
+            {
+                AppData::Instance()->setCurrentlyInspectingPad(hIDLinkedSphere, pad);
+            }
+
+        }
+    }
+    
     spheres[hIDLinkedSphere]->hitPad(pad, velocity);
 
 }

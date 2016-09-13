@@ -47,14 +47,14 @@ public:
         PadDataType,
         SphereDataType,
         ScaleDataType,
-        TempoDataType
+        TempoDataType,
     };
     
     struct DataChange{
         int dataID;
         int listenerType;
     };
-    
+        
     AppDataFormat()
     {
         changedDataIDs.clear();
@@ -96,6 +96,7 @@ public:
     
     void callRepaintListeners()
     {
+        
         triggerAsyncUpdate();
     }
 private:

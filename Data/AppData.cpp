@@ -66,12 +66,18 @@ bool AppData::getAdvancedFeaturesEnabled()
     return advancedFeaturesEnabled;
 }
 
+bool AppData::getPadPressSwitchesInspectedPad()
+{
+    return padPressSwitchesInspectedPad;
+}
+
+
 AppData::PadReference AppData::getcurrentlyInspectingPad()
 {
     return currentlyInspectingPad;
 }
 
-PadData* AppData::getCurrentlyInspectingPadPtr()
+PadData* AppData::getCurrentlyInspectingPadDataPtr()
 {
     if (currentlyInspectingPad.sphereID == -1 || currentlyInspectingPad.padID == -1)
     {
@@ -137,4 +143,13 @@ bool AppData::setCurrentlyInspectingPad(const int sphereID, const int padID)
     
     return success;
 }
+
+void AppData::setPadPressSwitchesInspectedPad(const bool enabled)
+{
+    dataLock.enter();
+    padPressSwitchesInspectedPad = enabled;
+    dataLock.exit();
+    callListeners(DataIDs::PadPressSwitch, AppDataFormat::AppDataType);
+}
+
 

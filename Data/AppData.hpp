@@ -30,6 +30,7 @@ public:
     enum DataIDs{
         AdvancedEnabled = 0,
         InspectingPad,
+        PadPressSwitch,
         LAST_ID
     };
     
@@ -56,8 +57,9 @@ public:
 
     //Variables
     bool getAdvancedFeaturesEnabled();
+    bool getPadPressSwitchesInspectedPad();
     PadReference getcurrentlyInspectingPad();
-    PadData* getCurrentlyInspectingPadPtr();
+    PadData* getCurrentlyInspectingPadDataPtr();
     //============= SETS ===========================================
     //Objects
     bool setEnginePointer(Alphalive2Engine* newEngine);
@@ -65,6 +67,8 @@ public:
     
     //Variables
     void setAdvancedFeaturesEnabled(const bool enabled);
+    void setPadPressSwitchesInspectedPad(const bool enabled);
+
 protected:
     AppData();
 
@@ -77,6 +81,7 @@ private:
     //Variables
     bool advancedFeaturesEnabled = true;
     PadReference currentlyInspectingPad;
+    bool padPressSwitchesInspectedPad = true;
     CriticalSection dataLock;
 };
 

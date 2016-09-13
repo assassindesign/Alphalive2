@@ -148,6 +148,7 @@ public:
     bool setMidiNote (const int newNote);
     bool setMidiNote (const int newNote, const int velPercentage);
     bool setMidiNote (const int arrayIndex, const int newNote, const int velPercentage);
+    bool setVelPercentForNote(const int noteToFind, const int newVelPercentage);
     bool setPadFunction (const int newFunction);
     bool setPadAudioFunction (const int newFunction);
     bool setPadMidiFunction (const int newFunction);

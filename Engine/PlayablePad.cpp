@@ -91,40 +91,51 @@ void PlayablePad::hitPad(const int velocity)
             //recievedVelocity = scaleValue (recievedVelocity, 0, 127.0, 0, 127.0);
             
             //===Pad Function================================================================================
-            
-            if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::SingleNote)
+            if (padData->getPadFunction() == PadData::PadFunctions::Midi)
             {
-                if (padData->setVelocity(recievedVelocity))
-                {
-                    MidiMessage outputMessage = MidiMessage::noteOn(padData->getMidiChannel(), padData->getMidiNote(), uint8(recievedVelocity));
-                    router->sendMidiToDestination(padData->getMidiDestination(), &outputMessage);
-                    
-                }
-            }
-            else if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::MultiNote)
-            {
-                if (padData->getMultiNoteMode() == PadData::MultiNoteModes::Chord)
+                static Array<PadData::MidiNote> midiNoteArray;
+                midiNoteArray = padData->getMidiNotes();
+                
+                if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::SingleNote)
                 {
                     if (padData->setVelocity(recievedVelocity))
                     {
-                        Array<PadData::MidiNote> midiNoteArray = padData->getMidiNotes();
                         
-                        for (int i = 0; i < midiNoteArray.size(); i++)
-                        {
-                            
-                            //DBG(midiNoteArray[i].noteNumber);
-                            // DBG(midiNoteArray[i].velocityPercentage);
-                            
-                            MidiMessage outputMessage = MidiMessage::noteOn (padData->getMidiChannel(),
-                                                                             midiNoteArray[i].noteNumber,
-                                                                             uint8((midiNoteArray[i].velocityPercentage / 100.0)*recievedVelocity));
-                            
-                            router->sendMidiToDestination(padData->getMidiDestination(), &outputMessage);
-                        }
+                        MidiMessage outputMessage = MidiMessage::noteOn (padData->getMidiChannel(),
+                                                                         midiNoteArray[0].noteNumber,
+                                                                         uint8((midiNoteArray[0].velocityPercentage / 100.0)*recievedVelocity));
+                        
+                        router->sendMidiToDestination(padData->getMidiDestination(), &outputMessage);
                         
                     }
-                }                
+                }
+                else if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::MultiNote)
+                {
+                    if (padData->getMultiNoteMode() == PadData::MultiNoteModes::Chord)
+                    {
+                        if (padData->setVelocity(recievedVelocity))
+                        {
+                            Array<PadData::MidiNote> midiNoteArray = padData->getMidiNotes();
+                            
+                            for (int i = 0; i < midiNoteArray.size(); i++)
+                            {
+                                
+                                //DBG(midiNoteArray[i].noteNumber);
+                                // DBG(midiNoteArray[i].velocityPercentage);
+                                
+                                MidiMessage outputMessage = MidiMessage::noteOn (padData->getMidiChannel(),
+                                                                                 midiNoteArray[i].noteNumber,
+                                                                                 uint8((midiNoteArray[i].velocityPercentage / 100.0)*recievedVelocity));
+                                
+                                router->sendMidiToDestination(padData->getMidiDestination(), &outputMessage);
+                            }
+                            
+                        }
+                    }                
+                }
             }
+            
+            
         }
         
         if (killingPad)

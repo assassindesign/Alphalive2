@@ -15,7 +15,10 @@ class PadInspectorPanelBase : public Component,
                               public AppDataListener
 {
 public:
-    PadInspectorPanelBase(){};
+    PadInspectorPanelBase()
+    {
+        setLookAndFeel(AppData::Instance()->getAlphaliveLookAndFeel());
+    };
     PadInspectorPanelBase(AppDataFormat* _dataObject)
     {
         setDataObject(_dataObject);

@@ -61,6 +61,12 @@ Alphalive2Engine* AppData::getEnginePointer()
     return engine;
 }
 
+CustomLookAndFeel* AppData::getAlphaliveLookAndFeel()
+{
+    return lookAndFeelManager.getMyLookAndFeel();
+}
+
+
 bool AppData::getAdvancedFeaturesEnabled()
 {
     return advancedFeaturesEnabled;

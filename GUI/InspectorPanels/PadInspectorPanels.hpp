@@ -17,7 +17,6 @@
 #include "SystemIPanel.hpp"
 #include "PadInspectorPanelBase.h"
 
-
 class InspectorTopPanel : public PadInspectorPanelBase,
                           public Button::Listener
 {
@@ -29,18 +28,20 @@ public:
         audioButton.setButtonText("Audio");
         audioButton.addListener(this);
         audioButton.setColour(TextButton::ColourIds::buttonOnColourId, Colour(GUIColours::MainBlue));
+        audioButton.setConnectedEdges(3);
         addAndMakeVisible(&audioButton);
         
         midiButton.setButtonText("MIDI");
         midiButton.addListener(this);
+        midiButton.setConnectedEdges(3);
         midiButton.setColour(TextButton::ColourIds::buttonOnColourId, Colour(GUIColours::MainBlue));
 
         addAndMakeVisible(&midiButton);
         
         systemButton.setButtonText("System");
         systemButton.addListener(this);
+        systemButton.setConnectedEdges(3);
         systemButton.setColour(TextButton::ColourIds::buttonOnColourId, Colour(GUIColours::MainBlue));
-
         addChildComponent(&systemButton);
         
         audioButton.setEnabled(false);

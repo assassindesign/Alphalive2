@@ -38,7 +38,7 @@ PadInspector::~PadInspector()
 
 void PadInspector::paint(Graphics& g)
 {
-    g.fillAll(backgroundColour);
+    //g.fillAll(Colours::hotpink);
     
     g.setColour(backgroundColour.withBrightness(0.25));
     g.fillRect(titleBox);

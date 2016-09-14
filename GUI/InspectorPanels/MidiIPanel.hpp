@@ -13,27 +13,26 @@
 #include "AppData.hpp"
 #include "PadInspectorPanelBase.h"
 #include "NoteSettingsPanel.hpp"
-
+#include "TabButton.hpp"
 
 
 
 class MidiIPanel : public PadInspectorPanelBase,
-                   public Button::Listener
+                   public TabButton::Listener
 {
 public:
-    
-   
-    
     MidiIPanel();
     ~MidiIPanel();
     void resized() override;
     void paint(Graphics& g) override;
     void refreshData() override;
     void padDataChangeCallback(const int changedData) override;
-    void buttonClicked (Button* button) override;
+    
+    void tabButtonClicked(const TabButton* button) override;
+    void tabLightClicked(const TabButton* button) override;
     
 private:
-    TextButton noteButton, pressureButton;
+    ScopedPointer<TabButton> noteButton, pressureButton;
 
     
     ScopedPointer<NoteSettingsPanel> noteSettingsPanel;

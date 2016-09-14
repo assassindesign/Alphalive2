@@ -15,6 +15,8 @@
 #include "SphereData.hpp"
 #include "PadData.hpp"
 #include "Constants.h"
+#include "AlphaLiveLookAndFeel.hpp"
+
 /*
     THIS CLASS IS A SINGLETON. 
  
@@ -54,7 +56,8 @@ public:
     //Objects
     SphereData* getSphereData (const int forSphere);
     Alphalive2Engine* getEnginePointer();
-
+    CustomLookAndFeel* getAlphaliveLookAndFeel();
+    
     //Variables
     bool getAdvancedFeaturesEnabled();
     bool getPadPressSwitchesInspectedPad();
@@ -77,7 +80,8 @@ private:
     static AppData* pInstance;
     Alphalive2Engine* engine;
     OwnedArray<SphereData> sphereDataArray;
-
+    LookAndFeelManager lookAndFeelManager;
+    
     //Variables
     bool advancedFeaturesEnabled = true;
     PadReference currentlyInspectingPad;

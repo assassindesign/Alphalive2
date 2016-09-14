@@ -329,6 +329,19 @@ SphereData* PlayableSphere::getSphereDataObject()
     return sphereData;
 }
 
+PlayablePad* PlayableSphere::getPlayablePad(const int padToGet)
+{
+    if (padToGet >= 0 && padToGet < playablePads.size())
+    {
+        return playablePads[padToGet];
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
+
 //=====================================================================
 //  Audio callbacks
 //=====================================================================

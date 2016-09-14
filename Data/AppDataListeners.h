@@ -19,7 +19,6 @@
 class GUIRepaintListener : public Component
 {
 public:
-    GUIRepaintListener(){};
     virtual ~GUIRepaintListener(){};
     void refreshUI() {repaint();};
     virtual void paint(Graphics&) = 0;
@@ -29,7 +28,6 @@ public:
 class AppDataListener
 {
 public:
-    AppDataListener(){};
     virtual ~AppDataListener(){};
     virtual void appDataChangeCallback(const int changedData) {};
     virtual void padDataChangeCallback(const int changedData) {};

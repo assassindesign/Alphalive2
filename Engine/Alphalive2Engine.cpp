@@ -118,6 +118,20 @@ PlayableSphere* Alphalive2Engine::getSpherePointer(const int sphereID)
     return nullptr;
 }
 
+PlayablePad* Alphalive2Engine::getPlayablePadPtr(const int sphereID, const int padID)
+{
+    PlayableSphere* workingSphere= getSpherePointer(sphereID);
+    if (workingSphere != nullptr)
+    {
+        return workingSphere->getPlayablePad(padID);
+    }
+    else
+    {
+        return nullptr;
+    }
+    
+}
+
 MasterClock* Alphalive2Engine::getMasterClockPointer()
 {
     return masterClock.get();

@@ -40,6 +40,7 @@ public:
     const int getHIDLinkedSphere();
     PlayableSphere* getHIDLinkedSpherePointer();
     PlayableSphere* getSpherePointer(const int sphereID);
+    PlayablePad* getPlayablePadPtr(const int sphereID, const int padID);
     MasterClock* getMasterClockPointer();
     InternalMidiRouter* getMidiRouterPointer();
     

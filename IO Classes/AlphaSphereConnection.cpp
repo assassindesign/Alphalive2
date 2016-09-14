@@ -110,7 +110,7 @@ void AlphaSphereConnection::hidInputCallback (int pad, int value, int velocity)
 
         if (padPressure[pad] != value)
         {
-            engine->pressPad(pad, recievedValue);
+            engine->pressPad(pad, value);
             padPressure[pad] = value;
         }
 

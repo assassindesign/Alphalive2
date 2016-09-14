@@ -31,8 +31,11 @@ void Pad::paint(Graphics& g)
     //g.setColour(Colour(GUIColours::Background));
     //g.fillEllipse(2, 2, getWidth()-4, getHeight()-4);
     
+    static float alpha;
+    alpha = 0.15 + (padData->getPadPressure()/127.0) * 0.75;
     
-    float alpha = 0.15 + (padData->getPadPressure()/127.0) * 0.75;
+    
+    //DBG(String(padData->getPadPressure()) + " : " + String(padData->getPadID()));
     if (emulatingPadPress) {
         alpha += 0.07;
     }

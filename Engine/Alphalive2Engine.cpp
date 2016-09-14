@@ -55,7 +55,7 @@ void Alphalive2Engine::midiThru(const MidiMessage& message)
 void Alphalive2Engine::hitPad (const int pad, const int velocity)
 {
     //DBG("Hit Pad : " + String(pad) + " : " + String(velocity));
-    if (AppData::Instance()->getPadPressSwitchesInspectedPad());
+    if (AppData::Instance()->getPadPressSwitchesInspectedPad() == true)
     {
         if (velocity > 0)
         {

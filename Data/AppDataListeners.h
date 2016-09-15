@@ -24,21 +24,25 @@ public:
     GUIRepaintListener()
     {
         timeOfLastPaint.set(Time::currentTimeMillis());
-        startTimer(100);
+        //startTimer(100);
     }
     virtual ~GUIRepaintListener(){}
-    void refreshUI() {
+    void refreshUI()
+    {
         if ((Time::currentTimeMillis() - timeOfLastPaint.get()) > refreshRate)
         {
             repaint();
             timeOfLastPaint.set(Time::currentTimeMillis());
             repaintQueued.set(false);
+            if (!isTimerRunning()) {
+                startTimer(100);
+            }
         }
         else
         {
             repaintQueued.set(true);
         }
-    };
+    }
     virtual void paint(Graphics&) override = 0;
     virtual void resized() override = 0;
 private:
@@ -48,6 +52,10 @@ private:
         {
             repaint();
             repaintQueued.set(false);
+        }
+        else if (Time::currentTimeMillis() - timeOfLastPaint.get() > 2000)
+        {
+            stopTimer();
         }
     }
     Atomic<int64> timeOfLastPaint;

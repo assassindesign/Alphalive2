@@ -11,7 +11,7 @@
 PadInspector::PadInspector()
 {
     padDataToInspect = nullptr;
-    backgroundColour = Colour(GUIColours::Background).withBrightness(Colour(GUIColours::Background).getBrightness()+0.05);
+    backgroundColour = GUIColours::Background.withBrightness(GUIColours::Background.getBrightness()+0.05);
 //    for (int i = 0; i < 10; i++)
 //    {
 //        listEntrys.add(new ListEntry());

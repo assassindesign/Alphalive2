@@ -1,16 +1,16 @@
 //
-//  PadInspectorPanels.hpp
+//  MainPadInspectorPanels.hpp
 //  Alphalive 2
 //
 //  Created by Luke Saxton on 02/08/2016.
 //
 //
 
-#ifndef PadInspectorPanels_hpp
-#define PadInspectorPanels_hpp
+#ifndef MainPadInspectorPanels_hpp
+#define MainPadInspectorPanels_hpp
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "GUIColours.h"
+#include "GUIStyle.h"
 #include "AppData.hpp"
 #include "MidiIPanel.hpp"
 #include "AudioIPanel.hpp"
@@ -51,8 +51,8 @@ public:
         addChildComponent(audioPanel);
         addChildComponent(midiPanel);
         addChildComponent(sysPanel);
-
         
+
         if (AppData::Instance()->getAdvancedFeaturesEnabled())
         {
             systemButton.setVisible(true);
@@ -63,11 +63,17 @@ public:
         AppData::Instance()->addListener(this);
         //AppData::Instance()->setAdvancedFeaturesEnabled(true);
         
+        for (int i = 0; i < 24; i++)
+        {
+            rackAccents.add(*new Rectangle<float>(2,0,6,6));
+        }
+        
     }
     ~InspectorTopPanel(){}
     
     void resized() override
     {
+        static float buttonWidth;
         
         if (AppData::Instance()->getAdvancedFeaturesEnabled())
             buttonWidth = getWidth()/3.0;
@@ -80,6 +86,21 @@ public:
         if (AppData::Instance()->getAdvancedFeaturesEnabled())
             systemButton.setBounds(midiButton.getBounds().translated(buttonWidth, 0));
         
+        
+        
+        static float twelthHeight;
+        twelthHeight = (getHeight() - audioButton.getHeight()) /12.0;
+        
+        for (int i = 0; i < 12; i++)
+        {
+            rackAccents.getReference(i).setPosition(2, (twelthHeight*i)+ twelthHeight*0.5 + audioButton.getHeight());
+            
+            //rackAccents[i].setY(twelthHeight*i);
+            rackAccents.getReference(i+12).setPosition(getWidth()-8, (twelthHeight*i)+ twelthHeight*0.5 + audioButton.getHeight());
+            
+            //DBG(String(rackAccents[i].getX()) + ":" + String(rackAccents[i].getY()) + " : " + String(twelthHeight*i));
+        }
+        
         audioPanel.setBounds(0, audioButton.getBottom(), getWidth(), getHeight() - audioButton.getBottom());
         midiPanel.setBounds(audioPanel.getBounds());
         sysPanel.setBounds(audioPanel.getBounds());
@@ -88,7 +109,18 @@ public:
     
     void paint (Graphics& g) override
     {
-        g.fillAll(Colour(GUIColours::Background));
+        g.fillAll(GUIColours::Background);
+        
+        g.setColour(GUIColours::Background.brighter());
+        g.fillRect(0, audioButton.getBottom(), 10, getHeight());
+        g.fillRect(getWidth()-10, audioButton.getBottom(), 10, getHeight());
+        
+        g.setColour(GUIColours::RackScrewAccent);
+        for (int i = 0; i < rackAccents.size(); i++)
+        {
+            g.fillEllipse(rackAccents[i]);
+        }
+        //g.fillAll(Colours::azure);
     }
     
     void appDataChangeCallback(const int changedData) override
@@ -179,11 +211,11 @@ public:
     
 private:
     TextButton audioButton, midiButton, systemButton;
-    float buttonWidth;
     AudioIPanel audioPanel;
     MidiIPanel midiPanel;
     SystemIPanel sysPanel;
     bool panelEnabled = false;
+    Array<Rectangle<float>> rackAccents;
 };
 
 class InspectorBottomPanel : public PadInspectorPanelBase

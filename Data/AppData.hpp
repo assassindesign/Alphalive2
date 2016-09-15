@@ -85,7 +85,7 @@ private:
     //Variables
     bool advancedFeaturesEnabled = true;
     PadReference currentlyInspectingPad;
-    bool padPressSwitchesInspectedPad = true;
+    bool padPressSwitchesInspectedPad;
     CriticalSection dataLock;
 };
 

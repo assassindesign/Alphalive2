@@ -16,7 +16,7 @@
 #include "TempoView.hpp"
 #include "ScaleView.hpp"
 #include "PadInspector.hpp"
-#include "GUIColours.h"
+#include "GUIStyle.h"
 //==============================================================================
 /*
     This component lives inside our window, and this is where you should put all

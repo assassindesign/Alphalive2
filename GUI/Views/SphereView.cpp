@@ -121,12 +121,14 @@ void SphereView::paint(Graphics& g)
 {
   
     //draw outer circle
-    g.setColour(*new Colour(0x33FFFFFF));
+    g.setColour(Colours::white.withAlpha(uint8(0x33)));
     
     g.drawEllipse(segmentLines[12]->getEnd().x+3, segmentLines[0]->getEnd().y+3, (segmentLines[0]->getLength()*2.0)-6, (segmentLines[0]->getLength()*2.0)-6, 3);
     
     //draw sphere background
-    Colour backgroundColour = Colour(GUIColours::Background);
+    static Colour backgroundColour;
+    
+    backgroundColour = GUIColours::Background;
     
     backgroundColour = backgroundColour.withBrightness(backgroundColour.getBrightness()+0.03);
     g.setColour(backgroundColour);

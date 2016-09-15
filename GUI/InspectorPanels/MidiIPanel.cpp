@@ -7,7 +7,6 @@
 //
 
 #include "MidiIPanel.hpp"
-#include "GUIColours.h"
 
 MidiIPanel::MidiIPanel()
 {

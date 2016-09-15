@@ -9,8 +9,8 @@
 #ifndef TabButton_hpp
 #define TabButton_hpp
 
-#include <stdio.h>
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "GUIStyle.h"
 
 class TabButton : public Component
 {
@@ -43,7 +43,7 @@ public:
     
 private:
     String labelText;
-    ScopedPointer<Font> titleFont;
+    Font titleFont;
     bool tabToggleState = 0;
     bool lightToggleState = 1;
     Rectangle<float> toggleLightBox;

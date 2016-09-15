@@ -14,7 +14,7 @@ ToggleSwitch::ToggleSwitch(String _labelText, String _option1, String _option2)
     option1 = _option1.toUpperCase();
     option2 = _option2.toUpperCase();
     
-    titleFont = optionFont = *new Font("Roboto", "Serif", 11.0);
+    titleFont = optionFont = GUIFonts::Roboto;
     
     //addMouseListener(this, false);
 }

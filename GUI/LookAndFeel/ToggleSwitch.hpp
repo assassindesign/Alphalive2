@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "GUIStyle.h"
 
 class ToggleSwitch : public Component
 {

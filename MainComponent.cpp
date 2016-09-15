@@ -58,7 +58,7 @@ MainContentComponent::~MainContentComponent()
 //==============================================================================
 void MainContentComponent::paint (Graphics& g)
 {
-    g.fillAll (Colour(GUIColours::Background));
+    g.fillAll (GUIColours::Background);
 
 }
 

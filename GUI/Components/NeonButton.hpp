@@ -10,7 +10,7 @@
 #define NeonButton_hpp
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "GUIColours.h"
+#include "GUIStyle.h"
 
 class NeonButton : public Button
 {

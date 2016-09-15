@@ -12,7 +12,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AppData.hpp"
 #include "PadInspectorPanelBase.h"
-#include "GUIColours.h"
+#include "GUIStyle.h"
 
 class KBComponentKey : public Component
 {
@@ -41,7 +41,7 @@ private:
     bool selected;
     Colour velPercentageColour;
     Label noteLabel;
-    ScopedPointer<Font> labelFont;
+    Font labelFont;
 };
 
 class NoteSelectPositionerComponent : public Component

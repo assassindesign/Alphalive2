@@ -11,8 +11,8 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AppData.hpp"
-#include "GUIColours.h"
-#include "PadInspectorPanels.hpp"
+#include "GUIStyle.h"
+#include "MainPadInspectorPanels.hpp"
 
 class PadInspector : public AppDataListener,
                      public Component

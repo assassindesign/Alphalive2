@@ -12,7 +12,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AppData.hpp"
 #include "AlphaLive2Engine.hpp"
-#include "GUIColours.h"
+#include "GUIStyle.h"
 #include "PadInspector.hpp"
 
 class MainContentComponent;

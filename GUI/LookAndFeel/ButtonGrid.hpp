@@ -10,8 +10,8 @@
 #define ButtonGrid_hpp
 #define BUTTONS_PER_ROW 8
 
-#include <stdio.h>
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "GUIStyle.h"
 
 class ButtonGrid : public Component
 {

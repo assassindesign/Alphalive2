@@ -60,7 +60,8 @@ bool ButtonGrid::ButtonGridButton::getToggleState()
 ButtonGrid::ButtonGrid(int numRows, String _labelText)
 {
     labelText = _labelText.toUpperCase();
-    titleFont = *new Font("Roboto", "Serif", 11.0);
+    titleFont = GUIFonts::Roboto;
+    titleFont.setHeight(11.0);
     
     for (int i = 0; i < numRows * BUTTONS_PER_ROW; i++)
     {

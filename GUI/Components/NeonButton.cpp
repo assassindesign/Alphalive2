@@ -10,7 +10,7 @@
 
 NeonButton::NeonButton() : Button("NeonButton")
 {
-    setColour(Colour(GUIColours::Background));
+    setColour(GUIColours::Background);
     font = new Font("Eurostile", 14, Font::plain);
 }
 

@@ -36,15 +36,16 @@ KBComponentKey::KBComponentKey(const int noteNumber, const String labelText)
             isCNote = true;
         }
     }
-    velPercentageColour = *new Colour(GUIColours::MainBlue);
+    velPercentageColour = GUIColours::MainBlue;
     
-    labelFont = new Font("Roboto", "sans-serif", 12.0);
+    labelFont = GUIFonts::Roboto;
+    labelFont.setHeight(12.0);
     
     if (labelText != NULLSTRING)
     {
         noteLabel.setText(labelText, dontSendNotification);
         noteLabel.setJustificationType(Justification::centred);
-        noteLabel.setFont(*labelFont);
+        noteLabel.setFont(labelFont);
         noteLabel.setEditable(false);
         addAndMakeVisible(noteLabel);
     }
@@ -57,7 +58,7 @@ KBComponentKey::~KBComponentKey()
 
 void KBComponentKey::resized()
 {
-    labelFont->setHeight(getHeight()*0.3);
+    labelFont.setHeight(getHeight()*0.3);
     noteLabel.setBounds(getLocalBounds().withTrimmedTop(getHeight()*0.75));
 }
 
@@ -278,10 +279,21 @@ void NoteSelectKBComponent::padDataChangeCallback(const int changedData)
                     lowestNote = lowestNote -1;
                 }
                 
-                lowestKeytoDisplay = lowestNote;
-                lowestKeyToDisplayX = keys[lowestNote]->getBounds().getX();
-                scrollingKeys = true;
-                startTimer(10);
+//                if (lowestNote > 111)
+//                {
+//                    lowestKeytoDisplay = 111;
+//                    lowestKeyToDisplayX = keyPositioner->getRight() - keyPositioner->getWidth();
+//                    scrollingKeys = true;
+//                    startTimer(10);
+//                }
+//                else
+//                {
+                    lowestKeytoDisplay = lowestNote;
+                    lowestKeyToDisplayX = keys[lowestNote]->getBounds().getX();
+                    scrollingKeys = true;
+                    startTimer(10);
+//                }
+                
             }
             
         }
@@ -301,7 +313,6 @@ void NoteSelectKBComponent::resized()
     whiteKeyWidth = getHeight()*0.2;
     blackKeyWidth = whiteKeyWidth*0.6;
     
-    keyPositioner->setBounds(0,0, (whiteKeyWidth * 75.0), y);
     mainViewport.setBounds(getLocalBounds());
     
     keys[0]->setBounds(0, 0, whiteKeyWidth, y);
@@ -333,6 +344,9 @@ void NoteSelectKBComponent::resized()
             lastWhiteKey = keys[i];
         }
     }
+    
+    keyPositioner->setBounds(0,0, keys.getLast()->getRight(), y);
+
     mainViewport.setViewPosition(keys[lowestKeytoDisplay]->getBounds().getX() , 0);
     
 }
@@ -427,11 +441,10 @@ void NoteSelectKBComponent::timerCallback()
     static int targetXposition;
     static int increment, currentXPosition;
     
+    increment = 16;
+    
     currentXPosition = mainViewport.getViewPosition().x;
     targetXposition = lowestKeyToDisplayX;
-    
-    
-    increment = 8;//(pow(2, abs(currentXPosition - targetXposition)));
     
     if (currentXPosition > targetXposition)
     {
@@ -447,13 +460,14 @@ void NoteSelectKBComponent::timerCallback()
     else if (currentXPosition < targetXposition)
     {
         mainViewport.setViewPosition(currentXPosition+increment, 0);
-        
+
         if (targetXposition - currentXPosition < increment)
         {
             mainViewport.setViewPosition(targetXposition, 0);
             stopTimer();
             scrollingKeys = false;
         }
+        
     }
     else
     {

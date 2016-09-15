@@ -19,7 +19,11 @@ Pad::Pad(PadData* _padData) : padData(_padData)
     ringGlowEffect.setGlowProperties(0, Colours::whitesmoke);
     setComponentEffect(&ringGlowEffect);
     
-    
+    for (int i = 0; i < 4; i++)
+    {
+        selectDots.add(*new Rectangle<float>(0,0,4,4));
+        selectDotsALines.add(*new Line<float>());
+    }
 }
 
 Pad::~Pad()
@@ -62,15 +66,37 @@ void Pad::paint(Graphics& g)
         g.drawEllipse(2, 2, getWidth()-4, getHeight()-4, 2);
 
     }
-    
-    
+
+    //g.setColour(Colours::white);
+    //g.drawFittedText(String(padData->getMidiNote()), getLocalBounds(), Justification::centred, 1);
+//    if (isSelected)
+//    {
+//        g.setColour(lightColour);
+//        for (int i = 0; i < selectDots.size(); i++)
+//        {
+//            g.fillEllipse(selectDots[i]);
+//        }
+//    }
     
 }
 void Pad::resized()
 {
-    halfWidth = getWidth()/2.0;
+    halfWidth = getWidth()*0.5;
     //centerPoint = getScreenPosition();
     centerPoint.setXY(halfWidth, getHeight()/2.0);
+    
+//    selectDotsALines.getReference(0).setStart(centerPoint.getX(), centerPoint.getY());
+//    selectDots.getReference(0).setPosition(selectDotsALines.getReference(0).getPointAlongLine(halfWidth + 4));
+//    for (int i = 1; i < selectDotsALines.size(); i++)
+//    {
+//        selectDotsALines.getReference(i) = selectDotsALines.getReference(i-1);
+//        selectDotsALines.getReference(i).applyTransform(AffineTransform::rotation(M_PI*0.5, centerPoint.x, centerPoint.y));
+//        selectDots.getReference(i).setPosition(selectDotsALines.getReference(i).getPointAlongLine(halfWidth + 4));
+//
+//    }
+
+
+
 }
 
 void Pad::setColour(const Colour newColour)

@@ -18,7 +18,6 @@
 #include "ToggleSwitch.hpp"
 
 class NoteSettingsPanel : public PadInspectorPanelBase,
-                          public Button::Listener,
                           public ToggleSwitch::Listener
 {
 public:
@@ -30,12 +29,12 @@ public:
     void refreshData() override;
     void padDataChangeCallback(const int changedData) override;
     void setCurrentlyViewingPanel(const int childPanelID);
-    void buttonClicked (Button*) override;
     void toggleSwitchChanged(const ToggleSwitch* toggle) override;
 
 private:
-    TextButton singleNoteBtn, multiNoteBtn, standardTriggerBtn, toggleTriggerBtn;
     PadData* padData;
+    
+    ScopedPointer<ToggleSwitch> noteModeSwitch, triggerModeSwitch;
     
     ScopedPointer<NoteSelectKBComponent> noteSelectKeyboard;
 };

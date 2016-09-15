@@ -37,7 +37,7 @@ void MidiIPanel::resized()
     
     static int borderPadding = 10;
     
-    noteButton->setBounds(thirdWidth*0.5, 0, thirdWidth, 20);
+    noteButton->setBounds(thirdWidth*0.5, 0, thirdWidth, 30);
     pressureButton->setBounds(noteButton->getBounds().translated(thirdWidth, 0));
     
     noteSettingsPanel->setBounds(borderPadding, noteButton->getBottom(), getWidth() - borderPadding*2, getHeight() - noteButton->getHeight());
@@ -45,13 +45,12 @@ void MidiIPanel::resized()
 }
 void MidiIPanel::paint(Graphics& g)
 {
-    //g.fillAll(Colours::blue);
+    //g.fillAll(Colours::slategrey);
 }
 
 void MidiIPanel::refreshData()
 {
     noteSettingsPanel->setDataObject(getDataObject());
-    noteSettingsPanel->refreshData();
     //noteSettingsPane->setDataObject(getDataObject());
     padData = AppData::Instance()->getCurrentlyInspectingPadDataPtr();
     

@@ -46,7 +46,9 @@ private:
     Point<int> centerPoint;
     int halfWidth;
     GlowEffect ringGlowEffect;
-
+    
+    Array<Rectangle<float>> selectDots;
+    Array<Line<float>> selectDotsALines;
 };
 
 #endif /* PadUI_hpp */

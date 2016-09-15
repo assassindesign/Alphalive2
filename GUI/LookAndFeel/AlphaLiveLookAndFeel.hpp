@@ -9,7 +9,6 @@
 #ifndef AlphaLiveLookAndFeel_hpp
 #define AlphaLiveLookAndFeel_hpp
 
-#include <stdio.h>
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "CustomVectorPaths.h"
 

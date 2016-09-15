@@ -29,24 +29,22 @@ void ToggleSwitch::resized()
     x = getWidth();
     y = getHeight();
     
-    titleBox.setBounds(2, 2, x/2, y/4);
+    titleBox.setBounds(5, 5, x/2, y/4);
     titleFont.setHeight(y/4);
-    optionFont.setHeight(y/3);
+    optionFont.setHeight(y/3.5);
     
-    option1Box.setBounds(0, y/3, x/3, y/2);
-    switchBox.setBounds(option1Box.getRight(), y/3, x/3, y/2);
-    option2Box.setBounds(switchBox.getRight(), y/3, x/3, y/2);
+    option1Box.setBounds(0, y/2, x/3, y/2);
+    switchBox.setBounds(option1Box.getRight(), y/2, x/3, y/2);
+    option2Box.setBounds(switchBox.getRight(), y/2, x/3, y/2);
     
     switchThrowBox.setBounds(switchBox.getX()+2, switchBox.getY()+2, (switchBox.getWidth()/2)-4, switchBox.getHeight()-4);
-
-    
     
 }
 
 void ToggleSwitch::paint(Graphics &g)
 {
-    //g.fillAll(juce::Colours::hotpink);
-    g.setColour(Colours::black);
+    g.fillAll(GUIColours::PanelBackground);
+    g.setColour(Colours::white);
     g.setFont(titleFont);
     g.drawFittedText(labelText, titleBox, Justification::topLeft, 1);
     
@@ -56,6 +54,8 @@ void ToggleSwitch::paint(Graphics &g)
     g.setColour(Colours::darkgrey);
     g.fillRect(switchBox);
     
+    g.setColour(GUIColours::MainBlue);
+    g.drawRect(1, 1, getWidth()-2, getHeight()-2, 1);
     //g.setColour(Colours::slategrey);
     //g.fillRect(switchThrowBox.withPosition(switchThrowBox.getX()+2, switchThrowBox.getY()+2));
 

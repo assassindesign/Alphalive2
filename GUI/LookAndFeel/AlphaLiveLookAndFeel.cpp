@@ -104,7 +104,7 @@ void CustomLookAndFeel::drawTickBox (Graphics& g, Component& component,
                   bool isMouseOverButton,
                   bool isButtonDown)
 {
-    const float boxSize = w * 0.7f;
+    //const float boxSize = w * 0.7f;
     
     bool isDownOrDragging = component.isEnabled() && (component.isMouseOverOrDragging() || component.isMouseButtonDown());
     
@@ -171,7 +171,7 @@ void CustomLookAndFeel::drawLinearSliderThumb (Graphics& g, int x, int y, int wi
             
         }
         
-        const float outlineThickness = slider.isEnabled() ? 0.8f : 0.3f;
+        //const float outlineThickness = slider.isEnabled() ? 0.8f : 0.3f;
         
 //        drawRoundThumb (g,
 //                        kx - sliderRadius,

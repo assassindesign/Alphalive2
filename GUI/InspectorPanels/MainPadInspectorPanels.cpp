@@ -17,7 +17,7 @@
 
 InspectorTopPanel::InspectorTopPanel()
 {
-    audioButton.setButtonText("Audio");
+    audioButton.setButtonText("AUDIO");
     audioButton.addListener(this);
     audioButton.setColour(TextButton::ColourIds::buttonOnColourId, Colour(GUIColours::MainBlue));
     audioButton.setConnectedEdges(3);
@@ -30,7 +30,7 @@ InspectorTopPanel::InspectorTopPanel()
     
     addAndMakeVisible(&midiButton);
     
-    systemButton.setButtonText("System");
+    systemButton.setButtonText("SYSTEM");
     systemButton.addListener(this);
     systemButton.setConnectedEdges(3);
     systemButton.setColour(TextButton::ColourIds::buttonOnColourId, Colour(GUIColours::MainBlue));

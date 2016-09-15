@@ -64,10 +64,15 @@ void MainContentComponent::paint (Graphics& g)
 
 void MainContentComponent::resized()
 {
-    sphereView->setBounds(getWidth()/4.0,0,(getWidth()/4.0)*2, getHeight());
-    tempoView->setBounds(0, 0, getWidth()/8.0, getHeight()/10.0);
-    scaleView->setBounds(tempoView->getBounds().translated(getWidth()/8.0, 0));
-    padInspector->setBounds(sphereView->getRight() + 15, 0, (getWidth()/4.0) - 15, getHeight());
+    static int segmentWidth;
+    segmentWidth = (getWidth() - 400)*0.125;
+    
+    sphereView->setBounds(segmentWidth*2,0,segmentWidth*6, getHeight());
+    
+    
+    //tempoView->setBounds(0, 0, getWidth()/8.0, getHeight()/10.0);
+    //scaleView->setBounds(tempoView->getBounds().translated(getWidth()/8.0, 0));
+    padInspector->setBounds(getWidth()-385, 0, 385, getHeight());
     
     killButton->setBounds(sphereView->getRight()-40, sphereView->getBottom()-20, 40, 20);
 }

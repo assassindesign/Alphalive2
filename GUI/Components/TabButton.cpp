@@ -11,7 +11,6 @@
 TabButton::TabButton(String _labelText)
 {
     labelText = _labelText.toUpperCase();
-    titleFont = GUIFonts::Roboto;
 }
 
 TabButton::~TabButton()
@@ -37,7 +36,7 @@ void TabButton::paint(Graphics &g)
 
     }
     
-    g.setFont(titleFont);
+    g.setFont(GUIFonts::Roboto);
 
     g.drawFittedText(labelText, 0, 0, getWidth(), getHeight(), Justification::centred, 1);
     

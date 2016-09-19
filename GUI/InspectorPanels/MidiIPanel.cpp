@@ -32,12 +32,13 @@ MidiIPanel::~MidiIPanel()
 
 void MidiIPanel::resized()
 {
-    static float thirdWidth;
+    static float thirdWidth, twelthHeight;
     thirdWidth = getWidth()/3.0;
+    twelthHeight = getHeight()/12.0;
     
     static int borderPadding = 10;
     
-    noteButton->setBounds(thirdWidth*0.5, 0, thirdWidth, 30);
+    noteButton->setBounds(thirdWidth*0.5, 0, thirdWidth, twelthHeight);
     pressureButton->setBounds(noteButton->getBounds().translated(thirdWidth, 0));
     
     noteSettingsPanel->setBounds(borderPadding, noteButton->getBottom(), getWidth() - borderPadding*2, getHeight() - noteButton->getHeight());

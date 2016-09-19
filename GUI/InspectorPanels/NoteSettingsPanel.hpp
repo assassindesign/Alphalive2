@@ -16,9 +16,11 @@
 #include "Alphalive2Engine.hpp"
 #include "NoteSelectKBComponent.hpp"
 #include "ToggleSwitch.hpp"
+#include "ButtonGrid.hpp"
 
 class NoteSettingsPanel : public PadInspectorPanelBase,
-                          public ToggleSwitch::Listener
+                          public ToggleSwitch::Listener,
+                          public ButtonGrid::Listener
 {
 public:
 
@@ -30,6 +32,8 @@ public:
     void padDataChangeCallback(const int changedData) override;
     void setCurrentlyViewingPanel(const int childPanelID);
     void toggleSwitchChanged(const ToggleSwitch* toggle) override;
+    
+    void buttonGridCallback(ButtonGrid* grid, const int buttonID) override;
 
 private:
     PadData* padData;
@@ -37,6 +41,8 @@ private:
     ScopedPointer<ToggleSwitch> noteModeSwitch, triggerModeSwitch;
     
     ScopedPointer<NoteSelectKBComponent> noteSelectKeyboard;
+    
+    ScopedPointer<ButtonGrid> channelSwitcher, groupSelector;
 };
 
 

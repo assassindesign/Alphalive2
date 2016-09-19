@@ -49,7 +49,8 @@ public:
     void paint (Graphics& g) override;
     void refreshData() override;
 private:
-    
+    Rectangle<int> groupTitleBox;
+    Font groupTitleFont;
 };
 
 class MainInspectorPanel : public PadInspectorPanelBase

@@ -8,7 +8,6 @@
 
 #ifndef ButtonGrid_hpp
 #define ButtonGrid_hpp
-#define BUTTONS_PER_ROW 8
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "GUIStyle.h"
@@ -41,6 +40,13 @@ public:
 //==========================================================================
 //==========================================================================
 
+    class Listener{
+    public:
+        virtual ~Listener(){};
+        virtual void buttonGridCallback(ButtonGrid* grid,
+                                        const int buttonID) = 0;
+    };
+    
     ButtonGrid(int numRows, String _labelText);
     ~ButtonGrid();
     
@@ -48,12 +54,23 @@ public:
     void paint(Graphics &g) override;
     void mouseDown (const MouseEvent &event) override;
     
+    void addListener(ButtonGrid::Listener* newListener);
+    void removeListener(ButtonGrid::Listener* listenerToRemove);
+    
+    bool setButtonSelected(const int buttonIndex, const bool isSelected);
+    bool getIsButtonSelected(const int buttonIndex);
+    
+    void setIsExclusive(const bool shouldBeExclusive);
+    bool getIsExclusive();
+    
 private:
     String labelText;
     Rectangle<int> titleBox;
     Font titleFont;
     float x, y;
     OwnedArray<ButtonGridButton> gridButtons;
+    bool isExclusive;
+    ListenerList<ButtonGrid::Listener> listeners;
 };
 
 #endif /* ButtonGrid_hpp */

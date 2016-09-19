@@ -25,7 +25,7 @@ public:
     void setColour(const Colour newColour);
     private:
     Colour neonColour, hoverColour, downColour;
-    ScopedPointer<Font> font;
+    Font font;
 };
 
 #endif /* NeonButton_hpp */

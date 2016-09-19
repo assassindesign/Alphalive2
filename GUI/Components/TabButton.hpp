@@ -43,7 +43,6 @@ public:
     
 private:
     String labelText;
-    Font titleFont;
     bool tabToggleState = 0;
     bool lightToggleState = 1;
     Rectangle<float> toggleLightBox;

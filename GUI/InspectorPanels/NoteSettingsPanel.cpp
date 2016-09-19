@@ -21,12 +21,17 @@ NoteSettingsPanel::NoteSettingsPanel()
     addAndMakeVisible(triggerModeSwitch);
     
     
-    
     noteSelectKeyboard = new NoteSelectKBComponent();
     addAndMakeVisible(noteSelectKeyboard);
     noteSelectKeyboard->setDataObject(getDataObject());
 
-
+    channelSwitcher = new ButtonGrid(16, "MIDI Channel");
+    channelSwitcher->addListener(this);
+    addAndMakeVisible(channelSwitcher);
+    
+    groupSelector = new ButtonGrid(8, "SEND TO GROUP:");
+    groupSelector->addListener(this);
+    addAndMakeVisible(groupSelector);
 }
 NoteSettingsPanel::~NoteSettingsPanel()
 {
@@ -44,7 +49,11 @@ void NoteSettingsPanel::resized()
     noteModeSwitch->setBounds(0, 0, halfWidth, 50);
     triggerModeSwitch->setBounds(noteModeSwitch->getBounds().translated(halfWidth, 0));
 
-    noteSelectKeyboard->setBounds(0, noteModeSwitch->getBottom() + 5, getWidth(), 120);
+    channelSwitcher->setBounds(0, noteModeSwitch->getBottom(), getWidth(), 50);
+    
+    noteSelectKeyboard->setBounds(0, channelSwitcher->getBottom() + 5, getWidth(), 120);
+    
+    groupSelector->setBounds(0, getHeight() - 60, getWidth(), 60);
 }
 
 void NoteSettingsPanel::paint(Graphics& g)
@@ -58,6 +67,7 @@ void NoteSettingsPanel::refreshData()
     
     padDataChangeCallback(PadData::DataIDs::PadMidiFunction);
     padDataChangeCallback(PadData::DataIDs::NoteTriggerMode);
+    padDataChangeCallback(PadData::DataIDs::MidiChannel);
 }
 
 void NoteSettingsPanel::padDataChangeCallback(const int changedData)
@@ -84,6 +94,10 @@ void NoteSettingsPanel::padDataChangeCallback(const int changedData)
         {
             triggerModeSwitch->setToggleState(true);
         }
+    }
+    else if (changedData == PadData::DataIDs::MidiChannel)
+    {
+        channelSwitcher->setButtonSelected(padData->getMidiChannel()-1, true);
     }
 }
 
@@ -121,5 +135,19 @@ void NoteSettingsPanel::toggleSwitchChanged(const ToggleSwitch* toggle)
         
     }
 
+    
+}
+
+void NoteSettingsPanel::buttonGridCallback(ButtonGrid* grid, const int buttonID)
+{
+    //DBG(buttonID);
+    if (grid == channelSwitcher)
+    {
+        padData->setMidiChannel(buttonID+1);
+    }
+    else if (grid == groupSelector)
+    {
+        DBG(buttonID);
+    }
     
 }

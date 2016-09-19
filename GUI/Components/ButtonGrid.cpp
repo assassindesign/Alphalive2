@@ -57,15 +57,17 @@ bool ButtonGrid::ButtonGridButton::getToggleState()
 //==========================================================================
 
 
-ButtonGrid::ButtonGrid(int numRows, String _labelText)
+ButtonGrid::ButtonGrid(int numButtons, String _labelText)
 {
     labelText = _labelText.toUpperCase();
     titleFont = GUIFonts::Roboto;
-    titleFont.setHeight(11.0);
+    titleFont.setHeight(12.0);
     
-    for (int i = 0; i < numRows * BUTTONS_PER_ROW; i++)
+    isExclusive = true;
+    
+    for (int i = 0; i < numButtons; i++)
     {
-        gridButtons.add(new ButtonGridButton(i + 1, Colour(0xff1d837a)));
+        gridButtons.add(new ButtonGridButton(i + 1, GUIColours::MainBlue));
         gridButtons.getLast()->addMouseListener(this, true);
         addAndMakeVisible(gridButtons.getLast());
     }
@@ -81,21 +83,29 @@ void ButtonGrid::resized()
     x = getWidth();
     y = getHeight();
     
-    titleBox.setBounds(2, 2, x/2, y/4);
-    titleFont.setHeight(y/5);
+    static float segments, segmentWidth, vertPadding, horPadding;
+    segments = gridButtons.size()+2;
+    segmentWidth = getWidth()/segments;
     
-    gridButtons[0]->setBounds(titleBox.getX(), titleBox.getBottom()*1.05, getWidth()*0.1, getWidth()*0.1);
+    titleBox.setBounds(4, 4, x/2, y/4);
+    
+    vertPadding = titleBox.getBottom() + (getHeight()-titleBox.getBottom() - segmentWidth) * 0.5;
+    horPadding = segmentWidth;
+    gridButtons[0]->setBounds(segmentWidth*0.5, vertPadding, segmentWidth, segmentWidth);
     for (int i = 1; i < gridButtons.size(); i++)
     {
-        gridButtons[i]->setBounds(gridButtons[i-1]->getBounds().translated(getWidth()*0.125, 0));
+        //gridButtons[i]->setBounds(segmentWidth + (segmentWidth*1.125*i) + (segmentWidth/segments), vertPadding, segmentWidth, segmentWidth);
+        gridButtons[i]->setBounds(gridButtons[i-1]->getBounds().translated(segmentWidth * (1.0+(1.3/gridButtons.size())), 0));
     }
 }
 
 void ButtonGrid::paint(Graphics &g)
 {
-    //g.fillAll(Colours::hotpink);
+    g.fillAll(GUIColours::PanelBackground);
     
-    g.setColour(Colours::black);
+    g.setColour(GUIColours::MainBlue);
+    g.drawRect(1, 1, getWidth()-2, getHeight()-2);
+    g.setColour(Colours::whitesmoke);
     g.setFont(titleFont);
     g.drawFittedText(labelText, titleBox, Justification::topLeft, 1);
 }
@@ -107,7 +117,72 @@ void ButtonGrid::mouseDown(const MouseEvent &event)
         for (int i = 0; i < gridButtons.size(); i++)
         {
             if (event.eventComponent == gridButtons[i])
-                gridButtons[i]->setToggleState(!gridButtons[i]->getToggleState());
+            {
+                listeners.call(&ButtonGrid::Listener::buttonGridCallback, this, i);
+            }
         }
     }
 }
+
+void ButtonGrid::addListener(ButtonGrid::Listener* newListener)
+{
+    listeners.add(newListener);
+}
+
+void ButtonGrid::removeListener(ButtonGrid::Listener* listenerToRemove)
+{
+    listeners.remove(listenerToRemove);
+}
+
+
+bool ButtonGrid::setButtonSelected(const int buttonIndex, const bool isSelected)
+{
+    if (buttonIndex > -1 && buttonIndex < gridButtons.size())
+    {
+        
+        if (isSelected && isExclusive)
+        {
+            for (int i = 0; i < gridButtons.size(); i++)
+            {
+                if (i != buttonIndex)
+                {
+                    gridButtons[i]->setToggleState(false);
+                }
+            }
+        }
+        
+        gridButtons[buttonIndex]->setToggleState(isSelected);
+
+        
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    
+}
+
+bool ButtonGrid::getIsButtonSelected(const int buttonIndex)
+{
+    if (buttonIndex > -1 && buttonIndex < gridButtons.size())
+    {
+        return gridButtons[buttonIndex]->getToggleState();
+    }
+    else
+    {
+        return false;
+    }
+
+}
+
+void ButtonGrid::setIsExclusive(const bool shouldBeExclusive)
+{
+    isExclusive = shouldBeExclusive;
+}
+
+bool ButtonGrid::getIsExclusive()
+{
+    return isExclusive;
+}
+

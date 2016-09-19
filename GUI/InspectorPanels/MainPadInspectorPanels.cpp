@@ -88,10 +88,10 @@ void InspectorTopPanel::resized()
     
     for (int i = 0; i < 12; i++)
     {
-        rackAccents.getReference(i).setPosition(2, (twelthHeight*i)+ twelthHeight*0.5 + audioButton.getHeight());
+        rackAccents.getReference(i).setPosition(2, (twelthHeight*i)+ twelthHeight*0.4 + audioButton.getHeight());
         
         //rackAccents[i].setY(twelthHeight*i);
-        rackAccents.getReference(i+12).setPosition(getWidth()-8, (twelthHeight*i)+ twelthHeight*0.5 + audioButton.getHeight());
+        rackAccents.getReference(i+12).setPosition(getWidth()-8, (twelthHeight*i)+ twelthHeight*0.4 + audioButton.getHeight());
         
         //DBG(String(rackAccents[i].getX()) + ":" + String(rackAccents[i].getY()) + " : " + String(twelthHeight*i));
     }
@@ -99,6 +99,8 @@ void InspectorTopPanel::resized()
     audioPanel.setBounds(0, audioButton.getBottom(), getWidth(), getHeight() - audioButton.getBottom());
     midiPanel.setBounds(audioPanel.getBounds());
     sysPanel.setBounds(audioPanel.getBounds());
+    
+    
     
 }
 
@@ -213,7 +215,7 @@ void InspectorTopPanel::setPanelEnabled(bool enabled)
 
 InspectorBottomPanel::InspectorBottomPanel()
 {
-
+    groupTitleFont = GUIFonts::Roboto.withHeight(30);
 }
 
 InspectorBottomPanel::~InspectorBottomPanel()
@@ -223,12 +225,18 @@ InspectorBottomPanel::~InspectorBottomPanel()
 
 void InspectorBottomPanel::resized()
 {
-    
+    groupTitleBox.setBounds(0, 0, getWidth(), 40);
 }
 
 void InspectorBottomPanel::paint (Graphics& g)
 {
-    g.fillAll(Colour(GUIColours::Background).brighter());
+    g.fillAll(GUIColours::Background.brighter());
+    
+    g.setColour(Colours::whitesmoke);
+    g.setFont(groupTitleFont);
+    g.drawFittedText("GROUPS", groupTitleBox, Justification::centred, 1);
+    
+    
 }
 
 void InspectorBottomPanel::refreshData()

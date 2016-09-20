@@ -18,7 +18,8 @@
 #include "PadInspectorPanelBase.h"
 
 class InspectorTopPanel : public PadInspectorPanelBase,
-                          public Button::Listener
+                          public Button::Listener,
+                          public ButtonGrid::Listener
 {
 public:
     InspectorTopPanel();
@@ -30,6 +31,8 @@ public:
     void buttonClicked (Button* button) override;
     void refreshData() override;
     void setPanelEnabled(bool enabled);
+    void buttonGridCallback(ButtonGrid* grid,
+                            const int buttonID) override;
     
 private:
     TextButton audioButton, midiButton, systemButton;
@@ -38,6 +41,10 @@ private:
     SystemIPanel sysPanel;
     bool panelEnabled = false;
     Array<Rectangle<float>> rackAccents;
+    
+    WeakReference<PadData> padData;
+    
+    ScopedPointer<ButtonGrid> groupSelector;
 };
 
 class InspectorBottomPanel : public PadInspectorPanelBase

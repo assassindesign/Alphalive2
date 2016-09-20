@@ -1,15 +1,15 @@
 //
-//  NoteSettingsPanel.cpp
+//  MidiNoteSettingsPanel.cpp
 //  Alphalive 2
 //
 //  Created by Luke Saxton on 11/08/2016.
 //
 //
 
-#include "NoteSettingsPanel.hpp"
+#include "MidiNoteSettingsPanel.hpp"
 
 
-NoteSettingsPanel::NoteSettingsPanel()
+MidiNoteSettingsPanel::MidiNoteSettingsPanel()
 {
     
     noteModeSwitch = new ToggleSwitch("Note Mode", "Single", "Multi");
@@ -29,16 +29,13 @@ NoteSettingsPanel::NoteSettingsPanel()
     channelSwitcher->addListener(this);
     addAndMakeVisible(channelSwitcher);
     
-    groupSelector = new ButtonGrid(8, "SEND TO GROUP:");
-    groupSelector->addListener(this);
-    addAndMakeVisible(groupSelector);
 }
-NoteSettingsPanel::~NoteSettingsPanel()
+MidiNoteSettingsPanel::~MidiNoteSettingsPanel()
 {
 
 }
 
-void NoteSettingsPanel::resized()
+void MidiNoteSettingsPanel::resized()
 {
     
     static float halfWidth;
@@ -53,15 +50,14 @@ void NoteSettingsPanel::resized()
     
     noteSelectKeyboard->setBounds(0, channelSwitcher->getBottom() + 5, getWidth(), 120);
     
-    groupSelector->setBounds(0, getHeight() - 60, getWidth(), 60);
 }
 
-void NoteSettingsPanel::paint(Graphics& g)
+void MidiNoteSettingsPanel::paint(Graphics& g)
 {
     //g.fillAll(Colours::blue);
 }
 
-void NoteSettingsPanel::refreshData()
+void MidiNoteSettingsPanel::refreshData()
 {
     noteSelectKeyboard->setDataObject(getDataObject());
     
@@ -70,7 +66,7 @@ void NoteSettingsPanel::refreshData()
     padDataChangeCallback(PadData::DataIDs::MidiChannel);
 }
 
-void NoteSettingsPanel::padDataChangeCallback(const int changedData)
+void MidiNoteSettingsPanel::padDataChangeCallback(const int changedData)
 {
     padData = AppData::Instance()->getCurrentlyInspectingPadDataPtr();
     if (changedData == PadData::DataIDs::PadMidiFunction)
@@ -103,7 +99,7 @@ void NoteSettingsPanel::padDataChangeCallback(const int changedData)
 
 
 
-void NoteSettingsPanel::toggleSwitchChanged(const ToggleSwitch* toggle)
+void MidiNoteSettingsPanel::toggleSwitchChanged(const ToggleSwitch* toggle)
 {
     padData = AppData::Instance()->getCurrentlyInspectingPadDataPtr();
     if (toggle == noteModeSwitch)
@@ -138,16 +134,13 @@ void NoteSettingsPanel::toggleSwitchChanged(const ToggleSwitch* toggle)
     
 }
 
-void NoteSettingsPanel::buttonGridCallback(ButtonGrid* grid, const int buttonID)
+void MidiNoteSettingsPanel::buttonGridCallback(ButtonGrid* grid, const int buttonID)
 {
     //DBG(buttonID);
     if (grid == channelSwitcher)
     {
         padData->setMidiChannel(buttonID+1);
     }
-    else if (grid == groupSelector)
-    {
-        DBG(buttonID);
-    }
+   
     
 }

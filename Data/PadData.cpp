@@ -11,11 +11,12 @@
 PadData::PadData(SphereData* _parent) : parent(_parent)
 {
     midiNotes.add(*new MidiNote());
+    masterReference.getSharedPointer(this);
 }
 
 PadData::~PadData()
 {
-    
+    masterReference.clear();
 }
 
 ValueTree* PadData::toValueTree()

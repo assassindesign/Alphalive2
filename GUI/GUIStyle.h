@@ -18,7 +18,7 @@ public:
 
 class GUIFonts {
 public:
-    static const Font Roboto;
+    static const Font Roboto, TestFont;
 };
 
 #endif /* GUIColours_h */

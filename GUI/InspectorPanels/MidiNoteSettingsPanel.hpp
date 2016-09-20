@@ -1,13 +1,13 @@
 //
-//  NoteSettingsPanel.hpp
+//  MidiNoteSettingsPanel.hpp
 //  Alphalive 2
 //
 //  Created by Luke Saxton on 11/08/2016.
 //
 //
 
-#ifndef NoteSettingsPanel_hpp
-#define NoteSettingsPanel_hpp
+#ifndef MidiNoteSettingsPanel_hpp
+#define MidiNoteSettingsPanel_hpp
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AppData.hpp"
@@ -18,14 +18,14 @@
 #include "ToggleSwitch.hpp"
 #include "ButtonGrid.hpp"
 
-class NoteSettingsPanel : public PadInspectorPanelBase,
+class MidiNoteSettingsPanel : public PadInspectorPanelBase,
                           public ToggleSwitch::Listener,
                           public ButtonGrid::Listener
 {
 public:
 
-    NoteSettingsPanel();
-    ~NoteSettingsPanel();
+    MidiNoteSettingsPanel();
+    ~MidiNoteSettingsPanel();
     void resized() override;
     void paint(Graphics& g) override;
     void refreshData() override;
@@ -42,9 +42,9 @@ private:
     
     ScopedPointer<NoteSelectKBComponent> noteSelectKeyboard;
     
-    ScopedPointer<ButtonGrid> channelSwitcher, groupSelector;
+    ScopedPointer<ButtonGrid> channelSwitcher;
 };
 
 
 
-#endif /* NoteSettingsPanel_hpp */
+#endif /* MidiNoteSettingsPanel_hpp */

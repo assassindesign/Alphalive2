@@ -136,7 +136,7 @@ public:
         int noteNumber = 0;
         int velocityPercentage = 100;
     };
-    
+        
     PadData(SphereData* _parent);
     ~PadData();
     ValueTree* toValueTree();
@@ -207,6 +207,8 @@ public:
     int getLFOCurveType();
     
     SphereData* getParentSphere();
+
+    WeakReference<PadData>::Master masterReference;
 
 private:
     int padID = -1;

@@ -17,3 +17,4 @@ const Colour GUIColours::RackScrewAccent(0xFFC1C1C1);
 const Colour GUIColours::RecButtonRed(0xFF5D1F1F);
 
 const Font GUIFonts::Roboto("Roboto", "sans-serif", 16.0);
+const Font GUIFonts::TestFont("Helvetica", "sans-serif", 16.0);

@@ -44,6 +44,9 @@ InspectorTopPanel::InspectorTopPanel()
     addChildComponent(midiPanel);
     addChildComponent(sysPanel);
     
+    groupSelector = new ButtonGrid(10, "SEND TO GROUP");
+    groupSelector->addListener(this);
+    addChildComponent(groupSelector);
     
     if (AppData::Instance()->getAdvancedFeaturesEnabled())
     {
@@ -95,6 +98,8 @@ void InspectorTopPanel::resized()
         
         //DBG(String(rackAccents[i].getX()) + ":" + String(rackAccents[i].getY()) + " : " + String(twelthHeight*i));
     }
+    
+    groupSelector->setBounds(10, getHeight()-60, getWidth() -20, 60);
     
     audioPanel.setBounds(0, audioButton.getBottom(), getWidth(), getHeight() - audioButton.getBottom());
     midiPanel.setBounds(audioPanel.getBounds());
@@ -162,6 +167,11 @@ void InspectorTopPanel::padDataChangeCallback(const int changedData)
                 break;
         }
     }
+    else if (changedData == PadData::DataIDs::PadGroup)
+    {
+        padData = AppData::Instance()->getCurrentlyInspectingPadDataPtr();
+        groupSelector->setButtonSelected(padData->getPadGroup(), true);
+    }
 }
 
 
@@ -189,6 +199,7 @@ void InspectorTopPanel::refreshData()
     audioPanel.setDataObject(getDataObject());
     midiPanel.setDataObject(getDataObject());
     padDataChangeCallback(PadData::DataIDs::PadFunction);
+    padDataChangeCallback(PadData::DataIDs::PadGroup);
 }
 
 void InspectorTopPanel::setPanelEnabled(bool enabled)
@@ -196,6 +207,7 @@ void InspectorTopPanel::setPanelEnabled(bool enabled)
     audioPanel.setVisible(enabled);
     midiPanel.setVisible(enabled);
     sysPanel.setVisible(enabled);
+    groupSelector->setVisible(enabled);
     
     audioButton.setEnabled(enabled);
     midiButton.setEnabled(enabled);
@@ -206,6 +218,14 @@ void InspectorTopPanel::setPanelEnabled(bool enabled)
     systemButton.setToggleState(false, dontSendNotification);
 }
 
+void InspectorTopPanel::buttonGridCallback(ButtonGrid* grid, const int buttonID)
+{
+    if (grid == groupSelector)
+    {
+        padData->setPadGroup(buttonID+1);
+        DBG(padData->getPadGroup());
+    }
+}
 
 //===============================================================================================================
 //

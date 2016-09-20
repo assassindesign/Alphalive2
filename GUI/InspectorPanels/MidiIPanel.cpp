@@ -22,8 +22,11 @@ MidiIPanel::MidiIPanel()
     pressureButton->addListener(this);
     addAndMakeVisible(pressureButton);
     
-    noteSettingsPanel = new NoteSettingsPanel();
-    addAndMakeVisible(noteSettingsPanel);
+    midiNoteSettingsPanel = new MidiNoteSettingsPanel();
+    addAndMakeVisible(midiNoteSettingsPanel);
+    
+    midiPressureSettingsPanel = new MidiPressureSettingsPanel();
+    addChildComponent(midiPressureSettingsPanel);
 }
 MidiIPanel::~MidiIPanel()
 {
@@ -41,7 +44,8 @@ void MidiIPanel::resized()
     noteButton->setBounds(thirdWidth*0.5, 0, thirdWidth, twelthHeight);
     pressureButton->setBounds(noteButton->getBounds().translated(thirdWidth, 0));
     
-    noteSettingsPanel->setBounds(borderPadding, noteButton->getBottom(), getWidth() - borderPadding*2, getHeight() - noteButton->getHeight());
+    midiNoteSettingsPanel->setBounds(borderPadding, noteButton->getBottom(), getWidth() - borderPadding*2, getHeight() - noteButton->getHeight());
+    midiPressureSettingsPanel->setBounds(midiNoteSettingsPanel->getBounds());
     
 }
 void MidiIPanel::paint(Graphics& g)
@@ -51,10 +55,10 @@ void MidiIPanel::paint(Graphics& g)
 
 void MidiIPanel::refreshData()
 {
-    noteSettingsPanel->setDataObject(getDataObject());
-    //noteSettingsPane->setDataObject(getDataObject());
+    midiNoteSettingsPanel->setDataObject(getDataObject());
+    midiPressureSettingsPanel->setDataObject(getDataObject());
+
     padData = AppData::Instance()->getCurrentlyInspectingPadDataPtr();
-    
     padDataChangeCallback(PadData::DataIDs::NoteEnabled);
     padDataChangeCallback(PadData::DataIDs::PressureEnabled);
     
@@ -78,14 +82,16 @@ void MidiIPanel::tabButtonClicked(const TabButton* button)
 {
     if (button == noteButton)
     {
-        noteSettingsPanel->setVisible(true);
+        midiNoteSettingsPanel->setVisible(true);
+        midiPressureSettingsPanel->setVisible(false);
         noteButton->setTabToggleState(true);
         pressureButton->setTabToggleState(false);
 
     }
     else if (button == pressureButton)
     {
-        noteSettingsPanel->setVisible(false);
+        midiNoteSettingsPanel->setVisible(false);
+        midiPressureSettingsPanel->setVisible(true);
         noteButton->setTabToggleState(false);
         pressureButton->setTabToggleState(true);
     }

@@ -12,7 +12,8 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AppData.hpp"
 #include "PadInspectorPanelBase.h"
-#include "NoteSettingsPanel.hpp"
+#include "MidiNoteSettingsPanel.hpp"
+#include "MidiPressureSettingsPanel.hpp"
 #include "TabButton.hpp"
 
 
@@ -35,7 +36,8 @@ private:
     ScopedPointer<TabButton> noteButton, pressureButton;
 
     
-    ScopedPointer<NoteSettingsPanel> noteSettingsPanel;
+    ScopedPointer<MidiNoteSettingsPanel> midiNoteSettingsPanel;
+    ScopedPointer<MidiPressureSettingsPanel> midiPressureSettingsPanel;
     // scoped pointer to pressure settings panel
     PadData* padData;
     bool panelEnabled;

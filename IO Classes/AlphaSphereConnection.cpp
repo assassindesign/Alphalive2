@@ -87,7 +87,8 @@ void AlphaSphereConnection::hidInputCallback (int pad, int value, int velocity)
     recievedValue = float(value);
     recievedVelocity = float(velocity);
 
-
+    //DBG(String(pad) + ":" + String(value) + ":" + String(velocity));
+    
     if (pad < 48)
     {
         if (padVelocity[pad] != velocity)

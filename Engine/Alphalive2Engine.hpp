@@ -71,7 +71,7 @@ private:
 
     ScopedPointer<ExternalMidiOut> midiOut;
     
-    ScopedPointer<ExternalMidiIn> midiIn;
+    //ScopedPointer<ExternalMidiIn> midiIn;
     
     ScopedPointer<AlphaSphereConnection> sphereConnection;
     

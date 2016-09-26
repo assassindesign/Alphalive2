@@ -22,7 +22,7 @@ void Alphalive2Engine::initialise()
 {
     midiOut = new ExternalMidiOut("Alphalive 2");
     
-    midiIn = new ExternalMidiIn(&deviceManager);
+    //midiIn = new ExternalMidiIn(&deviceManager);
     
     router = new InternalMidiRouter(midiOut);
     

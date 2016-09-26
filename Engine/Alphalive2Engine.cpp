@@ -22,6 +22,8 @@ void Alphalive2Engine::initialise()
 {
     midiOut = new ExternalMidiOut("Alphalive 2");
     
+    midiIn = new ExternalMidiIn(&deviceManager);
+    
     router = new InternalMidiRouter(midiOut);
     
     spheres.add(new PlayableSphere(48, 0));
@@ -151,7 +153,10 @@ void Alphalive2Engine::killAllPads()
     }
 }
 
-
+void Alphalive2Engine::setAudioEnabled(const bool isEnabled)
+{
+    DBG("Audio Enabled: " + String(isEnabled));
+}
 
 void Alphalive2Engine::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
@@ -167,6 +172,63 @@ void Alphalive2Engine::getNextAudioBlock (const AudioSourceChannelInfo& bufferTo
 {
     bufferToFill.clearActiveBufferRegion();
     
+    //masterMixer.getNextAudioBlock(bufferToFill);
+
+    static Random random;
+    
+    for (int channel = 0; channel < bufferToFill.buffer->getNumChannels(); ++channel)
+    {
+        // Get a pointer to the start sample in the buffer for this audio output channel
+        float* const buffer = bufferToFill.buffer->getWritePointer (channel, bufferToFill.startSample);
+        
+        // Fill the required number of samples with noise betweem -0.125 and +0.125
+        for (int sample = 0; sample < bufferToFill.numSamples; ++sample)
+            buffer[sample] += random.nextFloat() * 2.0f - 1.0f;
+    }
+    
+    
+    calculateAudioOutputAverage(bufferToFill);
+    
+    bufferToFill.clearActiveBufferRegion();
+    
     masterMixer.getNextAudioBlock(bufferToFill);
 }
+
+double Alphalive2Engine::getAudioOutputAverage(const int forChannel)
+{
+    
+    switch (forChannel) {
+        case 0:
+            return audioOutputAverageL;
+            break;
+        case 1:
+            return audioOutputAverageR;
+            break;
+        default:
+            return 0;
+            break;
+    }
+}
+
+
+void Alphalive2Engine::calculateAudioOutputAverage(const AudioSourceChannelInfo& buffer)
+{
+    static float avgL, avgR;
+    avgL = avgR = 0;
+    
+    for (int i = buffer.startSample; i < (buffer.startSample+buffer.numSamples); i++)
+    {
+        avgL += pow(fabsf(buffer.buffer->getSample(0, i)), 2.0);
+        avgR += pow(fabsf(buffer.buffer->getSample(1, i)), 2.0);
+
+    }
+    
+    audioOutputAverageL = sqrt(avgL / buffer.numSamples);
+    audioOutputAverageR = sqrt(avgR / buffer.numSamples);
+
+}
+
+
+
+
 

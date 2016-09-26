@@ -65,3 +65,9 @@ void ExternalMidiIn::handleIncomingMidiMessage (MidiInput* source, const MidiMes
     engine->midiThru(message);
 
 }
+
+StringArray ExternalMidiIn::getMidiInputs()
+{
+    return MidiInput::getDevices();
+}
+

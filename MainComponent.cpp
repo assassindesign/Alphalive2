@@ -45,6 +45,9 @@ MainContentComponent::MainContentComponent()
     killButton->addListener(this);
     addAndMakeVisible(killButton);
     
+    audioMeter = new AudioMeterButton();
+    addAndMakeVisible(audioMeter);
+    
     setSize (1200, 700);
     
 }
@@ -70,8 +73,11 @@ void MainContentComponent::resized()
     sphereView->setBounds(segmentWidth*2,0,segmentWidth*6, getHeight());
     
     
-    //tempoView->setBounds(0, 0, getWidth()/8.0, getHeight()/10.0);
-    //scaleView->setBounds(tempoView->getBounds().translated(getWidth()/8.0, 0));
+    //tempoView->setBounds(0, getHeight()/10.0, getWidth()/8.0, getHeight()/10.0);
+    //scaleView->setBounds(0, 0, getWidth()/8.0, getHeight()/10.0);
+    
+    audioMeter->setBounds(sphereView->getRight() - 100, 5, 100, 30);
+    
     padInspector->setBounds(getWidth()-385, 0, 385, getHeight());
     
     killButton->setBounds(sphereView->getRight()-40, sphereView->getBottom()-20, 40, 20);

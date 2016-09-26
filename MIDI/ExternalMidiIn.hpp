@@ -25,6 +25,8 @@ public:
     // These methods handle callbacks from the midi device + on-screen keyboard..
     void handleIncomingMidiMessage (MidiInput* source, const MidiMessage& message) override;
     
+    StringArray getMidiInputs();
+    
 private:
     
     double startTime;

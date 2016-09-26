@@ -63,9 +63,9 @@ AlphaSphereConnection::AlphaSphereConnection()
     setAppHasInitialised();
     //setLedColour(0, Colours::black);
     
-    setLedColour(0, Colours::orangered);
-    setLedColour(1, Colours::blue);
-    setLedColour(2, Colours::green);
+//    setLedColour(0, Colours::orangered);
+//    setLedColour(1, Colours::blue);
+//    setLedColour(2, Colours::green);
     
     for (int i = 0; i < 48; i++)
     {
@@ -83,8 +83,6 @@ AlphaSphereConnection::~AlphaSphereConnection()
 
 void AlphaSphereConnection::hidInputCallback (int pad, int value, int velocity)
 {
-
-
     recievedPad = pad;
     recievedValue = float(value);
     recievedVelocity = float(velocity);
@@ -121,7 +119,28 @@ void AlphaSphereConnection::hidInputCallback (int pad, int value, int velocity)
 
 void AlphaSphereConnection::processMidiInput (const MidiMessage midiMessage)
 {
-
+    
+//    if (midiMessage.isSongPositionPointer() || midiMessage.isMidiStart() || midiMessage.isMidiContinue() || midiMessage.isMidiStop() || midiMessage.isMidiClock())
+//    {
+//        static MasterClock* masterClock = engine->getMasterClockPointer();
+//        masterClock->handleExternalMidiClock(midiMessage);
+//        //DBG("EXT Clock Tick");
+//    }
+//    else if (midiMessage.isQuarterFrame())
+//    {
+//        DBG(midiMessage.getQuarterFrameValue());
+//    }
+//    else if (midiMessage.isTempoMetaEvent())
+//    {
+//        //static int tempo;
+//        midiMessage.getTempoSecondsPerQuarterNote();
+//        DBG(midiMessage.getTempoSecondsPerQuarterNote());
+//    }
+//    else
+//    {
+//        DBG("ASC:" + String(*midiMessage.getRawData()));
+//    }
+    
 }
 
 void AlphaSphereConnection::setDeviceType (int type) //1 - AlphaSphere, 2 - AlphaSphere elite

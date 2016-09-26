@@ -86,6 +86,9 @@ public:
     void setMetronomeEnabled(bool enabled);
 
     bool getMetronomeEnabled();
+    
+    void handleExternalMidiClock(const MidiMessage midiMessage);
+    
 private:
     void setMetronomeEnabledInternal(bool enabled);
 

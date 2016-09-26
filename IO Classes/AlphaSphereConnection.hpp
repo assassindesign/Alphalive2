@@ -72,6 +72,5 @@ private:
     
     Alphalive2Engine* engine;
     
-    
 };
 #endif /* AlphaSphereConnection_hpp */

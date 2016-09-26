@@ -17,16 +17,16 @@
 #include "ExternalMidiOut.hpp"
 #include "MasterClock.hpp"
 #include "AppData.hpp"
+#include "AudioMeterButton.hpp"
 
 class Alphalive2Engine : public DeletedAtShutdown,
-                            public AudioAppComponent
+                         public AudioAppComponent
 {
 public:
     Alphalive2Engine();
     ~Alphalive2Engine();
     
     void initialise();
-    
     
     void midiThru(const MidiMessage&);
     
@@ -45,6 +45,8 @@ public:
     InternalMidiRouter* getMidiRouterPointer();
     
     void killAllPads();
+    void setAudioEnabled(const bool isEnabled);
+
     //===========================================================================
     //  Audio callbacks for MasterClock
     //===========================================================================
@@ -54,13 +56,22 @@ public:
     void releaseResources() override;
  
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)override;
+    
+    double getAudioOutputAverage(const int forChannel);
+    
+    void handleExternalMidiClock(const MidiMessage midiMessage);
+    
 private:
+    void calculateAudioOutputAverage(const AudioSourceChannelInfo& buffer);
+    
     
     OwnedArray<PlayableSphere> spheres;
     
     ScopedPointer<InternalMidiRouter> router;
 
     ScopedPointer<ExternalMidiOut> midiOut;
+    
+    //ScopedPointer<ExternalMidiIn> midiIn;
     
     ScopedPointer<AlphaSphereConnection> sphereConnection;
     
@@ -69,9 +80,9 @@ private:
     //Audio Classes
     MixerAudioSource masterMixer;
     
-    int hIDLinkedSphere;
+    double audioOutputAverageL, audioOutputAverageR;
     
-
+    int hIDLinkedSphere;
 };
 
 #endif /* Alphalive2Engine_hpp */

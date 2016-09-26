@@ -24,14 +24,14 @@ ScaleView::ScaleView()
     octPlusButton.addListener(this);
     addAndMakeVisible(octPlusButton);
     
-    octMinusButton.setButtonText("O -");
+    octMinusButton.setButtonText("O-");
     octMinusButton.addListener(this);
     addAndMakeVisible(octMinusButton);
     
     keyLabel.setText("C", dontSendNotification);
     keyLabel.setColour(Label::ColourIds::textColourId, Colours::white);
     keyLabel.setJustificationType(Justification::centred);
-    keyLabel.setFont(Font(50));
+    keyLabel.setFont(GUIFonts::Roboto.withHeight(50));
     addAndMakeVisible(keyLabel);
     
     labelStrings = new StringArray(keyStrings);
@@ -56,7 +56,7 @@ ScaleView::~ScaleView()
 
 void ScaleView::paint(Graphics& g)
 {
-    g.fillAll(Colour(GUIColours::Background));
+    g.fillAll(GUIColours::Background);
     
 }
 

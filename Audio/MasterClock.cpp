@@ -230,3 +230,28 @@ bool MasterClock::getMetronomeEnabled()
 {
     return metronomeEnabled;
 }
+
+
+void MasterClock::handleExternalMidiClock(const MidiMessage midiMessage)
+{
+        if (midiMessage.isSongPositionPointer())
+        {
+            DBG("Song Position:" + String(midiMessage.getSongPositionPointerMidiBeat()));
+        }
+        else if (midiMessage.isMidiStart())
+        {
+            DBG("Start");
+        }
+        else if (midiMessage.isMidiContinue())
+        {
+            DBG("Continue");
+        }
+        else if (midiMessage.isMidiStop())
+        {
+            DBG("Stop");
+        }
+        else if(midiMessage.isMidiClock())
+        {
+            //   DBG("EXT Clock Tick");
+        }
+}

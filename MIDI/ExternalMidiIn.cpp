@@ -24,13 +24,19 @@ ExternalMidiIn::ExternalMidiIn(AudioDeviceManager* globalDeviceManager)
     {
         //if (deviceManager->isMidiInputEnabled (midiInputs[i]))
         //{
-            setMidiInput (i);
+            //setMidiInput (i);
             //break;
         //}
         //else
         //{
         //    DBG("No Midi Inputs Available");
         //}
+        
+        if (!midiInputs[i].contains("Alphalive"))
+        {
+            setMidiInput (i);
+
+        }
     }
 
     engine = AppData::Instance()->getEnginePointer();
@@ -65,3 +71,9 @@ void ExternalMidiIn::handleIncomingMidiMessage (MidiInput* source, const MidiMes
     engine->midiThru(message);
 
 }
+
+StringArray ExternalMidiIn::getMidiInputs()
+{
+    return MidiInput::getDevices();
+}
+

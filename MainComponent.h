@@ -45,6 +45,8 @@ private:
     ScopedPointer<ScaleView> scaleView;
     ScopedPointer<PadInspector> padInspector;
     ScopedPointer<TextButton> killButton;
+    ScopedPointer<AudioMeterButton> audioMeter;
+    //audio meter
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
 };

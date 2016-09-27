@@ -10,8 +10,9 @@
 
 PadData::PadData(SphereData* _parent) : parent(_parent)
 {
-    midiNotes.add(*new MidiNote());
     masterReference.getSharedPointer(this);
+    midiChannels.add(1);
+    midiNotes.add(*new MidiNote);
 }
 
 PadData::~PadData()
@@ -451,7 +452,7 @@ bool PadData::setMidiChannel (const int newChannel)
     if (newChannel >= 1 && newChannel <= 16)
     {
         dataLock.enter();
-        midiChannel = newChannel;
+        midiChannels.set(0, newChannel);
         dataLock.exit();
         
         callListeners(DataIDs::MidiChannel, AppDataFormat::PadDataType);
@@ -462,6 +463,59 @@ bool PadData::setMidiChannel (const int newChannel)
         jassertfalse; //value out of range
     }
     return success;
+}
+
+bool PadData::addMidChannel(const int newChannel)
+{
+    bool success = true;
+    if (newChannel >= 1 && newChannel <= 16)
+    {
+        dataLock.enter();
+        
+        midiChannels.add(newChannel);
+    
+        dataLock.exit();
+        callListeners(DataIDs::MidiNotes, AppDataFormat::PadDataType);
+        
+    }
+    else{
+        jassertfalse; //value out of range
+        success = false;
+    }
+    
+    return success;
+}
+
+bool PadData::removeMidiChannel(const int channelToRemove)
+{
+    bool success = false;
+    dataLock.enter();
+    
+    for (int i = 0; i < midiChannels.size(); i++)
+    {
+        if (midiChannels[i] == channelToRemove)
+        {
+            midiChannels.remove(i);
+            success = true;
+        }
+    }
+    
+    dataLock.exit();
+    
+    if (success)
+        callListeners(DataIDs::MidiNotes, AppDataFormat::PadDataType);
+    
+    return success;
+}
+
+void PadData::clearAllMidiChannels()
+{
+    dataLock.enter();
+    
+    midiChannels.clearQuick();
+    
+    dataLock.exit();
+    callListeners(DataIDs::MidiNotes, AppDataFormat::PadDataType);
 }
 
 bool PadData::setPressureMode(const int newMode)
@@ -733,6 +787,16 @@ bool PadData::setLFOCurveType(const int newType)
     return success;
 }
 
+void PadData::setDynamicMidiChannel(const bool enabled)
+{
+    dataLock.enter();
+    dynamicMidiChannel = enabled;
+    dataLock.exit();
+    
+    callListeners(DataIDs::DynamicMidiChannel, AppDataFormat::PadDataType);
+}
+
+
 //============= GETS ===========================================
 int PadData::getPadID()
 {
@@ -799,7 +863,17 @@ float PadData::getPadPressure()
 
 int PadData::getMidiChannel()
 {
-    return midiChannel;
+    return midiChannels[0];
+}
+
+Array<int> PadData::getMidiChannels()
+{
+    return midiChannels;
+}
+
+int PadData::getNumMidiChannels()
+{
+    return midiChannels.size();
 }
 
 int PadData::getPressureMode()
@@ -861,5 +935,9 @@ int PadData::getLFOCurveType()
     return lFOCurveType;
 }
 
+bool PadData::getDynamicMidiChannel()
+{
+    return dynamicMidiChannel;
+}
 
 

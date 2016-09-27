@@ -55,6 +55,8 @@ public:
     enum NoteTriggerModes{
         StandardNoteMode = 0,
         ToggleNoteMode,
+        LatchNoteMode,
+        TriggerNoteMode,
         FINAL_SINGLENOTEMODE
     };
     
@@ -127,6 +129,7 @@ public:
         PadGroup,
         MidiDestination,
         PadColour,
+        DynamicMidiChannel,
         FINAL_DATAID
     };
     
@@ -158,6 +161,9 @@ public:
     bool setVelocity (const int newVel);
     bool setPadPressure (const float newPressure);
     bool setMidiChannel (const int newChannel);
+    bool addMidChannel(const int newChannel);
+    bool removeMidiChannel(const int channelToRemove);
+    void clearAllMidiChannels();
     bool setPressureMode(const int newMode);
     bool setPressureDestination(const int newDestination);
     void setSticky(const bool shouldBeSticky);
@@ -177,6 +183,7 @@ public:
 
     bool removeMidiNote(const int noteToRemove);
     void clearAllMidiNotes();
+    void setDynamicMidiChannel(const bool enabled);
     
     //============= GETS ===========================================
     
@@ -192,6 +199,8 @@ public:
     int getVelocity();
     float getPadPressure();
     int getMidiChannel();
+    Array<int> getMidiChannels();
+    int getNumMidiChannels();
     int getPressureMode();
     int getPressureDestination();
     bool getSticky();
@@ -205,6 +214,7 @@ public:
     int getMidiDestination();
     int getPadColour();
     int getLFOCurveType();
+    bool getDynamicMidiChannel();
     
     SphereData* getParentSphere();
 
@@ -221,7 +231,7 @@ private:
     int multiNoteMode = 0;
     int velocity = 0;
     float padPressure = 0;
-    int midiChannel = 1;
+    Array<int> midiChannels;
     int pressureMode = 0;
     int pressureDestination = 0;
     bool sticky = false;
@@ -235,6 +245,7 @@ private:
     int midiDestination = 0;
     int padColour = 0;
     int lFOCurveType = 0;
+    bool dynamicMidiChannel = false;
     
     
     SphereData* parent;

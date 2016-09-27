@@ -48,6 +48,8 @@ MainContentComponent::MainContentComponent()
     audioMeter = new AudioMeterButton();
     addAndMakeVisible(audioMeter);
     
+    tooltip = new TooltipWindow(0, 700);
+    
     setSize (1200, 700);
     
 }

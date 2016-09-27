@@ -63,6 +63,7 @@ InspectorTopPanel::InspectorTopPanel()
         rackAccents.add(*new Rectangle<float>(2,0,6,6));
     }
     
+    setTooltip("Pad Inspector");
 }
 InspectorTopPanel::~InspectorTopPanel()
 {

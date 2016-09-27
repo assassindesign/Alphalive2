@@ -19,7 +19,8 @@
 
 class InspectorTopPanel : public PadInspectorPanelBase,
                           public Button::Listener,
-                          public ButtonGrid::Listener
+                          public ButtonGrid::Listener,
+                          public SettableTooltipClient
 {
 public:
     InspectorTopPanel();
@@ -33,7 +34,6 @@ public:
     void setPanelEnabled(bool enabled);
     void buttonGridCallback(ButtonGrid* grid,
                             const int buttonID) override;
-    
 private:
     TextButton audioButton, midiButton, systemButton;
     AudioIPanel audioPanel;

@@ -23,8 +23,6 @@ PlayablePad::PlayablePad(PadData* dataForPad)
     
     router = AppData::Instance()->getEnginePointer()->getMidiRouterPointer();
     
-    rawVelocity = 0;
-    killingPad = false;
 
 }
 PlayablePad::~PlayablePad()
@@ -32,8 +30,9 @@ PlayablePad::~PlayablePad()
     
 }
 
-void PlayablePad::hitPad(const int velocity)
+void PlayablePad::hitPad(const int velocity, const bool killingPad)
 {
+    static int rawVelocity;
     if (padData->getNoteEnabled() || killingPad)
     {
         //===Note Trigger Mode===============================================================================
@@ -62,6 +61,30 @@ void PlayablePad::hitPad(const int velocity)
         {
             rawVelocity = velocity;
         }
+        else if (padData->getNoteTriggerMode() == PadData::NoteTriggerModes::LatchNoteMode)
+        {
+            if (padData->getVelocity() == 0)
+            {
+                rawVelocity = velocity;
+            }
+            else
+            {
+                ignoreHit = true;
+            }
+        }
+        else if (padData->getNoteTriggerMode() == PadData::NoteTriggerModes::TriggerNoteMode && !killingPad)
+        {
+            if (velocity > 0)
+            {
+                hitPad(0, true);
+                rawVelocity = velocity;
+            }
+            else
+            {
+                ignoreHit = true;
+            }
+        }
+        
         
         if (killingPad)
         {
@@ -135,20 +158,16 @@ void PlayablePad::hitPad(const int velocity)
                 }
             }
             
-            
         }
         
-        if (killingPad)
-        {
-            killingPad = !killingPad;
-        }
     }
     
     
 }
 
-void PlayablePad::pressPad(const float pressure)
+void PlayablePad::pressPad(const float pressure, const bool killingPad)
 {
+    //static float rawPressure;
     if (padData->getPressureEnabled() || killingPad)
     {
         float receivedPressure = pressure;
@@ -162,6 +181,28 @@ void PlayablePad::pressPad(const float pressure)
                 MidiMessage message;
                 message = MidiMessage::aftertouchChange(padData->getMidiChannel(), padData->getMidiNote(), receivedPressure);
                 router->sendMidiToDestination(InternalMidiRouter::MidiOut, &message);
+            }
+        }
+    }
+    
+    if (padData->getNoteTriggerMode() == PadData::NoteTriggerModes::LatchNoteMode || padData->getNoteTriggerMode() == PadData::NoteTriggerModes::TriggerNoteMode)
+    {
+        static int minPressure = 511;
+        
+        if (pressure < minPressure && padData->getVelocity() > 0)
+        {
+            minPressure = pressure;
+        }
+        
+        DBG(minPressure);
+
+        
+        if (padData->Velocity > 0 && pressure >= 511)
+        {
+            if (minPressure == 0)
+            {
+                minPressure = 511;
+                hitPad(0, true);
             }
         }
     }
@@ -197,8 +238,7 @@ const int PlayablePad::getMidiChannel()
 
 void PlayablePad::killPad()
 {
-    killingPad = true;
-    pressPad(0);
-    hitPad(0); 
+    pressPad(0, true);
+    hitPad(0, true);
 }
 

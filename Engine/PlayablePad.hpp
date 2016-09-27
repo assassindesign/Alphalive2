@@ -23,8 +23,8 @@ public:
     PlayablePad(PadData* dataForPad);
     ~PlayablePad();
     
-    void hitPad(const int velocity);
-    void pressPad(const float pressure);
+    void hitPad(const int velocity, const bool killingPad = false);
+    void pressPad(const float pressure, const bool killingPad = false);
     
     bool setMidiNote(const int newMidiNote);
     const int getMidiNote();
@@ -37,8 +37,6 @@ public:
 private:    
     PadData* padData;
     InternalMidiRouter* router;
-    int rawVelocity;
-    bool killingPad;
 };
 
 #endif /* PlayablePad_hpp */

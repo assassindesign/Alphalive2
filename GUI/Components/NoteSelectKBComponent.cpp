@@ -368,7 +368,7 @@ void NoteSelectKBComponent::mouseDown(const MouseEvent &event)
                 {
                     for (int i = 0; i < keys.size(); i++) //loop through the keys - SHOULD BE OPTIMISED AT SOME POINT
                     {
-                        if (event.eventComponent == keys[i]) //when we find the key that has been pressed
+                        if (event.eventComponent == keys[i] || keys[i]->isParentOf(event.eventComponent)) //when we find the key that has been pressed
                         {
                             padData->setMidiNote(i, keys[i]->getVelPercentage());
                         }
@@ -378,7 +378,7 @@ void NoteSelectKBComponent::mouseDown(const MouseEvent &event)
                 {
                     for (int i = 0; i < keys.size(); i++) //loop through the keys - SHOULD BE OPTIMISED AT SOME POINT
                     {
-                        if (event.eventComponent == keys[i]) //when we find the key that has been pressed
+                        if (event.eventComponent == keys[i] || keys[i]->isParentOf(event.eventComponent)) //when we find the key that has been pressed
                         {
                             if (!keys[i]->getSelected())
                             {

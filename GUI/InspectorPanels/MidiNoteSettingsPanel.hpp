@@ -17,10 +17,11 @@
 #include "NoteSelectKBComponent.hpp"
 #include "ToggleSwitch.hpp"
 #include "ButtonGrid.hpp"
+#include "PadTriggerModePanel.hpp"
 
 class MidiNoteSettingsPanel : public PadInspectorPanelBase,
-                          public ToggleSwitch::Listener,
-                          public ButtonGrid::Listener
+                              public ToggleSwitch::Listener,
+                              public ButtonGrid::Listener
 {
 public:
 
@@ -43,6 +44,8 @@ private:
     ScopedPointer<NoteSelectKBComponent> noteSelectKeyboard;
     
     ScopedPointer<ButtonGrid> channelSwitcher;
+    
+    ScopedPointer<PadTriggerModePanel> triggerPanel;
 };
 
 

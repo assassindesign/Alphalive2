@@ -19,6 +19,7 @@ public:
     MidiPressureSettingsPanel();
     ~MidiPressureSettingsPanel();
     void refreshData() override;
+    void padDataChangeCallback(const int changedData) override;
     void paint(Graphics &g) override;
     void resized() override;
 

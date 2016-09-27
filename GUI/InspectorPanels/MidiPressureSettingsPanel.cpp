@@ -33,3 +33,8 @@ void MidiPressureSettingsPanel::resized()
 {
     
 }
+
+void MidiPressureSettingsPanel::padDataChangeCallback(const int changedData)
+{
+    
+}

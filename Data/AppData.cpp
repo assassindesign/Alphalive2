@@ -7,6 +7,7 @@
 //
 
 #include "AppData.hpp"
+
 AppData* AppData::pInstance = 0;
 
 
@@ -39,6 +40,11 @@ const int AppData::createNewSphereDataObject(const int withNumPads)
 {
     sphereDataArray.add(new SphereData(withNumPads, sphereDataArray.size()));
     return sphereDataArray.size()-1;
+}
+
+void AppData::refreshHIDDeviceConnected()
+{
+    callListeners(DataIDs::HIDSphereConnected, AppDataListenerType::AppDataType);
 }
 
 

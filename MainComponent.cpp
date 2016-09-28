@@ -48,6 +48,9 @@ MainContentComponent::MainContentComponent()
     audioMeter = new AudioMeterButton();
     addAndMakeVisible(audioMeter);
     
+    connectionStatus = new AlphaSphereConnectedButton();
+    addAndMakeVisible(connectionStatus);
+    
     tooltip = new TooltipWindow(0, 700);
     
     setSize (1200, 700);
@@ -72,9 +75,9 @@ void MainContentComponent::resized()
     static int segmentWidth;
     segmentWidth = (getWidth() - 400)*0.125;
     
-    sphereView->setBounds(segmentWidth*2,0,segmentWidth*6, getHeight());
+    sphereView->setBounds(segmentWidth*2,30,segmentWidth*6, getHeight()-40);
     
-    
+    connectionStatus->setBounds(segmentWidth*5 - 40, 0, 80, 15);
     //tempoView->setBounds(0, getHeight()/10.0, getWidth()/8.0, getHeight()/10.0);
     //scaleView->setBounds(0, 0, getWidth()/8.0, getHeight()/10.0);
     

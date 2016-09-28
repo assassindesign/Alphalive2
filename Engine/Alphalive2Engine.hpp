@@ -38,6 +38,7 @@ public:
     //Set which playable sphere in the array to direct HID messages to
     void setHIDLinkedSphere(const int newSphereID);
     const int getHIDLinkedSphere();
+    const bool getHIDSphereConnected();
     PlayableSphere* getHIDLinkedSpherePointer();
     PlayableSphere* getSpherePointer(const int sphereID);
     PlayablePad* getPlayablePadPtr(const int sphereID, const int padID);

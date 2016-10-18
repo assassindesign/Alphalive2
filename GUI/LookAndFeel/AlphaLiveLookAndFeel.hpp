@@ -80,6 +80,7 @@ public:
     {
         myLookAndFeel = new CustomLookAndFeel();
         setupCustomLookAndFeelColours(*myLookAndFeel);
+        myLookAndFeel->setUsingNativeAlertWindows(true);
     }
     ~LookAndFeelManager() {}
     
@@ -105,6 +106,7 @@ public:
         
         
         laf.setColour(TooltipWindow::ColourIds::backgroundColourId, Colours::hotpink);
+        laf.setColour(ToggleButton::ColourIds::textColourId, Colours::white);
     }
     
     CustomLookAndFeel* getMyLookAndFeel()

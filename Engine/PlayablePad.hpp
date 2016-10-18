@@ -37,6 +37,8 @@ public:
 private:    
     PadData* padData;
     InternalMidiRouter* router;
+    
+    
 };
 
 #endif /* PlayablePad_hpp */

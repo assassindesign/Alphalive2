@@ -121,18 +121,19 @@ void PlayablePad::hitPad(const int velocity, const bool killingPad)
                 
                 if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::SingleNote)
                 {
-                    if (padData->setVelocity(recievedVelocity))
-                    {
-                        
-                        MidiMessage outputMessage = MidiMessage::noteOn (padData->getMidiChannel(),
-                                                                         midiNoteArray[0].noteNumber,
-                                                                         uint8((midiNoteArray[0].velocityPercentage / 100.0)*recievedVelocity));
-                        
-                        router->sendMidiToDestination(padData->getMidiDestination(), &outputMessage);
-                        
-                    }
+                    
+//                    if (padData->setVelocity(recievedVelocity))
+//                    {
+//                        
+//                        MidiMessage outputMessage = MidiMessage::noteOn (padData->getMidiChannel(),
+//                                                                         midiNoteArray[0].noteNumber,
+//                                                                         uint8((midiNoteArray[0].velocityPercentage / 100.0)*recievedVelocity));
+//                        
+//                            router->sendMidiToDestination(padData->getMidiDestination(), &outputMessage);
+//                        
+//                    }
                 }
-                else if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::MultiNote)
+                if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::MultiNote)
                 {
                     if (padData->getMultiNoteMode() == PadData::MultiNoteModes::Chord)
                     {
@@ -194,7 +195,7 @@ void PlayablePad::pressPad(const float pressure, const bool killingPad)
             minPressure = pressure;
         }
         
-        DBG(minPressure);
+        //DBG(minPressure);
 
         
         if (padData->Velocity > 0 && pressure >= 511)

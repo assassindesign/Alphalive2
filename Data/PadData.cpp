@@ -820,6 +820,10 @@ Array<PadData::MidiNote> PadData::getMidiNotes()
     return midiNotes;
 }
 
+int PadData::getNumMidiNotes()
+{
+    return midiNotes.size();
+}
 
 int PadData::getPadFunction()
 {

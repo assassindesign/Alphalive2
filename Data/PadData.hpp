@@ -190,6 +190,7 @@ public:
     int getPadID();
     int getMidiNote();
     Array<PadData::MidiNote> getMidiNotes();
+    int getNumMidiNotes();
     int getPadFunction();
     int getPadAudioFunction();
     int getPadMidiFunction();
@@ -225,7 +226,7 @@ private:
     Array<MidiNote> midiNotes;
     int padFunction = 0;
     int padAudioFunction = 0;
-    int padMidiFunction = 0;
+    int padMidiFunction = PadMidiFunctions::MultiNote;
     int padSystemFunction = 0;
     int noteTriggerMode = 0;
     int multiNoteMode = 0;

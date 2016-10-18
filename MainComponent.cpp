@@ -79,7 +79,7 @@ void MainContentComponent::resized()
     
     connectionStatus->setBounds(segmentWidth*5 - 40, 0, 80, 15);
     //tempoView->setBounds(0, getHeight()/10.0, getWidth()/8.0, getHeight()/10.0);
-    //scaleView->setBounds(0, 0, getWidth()/8.0, getHeight()/10.0);
+    scaleView->setBounds(0, 0, getWidth()/8.0, getHeight()/10.0);
     
     audioMeter->setBounds(sphereView->getRight() - 100, 5, 100, 30);
     

@@ -17,6 +17,7 @@
 #include "ScaleView.hpp"
 #include "PadInspector.hpp"
 #include "GUIStyle.h"
+#include "AlphaSphereConnectedButton.hpp"
 //==============================================================================
 /*
     This component lives inside our window, and this is where you should put all
@@ -41,12 +42,15 @@ private:
     ScopedPointer<AppData> appData;
     ScopedPointer<Alphalive2Engine> alphalive2Engine;
     ScopedPointer<SphereView> sphereView;
+    ScopedPointer<AlphaSphereConnectedButton> connectionStatus;
     ScopedPointer<TempoView> tempoView;
     ScopedPointer<ScaleView> scaleView;
     ScopedPointer<PadInspector> padInspector;
     ScopedPointer<TextButton> killButton;
     ScopedPointer<AudioMeterButton> audioMeter;
-    //audio meter
+    
+    ScopedPointer<TooltipWindow> tooltip;
+    
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
 };

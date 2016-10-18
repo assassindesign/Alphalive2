@@ -101,6 +101,10 @@ const int Alphalive2Engine::getHIDLinkedSphere()
     return hIDLinkedSphere;
 }
 
+const bool Alphalive2Engine::getHIDSphereConnected()
+{
+    return sphereConnection->getDeviceStatus();
+}
 
 PlayableSphere* Alphalive2Engine::getHIDLinkedSpherePointer()
 {

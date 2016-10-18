@@ -121,25 +121,95 @@ void AlphaSphereConnection::hidInputCallback (int pad, int value, int velocity)
 void AlphaSphereConnection::processMidiInput (const MidiMessage midiMessage)
 {
     
-//    if (midiMessage.isSongPositionPointer() || midiMessage.isMidiStart() || midiMessage.isMidiContinue() || midiMessage.isMidiStop() || midiMessage.isMidiClock())
+    if (midiMessage.isSongPositionPointer() || midiMessage.isMidiStart() || midiMessage.isMidiContinue() || midiMessage.isMidiStop() || midiMessage.isMidiClock())
+    {
+        static MasterClock* masterClock = engine->getMasterClockPointer();
+        masterClock->handleExternalMidiClock(midiMessage);
+        //DBG("EXT Clock Tick");
+    }
+    else if (midiMessage.isQuarterFrame())
+    {
+        DBG(midiMessage.getQuarterFrameValue());
+    }
+    else if (midiMessage.isTempoMetaEvent())
+    {
+        //static int tempo;
+        midiMessage.getTempoSecondsPerQuarterNote();
+        DBG(midiMessage.getTempoSecondsPerQuarterNote());
+    }
+    else
+    {
+        DBG("ASC:" + String(*midiMessage.getRawData()));
+    }
+    
+}
+
+void AlphaSphereConnection::sendMidiMessage(MidiMessage midiMessage)
+{
+    //sharedMemoryMidi.enter();
+    
+//    if (getDeviceStatus() != 0)
 //    {
-//        static MasterClock* masterClock = engine->getMasterClockPointer();
-//        masterClock->handleExternalMidiClock(midiMessage);
-//        //DBG("EXT Clock Tick");
-//    }
-//    else if (midiMessage.isQuarterFrame())
-//    {
-//        DBG(midiMessage.getQuarterFrameValue());
-//    }
-//    else if (midiMessage.isTempoMetaEvent())
-//    {
-//        //static int tempo;
-//        midiMessage.getTempoSecondsPerQuarterNote();
-//        DBG(midiMessage.getTempoSecondsPerQuarterNote());
+//        //===============================================================
+//        //Sending MIDI over HID
+//        
+//        unsigned char dataToSend[4];
+//        
+//        const uint8 *rawMidiMessage = midiMessage.getRawData();
+//        
+//        dataToSend[0] = 0x00; //MIDI command ID
+//        dataToSend[1] = rawMidiMessage[0]; //midi status byte
+//        dataToSend[2] = rawMidiMessage[1]; //midi data byte 1
+//        dataToSend[3] = rawMidiMessage[2]; //midi data byte 2
+//        
+//        addMessageToHidOutReport (dataToSend);
 //    }
 //    else
 //    {
-//        DBG("ASC:" + String(*midiMessage.getRawData()));
+//        //===============================================================
+//        //Sending MIDI using MidiOutput object
+//        
+//#if JUCE_MAC || JUCE_LINUX
+//        if(midiOutputDevice)
+//        {
+//            midiOutputDevice->sendBlockOfMessages(MidiBuffer(midiMessage), Time::getMillisecondCounter(), 44100);
+//        }
+//        else
+//        {
+//            if (!hasDisplayedNoMidiDeviceWarning)
+//            {
+//                String instructionString = translate("AlphaLive cannot currently send any MIDI messages as the AlphaSphere has been disconnected. To start sending MIDI messages again please reconnect the AlphaSphere, or if you would like to use AlphaLive's virtual MIDI port, quit and relaunch AlphaLive without the AlphaSphere connected.");
+//                AlertWindow::showMessageBoxAsync (AlertWindow::WarningIcon,
+//                                                  translate("No MIDI device available!"),
+//                                                  translate(instructionString));
+//            }
+//            
+//            hasDisplayedNoMidiDeviceWarning = true;
+//        }
+//        
+//#elif JUCE_WINDOWS
+//        
+//        //If midi output exists (it won't if the user hasn't chosen an output device...)
+//        if (audioDeviceManager.getDefaultMidiOutput())
+//        {
+//            audioDeviceManager.getDefaultMidiOutput()->startBackgroundThread();
+//            audioDeviceManager.getDefaultMidiOutput()->sendBlockOfMessages(MidiBuffer(midiMessage), Time::getMillisecondCounter(), 44100);
+//        }
+//        else
+//        {
+//            if (!hasDisplayedNoMidiDeviceWarning)
+//            {
+//                String instructionString = translate("AlphaLive cannot currently send any MIDI messages as the AlphaSphere has been disconnected or no MIDI output port has be selected. To start sending MIDI messages please reconnect the AlphaSphere, or select an external MIDI output device from the Preferences view (if the option to select a MIDI output port is not available here, quit and relaunch AlphaLive without the AlphaSphere connected).");
+//                AlertWindow::showMessageBoxAsync (AlertWindow::WarningIcon,
+//                                                  translate("No MIDI device available!"),
+//                                                  translate(instructionString));
+//            }
+//            
+//            hasDisplayedNoMidiDeviceWarning = true;
+//        }
+//        
+//#endif
+//        
 //    }
     
 }
@@ -170,7 +240,7 @@ void AlphaSphereConnection::setFirmwareUpdateStatus (bool status)
 
 void AlphaSphereConnection::setDeviceStatus()
 {
-
+    AppData::Instance()->refreshHIDDeviceConnected();
 }
 
 void AlphaSphereConnection::setFirmwareDetails (String version, String serial)

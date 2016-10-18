@@ -33,6 +33,7 @@ public:
         AdvancedEnabled = 0,
         InspectingPad,
         PadPressSwitch,
+        HIDSphereConnected,
         LAST_ID
     };
     
@@ -51,6 +52,8 @@ public:
     //Adds a new SphereData object to the array and returns the array index of
     //the new object.
     const int createNewSphereDataObject(const int withNumPads);
+    
+    void refreshHIDDeviceConnected();
     
     //============= GETS ===========================================
     //Objects

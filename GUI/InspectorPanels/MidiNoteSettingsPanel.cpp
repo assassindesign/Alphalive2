@@ -21,6 +21,9 @@ MidiNoteSettingsPanel::MidiNoteSettingsPanel()
     addAndMakeVisible(triggerModeSwitch);
     
     
+    triggerPanel = new PadTriggerModePanel();
+    addAndMakeVisible(triggerPanel);
+    
     noteSelectKeyboard = new NoteSelectKBComponent();
     addAndMakeVisible(noteSelectKeyboard);
     noteSelectKeyboard->setDataObject(getDataObject());
@@ -43,10 +46,12 @@ void MidiNoteSettingsPanel::resized()
     //float thirdHeight = getHeight()/3.0;
     
     
-    noteModeSwitch->setBounds(0, 0, halfWidth, 50);
-    triggerModeSwitch->setBounds(noteModeSwitch->getBounds().translated(halfWidth, 0));
+    //noteModeSwitch->setBounds(0, 0, halfWidth, 50);
+    //triggerModeSwitch->setBounds(noteModeSwitch->getBounds().translated(halfWidth, 0));
+    
+    triggerPanel->setBounds(0, 0, getWidth(), 50);
 
-    channelSwitcher->setBounds(0, noteModeSwitch->getBottom(), getWidth(), 50);
+    channelSwitcher->setBounds(0, triggerPanel->getBottom(), getWidth(), 50);
     
     noteSelectKeyboard->setBounds(0, channelSwitcher->getBottom() + 5, getWidth(), 120);
     
@@ -60,6 +65,7 @@ void MidiNoteSettingsPanel::paint(Graphics& g)
 void MidiNoteSettingsPanel::refreshData()
 {
     noteSelectKeyboard->setDataObject(getDataObject());
+    triggerPanel->setDataObject(getDataObject());
     
     padDataChangeCallback(PadData::DataIDs::PadMidiFunction);
     padDataChangeCallback(PadData::DataIDs::NoteTriggerMode);

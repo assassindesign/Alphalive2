@@ -103,6 +103,8 @@ public:
         
         laf.setColour (PopupMenu::backgroundColourId, Colour(0xff4d4d4d));
         
+        
+        laf.setColour(TooltipWindow::ColourIds::backgroundColourId, Colours::hotpink);
     }
     
     CustomLookAndFeel* getMyLookAndFeel()

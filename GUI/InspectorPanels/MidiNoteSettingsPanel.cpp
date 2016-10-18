@@ -28,7 +28,7 @@ MidiNoteSettingsPanel::MidiNoteSettingsPanel()
     addAndMakeVisible(noteSelectKeyboard);
     noteSelectKeyboard->setDataObject(getDataObject());
 
-    channelSwitcher = new ButtonGrid(16, "MIDI Channel");
+    channelSwitcher = new ButtonGrid(16, "MIDI Channel", true, "DYN");
     channelSwitcher->addListener(this);
     addAndMakeVisible(channelSwitcher);
     

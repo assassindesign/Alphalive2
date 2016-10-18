@@ -57,7 +57,7 @@ bool ButtonGrid::ButtonGridButton::getToggleState()
 //==========================================================================
 
 
-ButtonGrid::ButtonGrid(int numButtons, String _labelText)
+ButtonGrid::ButtonGrid(int numButtons, String _labelText, bool showTopButton, String topButtonText)
 {
     labelText = _labelText.toUpperCase();
     titleFont = GUIFonts::Roboto;
@@ -71,6 +71,14 @@ ButtonGrid::ButtonGrid(int numButtons, String _labelText)
         gridButtons.getLast()->addMouseListener(this, true);
         addAndMakeVisible(gridButtons.getLast());
     }
+    
+    topRightButton = new ToggleButton(topButtonText);
+    topRightButton->setRadioGroupId(1);
+    if (showTopButton)
+    {
+        addAndMakeVisible(topRightButton);
+    }
+
 }
 
 ButtonGrid::~ButtonGrid()
@@ -97,6 +105,9 @@ void ButtonGrid::resized()
         //gridButtons[i]->setBounds(segmentWidth + (segmentWidth*1.125*i) + (segmentWidth/segments), vertPadding, segmentWidth, segmentWidth);
         gridButtons[i]->setBounds(gridButtons[i-1]->getBounds().translated(segmentWidth * (1.0+(1.3/gridButtons.size())), 0));
     }
+    
+    topRightButton->setBounds(x - 70, 0, 70, 20);
+    
 }
 
 void ButtonGrid::paint(Graphics &g)
@@ -119,6 +130,11 @@ void ButtonGrid::mouseDown(const MouseEvent &event)
             if (event.eventComponent == gridButtons[i])
             {
                 listeners.call(&ButtonGrid::Listener::buttonGridCallback, this, i);
+                break;
+            }
+            else if (event.eventComponent == topRightButton)
+            {
+                listeners.call(&ButtonGrid::Listener::buttonGridCallback, this, -1);
             }
         }
     }

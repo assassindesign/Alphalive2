@@ -47,7 +47,7 @@ public:
                                         const int buttonID) = 0;
     };
     
-    ButtonGrid(int numRows, String _labelText);
+    ButtonGrid(int numButtons, String _labelText, bool showTopButton = false, String topButtonText = "");
     ~ButtonGrid();
     
     void resized() override;
@@ -69,6 +69,8 @@ private:
     Font titleFont;
     float x, y;
     OwnedArray<ButtonGridButton> gridButtons;
+    ScopedPointer<ToggleButton> topRightButton;
+    
     bool isExclusive;
     ListenerList<ButtonGrid::Listener> listeners;
 };

@@ -28,6 +28,10 @@ public:
         
         g.drawEllipse(padding.getCentreX()+getWidth()*0.03, padding.getTopLeft().y - getHeight()*0.02, padding.getWidth()/2.0, padding.getHeight(), 3);
         
+        g.drawEllipse(padding.getCentreX()+getWidth()*0.03, padding.getTopLeft().y - getHeight()*0.02, padding.getWidth()/2.0, padding.getHeight(), 3);
+        
+        g.drawEllipse(padding.getCentreX()+getWidth()*0.03, padding.getTopLeft().y - getHeight()*0.02, padding.getWidth()/2.0, padding.getHeight(), 3);
+        
         g.setColour(mainColour.withAlpha(float(0.5)));
         
         if (toggleValue)

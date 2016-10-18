@@ -35,6 +35,8 @@ TempoView::~TempoView()
 
 void TempoView::paint(Graphics& g)
 {
+    //tempoSlider.setRange(120, 240, 1);
+    //tempoSlider.setSliderStyle(Slider::SliderStyle::RotaryVerticalDrag);
     
 }
 
@@ -63,8 +65,6 @@ void TempoView::buttonClicked (Button* button)
             engine->getMasterClockPointer()->resetAndStopClock();
 
         }
-        
-
     }
 }
 

@@ -130,6 +130,7 @@ public:
         MidiDestination,
         PadColour,
         DynamicMidiChannel,
+        PadEnabled,
         FINAL_DATAID
     };
     
@@ -184,6 +185,7 @@ public:
     bool removeMidiNote(const int noteToRemove);
     void clearAllMidiNotes();
     void setDynamicMidiChannel(const bool enabled);
+    void setPadEnabled (const bool enabled);
     
     //============= GETS ===========================================
     
@@ -216,8 +218,10 @@ public:
     int getPadColour();
     int getLFOCurveType();
     bool getDynamicMidiChannel();
+    bool getPadEnabled();
     
-    SphereData* getParentSphere();
+    //SphereData* getParentSphere();
+    int getParentSphereID();
 
     WeakReference<PadData>::Master masterReference;
 
@@ -247,9 +251,10 @@ private:
     int padColour = 0;
     int lFOCurveType = 0;
     bool dynamicMidiChannel = false;
+    bool padEnabled = true;
     
     
-    SphereData* parent;
+    SphereData* parent = nullptr;
     
     CriticalSection dataLock;
     

@@ -329,7 +329,7 @@ SphereData* PlayableSphere::getSphereDataObject()
     return sphereData;
 }
 
-PlayablePad* PlayableSphere::getPlayablePad(const int padToGet)
+PlayablePad* PlayableSphere::getPad(const int padToGet)
 {
     if (padToGet >= 0 && padToGet < playablePads.size())
     {

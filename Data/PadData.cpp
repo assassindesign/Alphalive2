@@ -7,6 +7,7 @@
 //
 
 #include "PadData.hpp"
+#include "SphereData.hpp"
 
 PadData::PadData(SphereData* _parent) : parent(_parent)
 {
@@ -145,10 +146,10 @@ bool PadData::fromValueTree(ValueTree* treeToImport)
 }
 
 
-SphereData* PadData::getParentSphere()
-{
-    return parent;
-}
+//SphereData* PadData::getParentSphere()
+//{
+//    return parent;
+//}
 
 //============= SETS ===========================================
 
@@ -796,6 +797,14 @@ void PadData::setDynamicMidiChannel(const bool enabled)
     callListeners(DataIDs::DynamicMidiChannel, AppDataFormat::PadDataType);
 }
 
+void PadData::setPadEnabled(const bool enabled)
+{
+    dataLock.enter();
+    padEnabled = enabled;
+    dataLock.exit();
+    
+    callListeners(DataIDs::DynamicMidiChannel, AppDataFormat::PadDataType);
+}
 
 //============= GETS ===========================================
 int PadData::getPadID()
@@ -943,5 +952,23 @@ bool PadData::getDynamicMidiChannel()
 {
     return dynamicMidiChannel;
 }
+
+bool PadData::getPadEnabled()
+{
+    return padEnabled;
+}
+
+int PadData::getParentSphereID()
+{
+    if (parent != nullptr)
+    {
+        return parent->getSphereID();
+    }
+    else
+    {
+        return -1;
+    }
+}
+
 
 

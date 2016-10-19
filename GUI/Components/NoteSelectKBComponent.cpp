@@ -371,7 +371,7 @@ void NoteSelectKBComponent::mouseDown(const MouseEvent &event)
                     {
                         if (event.eventComponent == keys[i] || keys[i]->isParentOf(event.eventComponent)) //when we find the key that has been pressed
                         {
-                            AppData::Instance()->getEnginePointer()->getPlayablePadPtr(padData->getParentSphere()->getSphereID(), padData->getPadID())->killPad();
+                            AppData::Instance()->getEnginePointer()->getPlayablePadPtr(padData->getParentSphereID(), padData->getPadID())->killPad();
                             
                             int diff = i - padData->getMidiNote();
                             Array<PadData::MidiNote> currentNotes = padData->getMidiNotes();

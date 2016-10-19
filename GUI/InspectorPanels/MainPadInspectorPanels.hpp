@@ -35,7 +35,7 @@ public:
     void buttonGridCallback(ButtonGrid* grid,
                             const int buttonID) override;
 private:
-    TextButton audioButton, midiButton, systemButton;
+    TextButton audioButton, midiButton, systemButton, powerButton;
     AudioIPanel audioPanel;
     MidiIPanel midiPanel;
     SystemIPanel sysPanel;

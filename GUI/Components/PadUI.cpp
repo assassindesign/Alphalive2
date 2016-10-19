@@ -153,7 +153,7 @@ bool Pad::isPointInsideCircle(const Point<int> point)
 
 void Pad::setAsCurrentlyInspectedPad()
 {
-    AppData::Instance()->setCurrentlyInspectingPad(padData->getParentSphere()->getSphereID(), padData->getPadID());
+    AppData::Instance()->setCurrentlyInspectingPad(padData->getParentSphereID(), padData->getPadID());
 }
 
 

@@ -25,6 +25,9 @@ public:
 
 private:
     //ToggleSwitch
+    
+    Rectangle<int> destinationsBox, rangeBox, settingsBox;
+    Font labelFont;
 };
 
 #endif /* MidiPressureSettingsPanel_hpp */

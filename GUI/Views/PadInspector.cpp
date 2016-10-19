@@ -49,13 +49,9 @@ void PadInspector::paint(Graphics& g)
    
     
     g.setColour(Colours::white);
+    g.setFont(GUIFonts::Roboto);
     g.drawText("Pad Inspector", titleBox, Justification::centred);
     
-    if (padDataToInspect != nullptr)
-    {
-        g.drawSingleLineText(String(padDataToInspect->getPadID()), 0, getHeight());
-
-    }
 }
 
 void PadInspector::resized()

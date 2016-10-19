@@ -112,12 +112,12 @@ void MidiNoteSettingsPanel::toggleSwitchChanged(const ToggleSwitch* toggle)
     {
         if (!noteModeSwitch->getToggleState()) // single note mode
         {
-            AppData::Instance()->getEnginePointer()->getSpherePointer(padData->getParentSphere()->getSphereID())->killPad(padData->getPadID());
+            AppData::Instance()->getEnginePointer()->getSpherePointer(padData->getParentSphereID())->killPad(padData->getPadID());
             padData->setPadMidiFunction(PadData::PadMidiFunctions::SingleNote);
         }
         else //multi note mode
         {
-            AppData::Instance()->getEnginePointer()->getSpherePointer(padData->getParentSphere()->getSphereID())->killPad(padData->getPadID());
+            AppData::Instance()->getEnginePointer()->getSpherePointer(padData->getParentSphereID())->killPad(padData->getPadID());
             padData->setPadMidiFunction(PadData::PadMidiFunctions::MultiNote);
         }
         
@@ -126,12 +126,12 @@ void MidiNoteSettingsPanel::toggleSwitchChanged(const ToggleSwitch* toggle)
     {
         if (!triggerModeSwitch->getToggleState()) //standard mode
         {
-            AppData::Instance()->getEnginePointer()->getSpherePointer(padData->getParentSphere()->getSphereID())->killPad(padData->getPadID());
+            AppData::Instance()->getEnginePointer()->getSpherePointer(padData->getParentSphereID())->killPad(padData->getPadID());
             padData->setNoteTriggerMode(PadData::NoteTriggerModes::StandardNoteMode);
         }
         else //toggle mode
         {
-            AppData::Instance()->getEnginePointer()->getSpherePointer(padData->getParentSphere()->getSphereID())->killPad(padData->getPadID());
+            AppData::Instance()->getEnginePointer()->getSpherePointer(padData->getParentSphereID())->killPad(padData->getPadID());
             padData->setNoteTriggerMode(PadData::NoteTriggerModes::ToggleNoteMode);
         }
         

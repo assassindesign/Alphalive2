@@ -22,11 +22,14 @@
 MainContentComponent::MainContentComponent()
 {
     
+    
     appData = AppData::Instance();
     appData->setEnginePointer(new Alphalive2Engine());
     alphalive2Engine = appData->getEnginePointer();
     
     alphalive2Engine->initialise();
+    
+    setLookAndFeel(appData->getAlphaliveLookAndFeel());
     
     padInspector = new PadInspector();
     addAndMakeVisible(padInspector);
@@ -34,11 +37,11 @@ MainContentComponent::MainContentComponent()
     sphereView = new SphereView(0, *this);
     addAndMakeVisible(sphereView);
 
-    tempoView = new TempoView();
-    addAndMakeVisible(tempoView);
+    //tempoView = new TempoView();
+    //addAndMakeVisible(tempoView);
     
-    scaleView = new ScaleView();
-    addAndMakeVisible(scaleView);
+    //scaleView = new ScaleView();
+    //addAndMakeVisible(scaleView);
     
     killButton = new TextButton();
     killButton->setButtonText("Kill");
@@ -51,7 +54,8 @@ MainContentComponent::MainContentComponent()
     connectionStatus = new AlphaSphereConnectedButton();
     addAndMakeVisible(connectionStatus);
     
-    tooltip = new TooltipWindow(0, 700);
+    tooltip = new TooltipWindow(this, 700);
+    
     
     setSize (1200, 700);
     
@@ -79,7 +83,7 @@ void MainContentComponent::resized()
     
     connectionStatus->setBounds(segmentWidth*5 - 40, 0, 80, 15);
     //tempoView->setBounds(0, getHeight()/10.0, getWidth()/8.0, getHeight()/10.0);
-    scaleView->setBounds(0, 0, getWidth()/8.0, getHeight()/10.0);
+    //scaleView->setBounds(0, 0, getWidth()/8.0, getHeight()/10.0);
     
     audioMeter->setBounds(sphereView->getRight() - 100, 5, 100, 30);
     

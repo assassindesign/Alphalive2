@@ -19,21 +19,21 @@ InspectorTopPanel::InspectorTopPanel()
 {
     audioButton.setButtonText("AUDIO");
     audioButton.addListener(this);
-    audioButton.setColour(TextButton::ColourIds::buttonOnColourId, Colour(GUIColours::MainBlue));
+    audioButton.setColour(TextButton::ColourIds::buttonOnColourId, Colour(GUIColours::AlphaGreen));
     audioButton.setConnectedEdges(3);
     addAndMakeVisible(&audioButton);
     
     midiButton.setButtonText("MIDI");
     midiButton.addListener(this);
     midiButton.setConnectedEdges(3);
-    midiButton.setColour(TextButton::ColourIds::buttonOnColourId, Colour(GUIColours::MainBlue));
+    midiButton.setColour(TextButton::ColourIds::buttonOnColourId, Colour(GUIColours::AlphaGreen));
     
     addAndMakeVisible(&midiButton);
     
     systemButton.setButtonText("SYSTEM");
     systemButton.addListener(this);
     systemButton.setConnectedEdges(3);
-    systemButton.setColour(TextButton::ColourIds::buttonOnColourId, Colour(GUIColours::MainBlue));
+    systemButton.setColour(TextButton::ColourIds::buttonOnColourId, Colour(GUIColours::AlphaGreen));
     addChildComponent(&systemButton);
     
     audioButton.setEnabled(false);

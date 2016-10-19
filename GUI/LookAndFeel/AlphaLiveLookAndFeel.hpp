@@ -11,6 +11,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "CustomVectorPaths.h"
+#include "GUIStyle.h"
 
 #define ALPHAGREEN 0xff1d837a
 
@@ -81,32 +82,43 @@ public:
         myLookAndFeel = new CustomLookAndFeel();
         setupCustomLookAndFeelColours(*myLookAndFeel);
         myLookAndFeel->setUsingNativeAlertWindows(true);
+        myLookAndFeel->setDefaultSansSerifTypefaceName("Roboto");
     }
     ~LookAndFeelManager() {}
     
     void setupCustomLookAndFeelColours (LookAndFeel& laf)
     {
+        // Slider
         laf.setColour (Slider::thumbColourId, Colour (ALPHAGREEN));
         laf.setColour (Slider::textBoxOutlineColourId, Colours::transparentWhite);
         laf.setColour (Slider::rotarySliderFillColourId, Colour (0xff4d4d4d));
         laf.setColour (Slider::rotarySliderOutlineColourId, Colours::white);
-        
+        // Text Button
         laf.setColour (TextButton::buttonColourId, Colours::white);
         laf.setColour (TextButton::textColourOffId, Colour (ALPHAGREEN));
         
         laf.setColour (TextButton::buttonOnColourId, laf.findColour (TextButton::textColourOffId));
         laf.setColour (TextButton::textColourOnId, laf.findColour (TextButton::buttonColourId));
         
+        // Combobox
         laf.setColour (ComboBox::buttonColourId, Colour (ALPHAGREEN));
         laf.setColour (ComboBox::backgroundColourId, Colour (0xff4d4d4d));
         laf.setColour (ComboBox::arrowColourId, Colour (ALPHAGREEN));
         laf.setColour (ComboBox::textColourId, Colours::white);
         
+        // Popup Menu
         laf.setColour (PopupMenu::backgroundColourId, Colour(0xff4d4d4d));
         
+        // Tooltip
+        laf.setColour(TooltipWindow::ColourIds::backgroundColourId, GUIColours::Background);
+        laf.setColour(TooltipWindow::ColourIds::outlineColourId, GUIColours::AlphaGreen);
+        laf.setColour(TooltipWindow::ColourIds::textColourId, Colours::white);
+
         
-        laf.setColour(TooltipWindow::ColourIds::backgroundColourId, Colours::hotpink);
+        // Toggle Button
         laf.setColour(ToggleButton::ColourIds::textColourId, Colours::white);
+        
+        
     }
     
     CustomLookAndFeel* getMyLookAndFeel()

@@ -54,7 +54,7 @@ void ToggleSwitch::paint(Graphics &g)
     g.setColour(Colours::darkgrey);
     g.fillRect(switchBox);
     
-    g.setColour(GUIColours::MainBlue);
+    g.setColour(GUIColours::AlphaGreen);
     g.drawRect(1, 1, getWidth()-2, getHeight()-2, 1);
     //g.setColour(Colours::slategrey);
     //g.fillRect(switchThrowBox.withPosition(switchThrowBox.getX()+2, switchThrowBox.getY()+2));

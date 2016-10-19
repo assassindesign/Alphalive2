@@ -37,7 +37,7 @@ KBComponentKey::KBComponentKey(const int noteNumber, const String labelText)
             isCNote = true;
         }
     }
-    velPercentageColour = GUIColours::MainBlue;
+    velPercentageColour = GUIColours::AlphaGreen;
     
     labelFont = GUIFonts::Roboto;
     labelFont.setHeight(12.0);

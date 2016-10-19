@@ -13,6 +13,7 @@
 AlphaSphereConnectedButton::AlphaSphereConnectedButton()
 {
     AppData::Instance()->addListener(this);
+    setTooltip(translate("AlphaSphere not connected."));
 }
 
 AlphaSphereConnectedButton::~AlphaSphereConnectedButton()
@@ -24,7 +25,7 @@ AlphaSphereConnectedButton::~AlphaSphereConnectedButton()
 void AlphaSphereConnectedButton::paint(Graphics& g)
 {
     g.fillAll(GUIColours::PanelBackground);
-    g.setColour(GUIColours::MainBlue);
+    g.setColour(GUIColours::AlphaGreen);
     g.drawRect(1, 1, getWidth()-2, getHeight()-2);
     
     if (alphaSphereConnected)
@@ -49,16 +50,13 @@ void AlphaSphereConnectedButton::mouseDown(const MouseEvent& event)
     if (alphaSphereConnected)
     {
         String instructionString = translate("AlphaLive has detected an AlphaSphere with no issues connected to your computer.");
-        AlertWindow::showMessageBoxAsync (AlertWindow::AlertIconType::NoIcon,
-                                          translate("AlphaSphere Connected."),
-                                          translate(instructionString));
+        AlertWindow::showNativeDialogBox(translate("AlphaSphere Connected."), translate(instructionString), false);
     }
     else
     {
         String instructionString = translate("AlphaLive cannot detect an AlphaSphere connected to your computer.");
-        AlertWindow::showMessageBoxAsync (AlertWindow::NoIcon,
-                                          translate("No AlphaShere Connected"),
-                                          translate(instructionString));
+        AlertWindow::showNativeDialogBox(translate("No AlphaSphere Connected."), translate(instructionString), false);
+
     }
 }
 
@@ -67,6 +65,14 @@ void AlphaSphereConnectedButton::appDataChangeCallback(const int changedData)
     if (changedData == AppData::DataIDs::HIDSphereConnected)
     {
         alphaSphereConnected = AppData::Instance()->getEnginePointer()->getHIDSphereConnected();
+        if (alphaSphereConnected)
+        {
+            setTooltip(translate("AlphaSphere connected."));
+        }
+        else
+        {
+            setTooltip(translate("AlphaSphere not connected."));
+        }
         repaint();
     }
 }

@@ -16,7 +16,7 @@ MidiIPanel::MidiIPanel()
     addAndMakeVisible(noteButton);
 
 //    noteButton.addListener(this);
-//    noteButton.setColour(TextButton::ColourIds::buttonOnColourId, Colour(GUIColours::MainBlue));
+//    noteButton.setColour(TextButton::ColourIds::buttonOnColourId, Colour(GUIColours::AlphaGreen));
     
     pressureButton = new TabButton("Pressure");
     pressureButton->addListener(this);

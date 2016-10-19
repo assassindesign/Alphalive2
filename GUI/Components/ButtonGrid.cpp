@@ -67,7 +67,7 @@ ButtonGrid::ButtonGrid(int numButtons, String _labelText, bool showTopButton, St
     
     for (int i = 0; i < numButtons; i++)
     {
-        gridButtons.add(new ButtonGridButton(i + 1, GUIColours::MainBlue));
+        gridButtons.add(new ButtonGridButton(i + 1, GUIColours::AlphaGreen));
         gridButtons.getLast()->addMouseListener(this, true);
         addAndMakeVisible(gridButtons.getLast());
     }
@@ -114,7 +114,7 @@ void ButtonGrid::paint(Graphics &g)
 {
     g.fillAll(GUIColours::PanelBackground);
     
-    g.setColour(GUIColours::MainBlue);
+    g.setColour(GUIColours::AlphaGreen);
     g.drawRect(1, 1, getWidth()-2, getHeight()-2);
     g.setColour(Colours::whitesmoke);
     g.setFont(titleFont);

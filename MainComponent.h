@@ -49,6 +49,8 @@ private:
     ScopedPointer<TextButton> killButton;
     ScopedPointer<AudioMeterButton> audioMeter;
     
+    
+    
     ScopedPointer<TooltipWindow> tooltip;
     
     //==============================================================================

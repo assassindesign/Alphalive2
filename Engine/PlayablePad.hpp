@@ -33,11 +33,11 @@ public:
     const int getMidiChannel();
     
     void killPad();
+    void setPadEnabled(const bool enabled);
     
 private:    
     PadData* padData;
     InternalMidiRouter* router;
-    
     
 };
 

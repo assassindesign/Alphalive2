@@ -88,7 +88,7 @@ public:
         ChannetAT,
         PBup,
         PBDown,
-        ControlMessage,
+        ModWheel,
         MidiCC,
         OSC,
         FINAL_PRESSUREDESTINATION
@@ -131,6 +131,7 @@ public:
         PadColour,
         DynamicMidiChannel,
         PadEnabled,
+        MidiCCType,
         FINAL_DATAID
     };
     
@@ -186,6 +187,7 @@ public:
     void clearAllMidiNotes();
     void setDynamicMidiChannel(const bool enabled);
     void setPadEnabled (const bool enabled);
+    bool setMidiCC(const int newCC);
     
     //============= GETS ===========================================
     
@@ -219,6 +221,7 @@ public:
     int getLFOCurveType();
     bool getDynamicMidiChannel();
     bool getPadEnabled();
+    int getMidiCC();
     
     //SphereData* getParentSphere();
     int getParentSphereID();
@@ -252,7 +255,7 @@ private:
     int lFOCurveType = 0;
     bool dynamicMidiChannel = false;
     bool padEnabled = true;
-    
+    int midiCC = 0;
     
     SphereData* parent = nullptr;
     

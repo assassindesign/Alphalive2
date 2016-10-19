@@ -15,7 +15,6 @@ AppData::AppData() : engine(nullptr)
 {
     sphereDataArray.clear();
     createNewSphereDataObject(48);
-    padPressSwitchesInspectedPad = false;
     //sphereDataArray.add(new SphereData(48));
 }
 

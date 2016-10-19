@@ -806,6 +806,25 @@ void PadData::setPadEnabled(const bool enabled)
     callListeners(DataIDs::DynamicMidiChannel, AppDataFormat::PadDataType);
 }
 
+bool PadData::setMidiCC(const int newCC)
+{
+    bool success = false;
+    if (newCC >= 0 && newCC <= 128)
+    {
+        dataLock.enter();
+        midiCC = newCC;
+        dataLock.exit();
+        callListeners(DataIDs::MidiCCType, AppDataFormat::PadDataType);
+        success = true;
+    }
+    else{
+        jassertfalse; //value out of range
+    }
+    return success;
+    
+}
+
+
 //============= GETS ===========================================
 int PadData::getPadID()
 {
@@ -970,5 +989,8 @@ int PadData::getParentSphereID()
     }
 }
 
-
+int PadData::getMidiCC()
+{
+    return midiCC;
+}
 

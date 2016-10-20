@@ -13,7 +13,8 @@
 #include "PadInspectorPanelBase.h"
 #include "ToggleSwitch.hpp"
 
-class MidiPressureSettingsPanel : public PadInspectorPanelBase
+class MidiPressureSettingsPanel : public PadInspectorPanelBase,
+                                  public Button::Listener
 {
 public:
     MidiPressureSettingsPanel();
@@ -22,9 +23,12 @@ public:
     void padDataChangeCallback(const int changedData) override;
     void paint(Graphics &g) override;
     void resized() override;
+    void buttonClicked(Button* button) override;
 
 private:
     //ToggleSwitch
+    
+    ToggleButton polyATButton, channelATButton, pbUpButton, pbDownButton, modWheelButton, midiCCButton;
     
     Rectangle<int> destinationsBox, rangeBox, settingsBox;
     Font labelFont;

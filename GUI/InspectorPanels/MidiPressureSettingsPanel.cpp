@@ -11,7 +11,35 @@
 
 MidiPressureSettingsPanel::MidiPressureSettingsPanel()
 {
+    polyATButton.setButtonText("PolyAT");
+    polyATButton.addListener(this);
+    polyATButton.setConnectedEdges(3);
+    addAndMakeVisible(polyATButton);
     
+    channelATButton.setButtonText("ChnlAT");
+    channelATButton.addListener(this);
+    channelATButton.setConnectedEdges(3);
+    addAndMakeVisible(channelATButton);
+    
+    pbUpButton.setButtonText("PB Up");
+    pbUpButton.addListener(this);
+    pbUpButton.setConnectedEdges(3);
+    addAndMakeVisible(pbUpButton);
+    
+    pbDownButton.setButtonText("PB Dn");
+    pbDownButton.addListener(this);
+    pbDownButton.setConnectedEdges(3);
+    addAndMakeVisible(pbDownButton);
+    
+    polyATButton.setButtonText("PolyAT");
+    polyATButton.addListener(this);
+    polyATButton.setConnectedEdges(3);
+    addAndMakeVisible(polyATButton);
+    
+    polyATButton.setButtonText("PolyAT");
+    polyATButton.addListener(this);
+    polyATButton.setConnectedEdges(3);
+    addAndMakeVisible(polyATButton);
 }
 
 MidiPressureSettingsPanel::~MidiPressureSettingsPanel()
@@ -23,6 +51,12 @@ void MidiPressureSettingsPanel::refreshData()
 {
     
 }
+
+void MidiPressureSettingsPanel::padDataChangeCallback(const int changedData)
+{
+    
+}
+
 
 void MidiPressureSettingsPanel::paint(Graphics &g)
 {
@@ -42,9 +76,6 @@ void MidiPressureSettingsPanel::paint(Graphics &g)
     g.drawSingleLineText("DESTINATION", destinationsBox.getX()+5, destinationsBox.getY()+15);
     g.drawSingleLineText("RANGE", rangeBox.getX()+5, rangeBox.getY()+15);
     g.drawSingleLineText("SETTINGS", settingsBox.getX()+5, settingsBox.getY()+15);
-
-
-    
     
 }
 
@@ -56,7 +87,8 @@ void MidiPressureSettingsPanel::resized()
     settingsBox.translate(0, 102);
 }
 
-void MidiPressureSettingsPanel::padDataChangeCallback(const int changedData)
+void MidiPressureSettingsPanel::buttonClicked(Button* button)
 {
     
 }
+

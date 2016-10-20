@@ -11,6 +11,7 @@
 
 #include "AppData.hpp"
 #include "PadInspectorPanelBase.h"
+#include "CustomIconButton.hpp"
 
 class PadTriggerModePanel : public PadInspectorPanelBase,
                             public Button::Listener
@@ -26,7 +27,7 @@ public:
     void padDataChangeCallback(const int changedData) override;
 private:
     
-    TextButton stdBtn, tglBtn, ltchBtn, trgrBtn;
+    ScopedPointer<CustomIconButton> stdBtn, tglBtn, ltchBtn, trgrBtn;
     WeakReference<PadData> padData;
     Font font;
 };

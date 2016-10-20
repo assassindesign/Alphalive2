@@ -10,7 +10,7 @@
 #define NeonButton_hpp
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "GUIColours.h"
+#include "GUIStyle.h"
 
 class NeonButton : public Button
 {
@@ -25,7 +25,7 @@ public:
     void setColour(const Colour newColour);
     private:
     Colour neonColour, hoverColour, downColour;
-    ScopedPointer<Font> font;
+    Font font;
 };
 
 #endif /* NeonButton_hpp */

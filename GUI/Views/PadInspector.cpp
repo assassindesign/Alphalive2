@@ -1,0 +1,91 @@
+//
+//  PadInspector.cpp
+//  AlphaLive Midi
+//
+//  Created by Luke Saxton on 12/07/2016.
+//
+//
+
+#include "PadInspector.hpp"
+
+PadInspector::PadInspector()
+{
+    padDataToInspect = nullptr;
+    backgroundColour = GUIColours::Background.withBrightness(GUIColours::Background.getBrightness()+0.05);
+//    for (int i = 0; i < 10; i++)
+//    {
+//        listEntrys.add(new ListEntry());
+//        addAndMakeVisible(listEntrys.getLast());
+//    }
+    
+    midiNoteSlider.setRange(0, 127, 1);
+    addAndMakeVisible(midiNoteSlider);
+    
+    addAndMakeVisible(mainInspectorPanel);
+    mainViewport.setViewedComponent(&mainInspectorPanel);
+    
+    mainViewport.setScrollBarsShown(false, false, true);
+    addAndMakeVisible(mainViewport);
+    
+    AppData::Instance()->addListener(this);
+    
+}
+
+PadInspector::~PadInspector()
+{
+    
+}
+
+void PadInspector::paint(Graphics& g)
+{
+    //g.fillAll(Colours::hotpink);
+    
+    g.setColour(backgroundColour.withBrightness(0.25));
+    g.fillRect(titleBox);
+    
+    g.setColour(backgroundColour.withBrightness(0.1));
+    g.fillRect(leftBumperBox);
+
+   
+    
+    g.setColour(Colours::white);
+    g.setFont(GUIFonts::Roboto);
+    g.drawText("Pad Inspector", titleBox, Justification::centred);
+    
+}
+
+void PadInspector::resized()
+{
+    titleBox = leftBumperBox = getLocalBounds();
+    leftBumperBox.removeFromRight(getWidth()-10);
+    titleBox.removeFromBottom(getHeight()-20);
+    
+    
+    mainViewportBox.setPosition(leftBumperBox.getRight(), titleBox.getBottom());
+    mainViewportBox.setSize(getWidth()-leftBumperBox.getWidth(), getHeight()-titleBox.getHeight());
+    
+    
+    mainViewport.setBounds(mainViewportBox);
+    mainInspectorPanel.setSize(mainViewportBox.getWidth(), mainViewportBox.getHeight());
+
+}
+
+
+void PadInspector::appDataChangeCallback(const int changedData)
+{
+    if (changedData == AppData::DataIDs::InspectingPad)
+    {
+        padDataToInspect = AppData::Instance()->getCurrentlyInspectingPadDataPtr();
+        
+        if (padDataToInspect == nullptr)
+        {
+            mainInspectorPanel.setTopPanelEnabled(false);
+        }
+        else
+        {
+            mainInspectorPanel.setTopPanelEnabled(true);
+            mainInspectorPanel.setDataObject(padDataToInspect);
+        }
+        
+    }
+}

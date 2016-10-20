@@ -7,6 +7,7 @@
 //
 
 #include "AppData.hpp"
+
 AppData* AppData::pInstance = 0;
 
 
@@ -14,9 +15,6 @@ AppData::AppData() : engine(nullptr)
 {
     sphereDataArray.clear();
     createNewSphereDataObject(48);
-    
-    globalScaleData = new ScaleData();
-
     //sphereDataArray.add(new SphereData(48));
 }
 
@@ -36,30 +34,20 @@ AppData* AppData::Instance()
     return pInstance;
 }
 
-bool AppData::setEnginePointer(Alphalive2Engine* newEngine = nullptr)
-{
-    if (newEngine != nullptr)
-    {
-        engine = newEngine;
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-Alphalive2Engine* AppData::getEnginePointer()
-{
-    return engine;
-}
 
 const int AppData::createNewSphereDataObject(const int withNumPads)
 {
-    sphereDataArray.add(new SphereData(withNumPads, 48));
+    sphereDataArray.add(new SphereData(withNumPads, sphereDataArray.size()));
     return sphereDataArray.size()-1;
 }
 
+void AppData::refreshHIDDeviceConnected()
+{
+    callListeners(DataIDs::HIDSphereConnected, AppDataListenerType::AppDataType);
+}
+
+
+//============= GETS ===========================================
 SphereData* AppData::getSphereData (const int forSphere)
 {
     if (forSphere < sphereDataArray.size() && !sphereDataArray.isEmpty())
@@ -73,13 +61,106 @@ SphereData* AppData::getSphereData (const int forSphere)
     }
 }
 
-ScaleData* AppData::getGlobalScaleData()
+Alphalive2Engine* AppData::getEnginePointer()
 {
-    return globalScaleData;
+    return engine;
+}
+
+CustomLookAndFeel* AppData::getAlphaliveLookAndFeel()
+{
+    return lookAndFeelManager.getMyLookAndFeel();
 }
 
 
-void AppData::actionListenerCallback (const String& message)
+bool AppData::getAdvancedFeaturesEnabled()
 {
+    return advancedFeaturesEnabled;
+}
+
+bool AppData::getPadPressSwitchesInspectedPad()
+{
+    return padPressSwitchesInspectedPad;
+}
+
+
+AppData::PadReference AppData::getcurrentlyInspectingPad()
+{
+    return currentlyInspectingPad;
+}
+
+PadData* AppData::getCurrentlyInspectingPadDataPtr()
+{
+    if (currentlyInspectingPad.sphereID == -1 || currentlyInspectingPad.padID == -1)
+    {
+        return nullptr;
+    }
+    else
+    {
+        return sphereDataArray.getUnchecked(currentlyInspectingPad.sphereID)->getPadData(currentlyInspectingPad.padID);
+    }
+}
+
+
+
+//============= SETS ===========================================
+bool AppData::setEnginePointer(Alphalive2Engine* newEngine = nullptr)
+{
+    if (newEngine != nullptr)
+    {
+        engine = newEngine;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void AppData::setAdvancedFeaturesEnabled(const bool enabled)
+{
+    dataLock.enter();
+    advancedFeaturesEnabled = enabled;
+    dataLock.exit();
+    callListeners(DataIDs::AdvancedEnabled, AppDataFormat::AppDataType);
+}
+
+bool AppData::setCurrentlyInspectingPad(const int sphereID, const int padID)
+{
+    bool success = false;
+    if (sphereID > -1 && sphereID < sphereDataArray.size()) //if valid sphere ID
+    {
+        if (padID > -1 && padID < sphereDataArray.getUnchecked(sphereID)->getNumPadDataObjects()) //if valid pad ID
+        {
+            dataLock.enter();
+            currentlyInspectingPad.sphereID = sphereID;
+            currentlyInspectingPad.padID = padID;
+            dataLock.exit();
+            
+            callListeners(DataIDs::InspectingPad, AppDataFormat::AppDataType);
+            success = true;
+        }
+    }
     
+    if (!success)
+    {
+        dataLock.enter();
+        currentlyInspectingPad.sphereID = -1;
+        currentlyInspectingPad.padID = -1;
+        dataLock.exit();
+        
+        callListeners(DataIDs::InspectingPad, AppDataFormat::AppDataType);
+    }
+    
+    
+    return success;
 }
+
+void AppData::setPadPressSwitchesInspectedPad(const bool enabled)
+{
+    dataLock.enter();
+    padPressSwitchesInspectedPad = enabled;
+    dataLock.exit();
+    callListeners(DataIDs::PadPressSwitch, AppDataFormat::AppDataType);
+}
+
+

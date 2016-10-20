@@ -18,71 +18,96 @@ public:
     {
         Instrument =  0,
         Controller,
-        Empty
+        Empty,
+        FINAL_SPHERETYPE
     };
     
-    SphereData(int numPads = 48, const int _sphereID = -1) : sphereID(_sphereID)
+    enum MappedScale
     {
-        for (int i = 0 ; i < numPads; i++)
-        {
-            padData.add(new PadData(this));
-            padData.getLast()->setPadID(i);
-        }
-    }
-    ~SphereData(){}
+        Major = 0,
+        Natural,
+        Harmonic,
+        Hungarian,
+        Chromatic,
+        FINAL_SCALE
+    };
     
-    ValueTree* toValueTree()
+    enum RowConfig
     {
-        ValueTree* outputTree = new ValueTree("SphereData");
-        outputTree->setProperty("SphereID", sphereID, 0);
-        outputTree->setProperty("SphereType", int(sphereType), 0);
-        
-        for (int i = 0 ; i < padData.size(); i++)
-        {
-            outputTree->addChild(*padData[i]->toValueTree(), -1, 0);
-        }
-        
-        return outputTree;
-    }
+        OneRow = 0,
+        TwoRow,
+        CenterRow,
+        FINAL_ROWCONF
+    };
     
-    const int getSphereID()
+    enum DataIDS
     {
-        return sphereID;
-    }
+        SphereID = 0,
+        SphereTypeData,
+        RootNote,
+        Octave,
+        Scale,
+        RowConfigData,
+        MidiThru,
+        MidiEnabled,
+        FINAL_ID
+    };
     
-    PadData* getPadData(const int forPad)
-    {
-        if (forPad > -1 && forPad < padData.size())
-        {
-            return padData.getUnchecked(forPad);
-        }
-        else
-        {
-            return nullptr;
-        }
-    }
+    SphereData(int numPads = 48, const int _sphereID = -1);
+    ~SphereData();
     
-    const int getNumPadDataObjects()
-    {
-        return padData.size();
-    }
+    ValueTree* toValueTree();
+    
+    //============= GETS ===========================================
+    //Objects
+    PadData* getPadData(const int forPad);
+    const int getNumPadDataObjects();
+    TempoData* getTempoData();
+    ScaleData* getScaleData();
+    
+    //Variables
+    const int getSphereID();
+    const enum SphereType getSphereType();
+    const int getRootNote();
+    const int getOctave();
+    const enum MappedScale getScale();
+    const enum RowConfig getRowConfig();
+    const bool getMidiThruEnabled();
+    const bool getSphereMidiEnabled();
+    //============= SETS ===========================================
+    //Variables
+    bool setSphereID(const int newID);
+    bool setSphereType(const int newType);
+    bool setRootNote(const int newRootNote);
+    bool setOctave(const int newOctave);
+    bool setScale(const int newScale);
+    bool setRowConfig(const int newConfig);
+    void setMidiThruEnabled(const bool isEnabled);
+    void setSphereMidiEnabled(const bool isEnabled);
     
 private:
+    
+    //Objects
     OwnedArray<PadData> padData;
+    TempoData tempoData;
+    ScaleData scaleData;
+    
+    CriticalSection dataLock;
+    
+    //Variables
     int sphereID = -1;
     SphereType sphereType = Empty;
+    int rootNote = 36;
+    int octave = 0;
+    MappedScale scale;
+    RowConfig rowConfig;
+    bool midiThruEnabled = false;
+    bool sphereMidiEnabled = true;
+    
+
 };
 
-class TempoData : public AppDataFormat
-{
-public:
-    TempoData(){}
-    ~TempoData(){};
-    
-    float tempo = 120;
-    int beatsPerBar = 4;
-    
-};
+
 
 
 

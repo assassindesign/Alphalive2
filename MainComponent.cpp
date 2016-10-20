@@ -22,11 +22,14 @@
 MainContentComponent::MainContentComponent()
 {
     
+    
     appData = AppData::Instance();
     appData->setEnginePointer(new Alphalive2Engine());
     alphalive2Engine = appData->getEnginePointer();
     
     alphalive2Engine->initialise();
+    
+    setLookAndFeel(appData->getAlphaliveLookAndFeel());
     
     padInspector = new PadInspector();
     addAndMakeVisible(padInspector);
@@ -34,11 +37,24 @@ MainContentComponent::MainContentComponent()
     sphereView = new SphereView(0, *this);
     addAndMakeVisible(sphereView);
 
-    tempoView = new TempoView();
-    addAndMakeVisible(tempoView);
+    //tempoView = new TempoView();
+    //addAndMakeVisible(tempoView);
     
-    scaleView = new ScaleView();
-    addAndMakeVisible(scaleView);
+    //scaleView = new ScaleView();
+    //addAndMakeVisible(scaleView);
+    
+    killButton = new TextButton();
+    killButton->setButtonText("Kill");
+    killButton->addListener(this);
+    addAndMakeVisible(killButton);
+    
+    audioMeter = new AudioMeterButton();
+    addAndMakeVisible(audioMeter);
+    
+    connectionStatus = new AlphaSphereConnectedButton();
+    addAndMakeVisible(connectionStatus);
+    
+    tooltip = new TooltipWindow(this, 700);
     
     
     setSize (1200, 700);
@@ -54,16 +70,26 @@ MainContentComponent::~MainContentComponent()
 //==============================================================================
 void MainContentComponent::paint (Graphics& g)
 {
-    g.fillAll (Colour(GUIColours::Background));
+    g.fillAll (GUIColours::Background);
 
 }
 
 void MainContentComponent::resized()
 {
-    sphereView->setBounds(getWidth()/4.0,0,(getWidth()/4.0)*2, getHeight());
-    tempoView->setBounds(0, 0, getWidth()/8.0, getHeight()/10.0);
-    scaleView->setBounds(tempoView->getBounds().translated(getWidth()/8.0, 0));
-    padInspector->setBounds(sphereView->getRight() + 15, 0, (getWidth()/4.0) - 15, getHeight());
+    static int segmentWidth;
+    segmentWidth = (getWidth() - 400)*0.125;
+    
+    sphereView->setBounds(segmentWidth*2,30,segmentWidth*6, getHeight()-40);
+    
+    connectionStatus->setBounds(segmentWidth*5 - 40, 0, 80, 15);
+    //tempoView->setBounds(0, getHeight()/10.0, getWidth()/8.0, getHeight()/10.0);
+    //scaleView->setBounds(0, 0, getWidth()/8.0, getHeight()/10.0);
+    
+    audioMeter->setBounds(sphereView->getRight() - 100, 5, 100, 30);
+    
+    padInspector->setBounds(getWidth()-385, 0, 385, getHeight());
+    
+    killButton->setBounds(sphereView->getRight()-40, sphereView->getBottom()-20, 40, 20);
 }
 
 PadInspector* MainContentComponent::getPadInspector()
@@ -71,6 +97,13 @@ PadInspector* MainContentComponent::getPadInspector()
     return padInspector;
 }
 
+void MainContentComponent::buttonClicked (Button* button)
+{
+    if (button == killButton)
+    {
+        alphalive2Engine->killAllPads();
+    }
+}
 
     //==============================================================================
 

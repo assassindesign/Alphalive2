@@ -86,6 +86,9 @@ public:
     void setMetronomeEnabled(bool enabled);
 
     bool getMetronomeEnabled();
+    
+    void handleExternalMidiClock(const MidiMessage midiMessage);
+    
 private:
     void setMetronomeEnabledInternal(bool enabled);
 
@@ -97,9 +100,14 @@ private:
     Atomic<float> tempo, beatDivisions, currentSampleRate;
     Atomic<int> currentPositionInLoop, beatsInLoop, barsInLoop, beatsInBar, currentSample, samplesPerLoop, samplesPerTick;
 
-    ScopedPointer<SimpleAudioBufferSource> audioBufferSource;
-    ScopedPointer<AudioTransportSource> transportSource;
+    ScopedPointer<SimpleAudioBufferSource> tickBufferSource;
+    ScopedPointer<SimpleAudioBufferSource> tockBufferSource;
 
+    ScopedPointer<AudioTransportSource> tickTransportSource;
+    ScopedPointer<AudioTransportSource> tockTransportSource;
+
+    ScopedPointer<MixerAudioSource> mixer;
+    
     ScopedPointer<TimeSliceThread> metronomeTimeslice;
 
     bool isRunning;

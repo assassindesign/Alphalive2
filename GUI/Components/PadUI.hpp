@@ -12,20 +12,24 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AppData.hpp"
 #include "AlphaLive2Engine.hpp"
-#include "GUIColours.h"
+#include "GUIStyle.h"
 #include "PadInspector.hpp"
 
 class MainContentComponent;
 class Pad : public GUIRepaintListener
 {
 public:
-    Pad(PadData* _padData, MainContentComponent &ref);
+    Pad(PadData* _padData);
     ~Pad();
     void paint(Graphics& g) override;
     void resized()override;
     void setColour(const Colour newColour);
     void setSelected(const bool padIsSelected);
     bool getSelected();
+    void setAsCurrentlyInspectedPad();
+    
+    
+    bool isPointInsideCircle(const Point<int> point);
     //Mouse Listener============================
     void mouseEnter (const MouseEvent &event) override;
     void mouseExit (const MouseEvent &event) override;
@@ -38,8 +42,13 @@ private:
     PadData* padData;
     Colour padColour, lightColour, darkColour, actualColour;
     bool emulatingPadPress;
-    PadInspector* padInspector;
     bool isSelected;
+    Point<int> centerPoint;
+    int halfWidth;
+    GlowEffect ringGlowEffect;
+    
+    Array<Rectangle<float>> selectDots;
+    Array<Line<float>> selectDotsALines;
 };
 
 #endif /* PadUI_hpp */

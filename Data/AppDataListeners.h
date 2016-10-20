@@ -16,30 +16,85 @@
     Listeners when data is updated.
  */
 
-class GUIRepaintListener : public Component
+class GUIRepaintListener : public Component,
+                           public Timer
 {
 public:
-    GUIRepaintListener(){};
-    virtual ~GUIRepaintListener(){};
-    void refreshUI() {repaint();};
-    virtual void paint(Graphics&) = 0;
-    virtual void resized() = 0;
+    const int refreshRate = 40;
+    GUIRepaintListener()
+    {
+        timeOfLastPaint.set(Time::currentTimeMillis());
+        //startTimer(100);
+    }
+    virtual ~GUIRepaintListener(){}
+    void refreshUI()
+    {
+        if ((Time::currentTimeMillis() - timeOfLastPaint.get()) > refreshRate)
+        {
+            repaint();
+            timeOfLastPaint.set(Time::currentTimeMillis());
+            repaintQueued.set(false);
+            if (!isTimerRunning()) {
+                startTimer(100);
+            }
+        }
+        else
+        {
+            repaintQueued.set(true);
+        }
+    }
+    virtual void paint(Graphics&) override = 0;
+    virtual void resized() override = 0;
+private:
+    void timerCallback() override
+    {
+        if ((Time::currentTimeMillis() - timeOfLastPaint.get()) > refreshRate && repaintQueued.get())
+        {
+            repaint();
+            repaintQueued.set(false);
+        }
+        else if (Time::currentTimeMillis() - timeOfLastPaint.get() > 2000)
+        {
+            stopTimer();
+        }
+    }
+    Atomic<int64> timeOfLastPaint;
+    Atomic<int> repaintQueued;
 };
 
 class AppDataListener
 {
 public:
-    AppDataListener(){};
     virtual ~AppDataListener(){};
-    virtual void appDataChangeCallback(const int changedData) = 0;
+    virtual void appDataChangeCallback(const int changedData) {};
+    virtual void padDataChangeCallback(const int changedData) {};
+    virtual void sphereDataChangeCallback(const int changedData) {};
+    virtual void scaleDataChangeCallback(const int changedData) {};
+    virtual void tempoDataChangeCallback(const int changedData) {};
+
 };
 
-class AppDataFormat : public AsyncUpdater
+class AppDataFormat : public ActionBroadcaster,
+                      public ActionListener
 {
 public:
+    enum AppDataListenerType{
+        AppDataType = 0,
+        PadDataType,
+        SphereDataType,
+        ScaleDataType,
+        TempoDataType,
+    };
+    
+    struct DataChange{
+        int dataID;
+        int listenerType;
+    };
+        
     AppDataFormat()
     {
         changedDataIDs.clear();
+        addActionListener(this);
     }
     ~AppDataFormat()
     {
@@ -67,36 +122,68 @@ public:
         repaintListeners.remove(listenerToRemove);
     }
     
-    void callListeners(const int changedData)
+    void callListeners(const int changedData, const int listenerType)
     {
-        dataLock.enter();
-        changedDataIDs.add(changedData);
-        dataLock.exit();
-        triggerAsyncUpdate();
+        DataChange* change = new DataChange();
+        change->dataID = changedData;
+        change->listenerType = listenerType;
+        changedDataIDs.add(*change);
+        //triggerAsyncUpdate();
+        
+        sendActionMessage("DATA");
     }
     
     void callRepaintListeners()
     {
-        triggerAsyncUpdate();
+        sendActionMessage("REPAINT");
+        //triggerAsyncUpdate();
     }
 private:
-    void handleAsyncUpdate() override
+    void actionListenerCallback (const String& message) override
     {
-        repaintListeners.call(&GUIRepaintListener::refreshUI);
-        dataLock.enter();
-        for (int i = 0; i < changedDataIDs.size(); i++)
+        if (message == "REPAINT")
         {
-            appDataListeners.call(&AppDataListener::appDataChangeCallback, changedDataIDs.getUnchecked(i));
+            repaintListeners.call(&GUIRepaintListener::refreshUI);
         }
-        changedDataIDs.clearQuick();
-        dataLock.exit();
+        else
+        {
+            while(changedDataIDs.size() != 0)
+            {
+                workingDataChange = changedDataIDs.getUnchecked(0);
+                
+                switch(workingDataChange.listenerType)
+                {
+                    case AppDataType:
+                        appDataListeners.call(&AppDataListener::appDataChangeCallback, workingDataChange.dataID);
+                        break;
+                    case PadDataType:
+                        appDataListeners.call(&AppDataListener::padDataChangeCallback, workingDataChange.dataID);
+                        break;
+                    case SphereDataType:
+                        appDataListeners.call(&AppDataListener::sphereDataChangeCallback, workingDataChange.dataID);
+                        break;
+                    case ScaleDataType:
+                        appDataListeners.call(&AppDataListener::scaleDataChangeCallback, workingDataChange.dataID);
+                        break;
+                    case TempoDataType:
+                        appDataListeners.call(&AppDataListener::tempoDataChangeCallback, workingDataChange.dataID);
+                        break;
+                    default:
+                        break;
+                }
+             
+                changedDataIDs.remove(0);
+            }
+        }
+        
         
     }
-private:
+    
     ListenerList<AppDataListener> appDataListeners;
     ListenerList<GUIRepaintListener> repaintListeners;
-    Array<int> changedDataIDs;
-    CriticalSection dataLock;
+    Array<DataChange, CriticalSection> changedDataIDs;
+    DataChange workingDataChange;
+
 };
 
 #endif /* AppDataListeners_h */

@@ -47,6 +47,7 @@ public:
     // Virtual functions from HIDComms
     void hidInputCallback (int pad, int value, int velocity) override;
     void processMidiInput (const MidiMessage midiMessage) override;
+    void sendMidiMessage(MidiMessage midiMessage);
     void setDeviceType (int type) override; //1 - AlphaSphere, 2 - AlphaSphere elite
     void removeMidiInAndOut() override;
     void updateFirmware() override;
@@ -71,7 +72,6 @@ private:
     int velocityMaxRange;
     
     Alphalive2Engine* engine;
-    
     
 };
 #endif /* AlphaSphereConnection_hpp */

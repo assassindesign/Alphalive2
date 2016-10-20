@@ -19,29 +19,26 @@
 class PlayablePad
 {
     
-    enum PadFunction
-    {
-        Midi = 0,
-        Chord,
-        Sequencer,
-        
-    };
 public:
     PlayablePad(PadData* dataForPad);
     ~PlayablePad();
     
-    void hitPad(const int velocity);
-    void pressPad(const int pressure);
+    void hitPad(const int velocity, const bool killingPad = false);
+    void pressPad(const float pressure, const bool killingPad = false);
     
-    void setMidiNote(const int newMidiNote);
+    bool setMidiNote(const int newMidiNote);
     const int getMidiNote();
     
     void setMidiChannel(const int newMidiChannel);
     const int getMidiChannel();
     
+    void killPad();
+    void setPadEnabled(const bool enabled);
+    
 private:    
     PadData* padData;
     InternalMidiRouter* router;
+    
 };
 
 #endif /* PlayablePad_hpp */

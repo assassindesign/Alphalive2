@@ -24,24 +24,25 @@ ScaleView::ScaleView()
     octPlusButton.addListener(this);
     addAndMakeVisible(octPlusButton);
     
-    octMinusButton.setButtonText("O -");
+    octMinusButton.setButtonText("O-");
     octMinusButton.addListener(this);
     addAndMakeVisible(octMinusButton);
     
     keyLabel.setText("C", dontSendNotification);
     keyLabel.setColour(Label::ColourIds::textColourId, Colours::white);
     keyLabel.setJustificationType(Justification::centred);
-    keyLabel.setFont(Font(50));
+    keyLabel.setFont(GUIFonts::Roboto.withHeight(50));
     addAndMakeVisible(keyLabel);
     
     labelStrings = new StringArray(keyStrings);
     
-    scaleData = AppData::Instance()->getGlobalScaleData();
+    Alphalive2Engine* engine = AppData::Instance()->getEnginePointer();
+    
+    scaleData = engine->getHIDLinkedSpherePointer()->getSphereDataObject()->getScaleData();
     
     currentKey = scaleData->getKey();
     currentOctave = scaleData->getOctave();
     scaleData->addListener(this);
-    
     
     //AppData::Instance()->getGlobalScaleData()->addListener(this);
     //addToDesktop(0);
@@ -55,7 +56,7 @@ ScaleView::~ScaleView()
 
 void ScaleView::paint(Graphics& g)
 {
-    g.fillAll(Colour(GUIColours::Background));
+    g.fillAll(GUIColours::Background);
     
 }
 
@@ -71,12 +72,13 @@ void ScaleView::resized()
     keyLabel.setBounds(0, 0, getWidth()/2.0, getHeight());
 }
 
-void ScaleView::appDataChangeCallback(const int changedData)
+void ScaleView::scaleDataChangeCallback(const int changedData)
 {
+
     currentKey = scaleData->getKey();
     currentOctave = scaleData->getOctave();
     currentScale =  scaleData->getScale();
-    
+
     keyLabel.setText(labelStrings->getReference(currentKey) + String(currentOctave), dontSendNotification);
 }
 
@@ -109,7 +111,7 @@ void ScaleView::buttonClicked (Button* button)
         
         //keyLabel.setText(labelStrings->getReference(currentKey) + String(currentOctave), dontSendNotification);
         sphere->transposeMidiByNote(-1);
-        AppData::Instance()->getGlobalScaleData()->setKey(currentKey);
+        //AppData::Instance()->getGlobalScaleData()->setKey(currentKey);
 
     }
     else if (button == &octPlusButton)

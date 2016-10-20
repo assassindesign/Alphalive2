@@ -34,19 +34,13 @@ PlayableSphere::PlayableSphere(const int numPads, const int _sphereID) : sphereI
     if (AppData::Instance()->getEnginePointer()->getMidiRouterPointer() != 0)
     {
         router = AppData::Instance()->getEnginePointer()->getMidiRouterPointer();
-        mapSphere(36, Natural, OneRow);
-        midiThruEnabled = false;
-        sphereMidiEnabled = true;
-
+        mapSphere(36, SphereData::MappedScale::Natural, SphereData::RowConfig::TwoRow);
     }
     else
     {
         jassert(false);
         //Can't route things to a router that doesn't exist..
     }
-    
-   
-    
     
 }
 
@@ -56,119 +50,128 @@ PlayableSphere::~PlayableSphere()
     
 }
 
-void PlayableSphere::mapSphere(const int rootNote, const MappedScale scale, const RowConfig config = OneRow)
+void PlayableSphere::mapSphere(const int rootNote, const SphereData::MappedScale scale, const SphereData::RowConfig config)
 {
-    
-    currentRootNote = rootNote;
-    AppData::Instance()->getGlobalScaleData()->setScale(scale);
-    currentScale = MappedScale(AppData::Instance()->getGlobalScaleData()->getScale());
-    currentRowConfig = config;
-    AppData::Instance()->getGlobalScaleData()->setKey(rootNote % 12);
-    AppData::Instance()->getGlobalScaleData()->setScale((rootNote/12) - 2);
-    
-    int octaveCount, positionInScale;
-    octaveCount = positionInScale = 0;
-    
-    int index = 0;
-    Array<int> sphereMask;
-    sphereMask.clear();
-    
-    switch (config)
+    if (rootNote != sphereData->getRootNote())
     {
-        case OneRow:
-            while (SphereMask::OneRowMask[index] != -1)
-            {
-                sphereMask.add(SphereMask::OneRowMask[index]);
-                index++;
-            }
-            break;
-        case TwoRow:
-            while (SphereMask::TwoRowMask[index] != -1)
-            {
-                sphereMask.add(SphereMask::TwoRowMask[index]);
-                index++;
-            }
-            break;
-        case CenterRow:
-            while (SphereMask::TwoRowMask[index] != -1)
-            {
-                sphereMask.add(SphereMask::CenterRowsMask[index]);
-                index++;
-            }
-            break;
-        default:
-            jassert(false); //how did you manage that?
-            break;
+        sphereData->setRootNote(rootNote);
     }
     
-    
-    
-    if (router != nullptr)
+    if (scale != sphereData->getScale())
     {
-        router->panic(destination);
+        sphereData->setScale(scale);
+
     }
-    //DBG("Map: " + String(rootNote) + " : " + String(scale));
-
-    for (int i = 0; i < playablePads.size(); i++)
+    if (config != sphereData->getRowConfig())
     {
-        int maskValue = sphereMask.getUnchecked(i);
-        
-        
-        octaveCount = maskValue / 7;
-        positionInScale =  maskValue % 7;
+        sphereData->setRowConfig(config);
 
+    }
+    
+    if(sphereData->getScaleData()->setKey(sphereData->getRootNote()%12)
+       && sphereData->getScaleData()->setOctave((rootNote/12)-2))
+    {
+        killAllPads();
         
-        switch (scale) {
-            case Major:
-                playablePads.getUnchecked(i)->setMidiNote(rootNote + (octaveCount * 12) + IntervalSpacings::Major[positionInScale]);
+        int octaveCount, positionInScale;
+        octaveCount = positionInScale = 0;
+        
+        int index = 0;
+        Array<int> sphereMask;
+        sphereMask.clear();
+        
+        switch (config)
+        {
+            case SphereData::OneRow:
+                while (SphereMask::OneRowMask[index] != -1)
+                {
+                    sphereMask.add(SphereMask::OneRowMask[index]);
+                    index++;
+                }
                 break;
-            case Natural:
-                playablePads.getUnchecked(i)->setMidiNote(rootNote + (octaveCount * 12) + IntervalSpacings::NaturalMinor[positionInScale]);
+            case SphereData::TwoRow:
+                while (SphereMask::TwoRowMask[index] != -1)
+                {
+                    sphereMask.add(SphereMask::TwoRowMask[index]);
+                    index++;
+                }
                 break;
-            case Harmonic:
-                playablePads.getUnchecked(i)->setMidiNote(rootNote + (octaveCount * 12) + IntervalSpacings::HarmonicMinor[positionInScale]);
+            case SphereData::CenterRow:
+                while (SphereMask::TwoRowMask[index] != -1)
+                {
+                    sphereMask.add(SphereMask::CenterRowsMask[index]);
+                    index++;
+                }
                 break;
-            case Hungarian:
-                playablePads.getUnchecked(i)->setMidiNote(rootNote + (octaveCount * 12) + IntervalSpacings::Hungarian[positionInScale]);
-                break;
-            case Chromatic:
-                playablePads.getUnchecked(i)->setMidiNote(i+rootNote);
             default:
+                jassert(false); //how did you manage that?
                 break;
         }
         
+        
+        
+        if (router != nullptr)
+        {
+            router->panic(destination);
+        }
+        //DBG("Map: " + String(rootNote) + " : " + String(scale));
+        
+        int maskValue, octaveRoot, newMidiNote;
+        for (int i = 0; i < playablePads.size(); i++)
+        {
+            maskValue = sphereMask.getUnchecked(i);
+            
+            
+            octaveCount = maskValue / 7;
+            positionInScale =  maskValue % 7;
+            
+            octaveRoot = rootNote + (octaveCount * 12);
+            
+            switch (scale) {
+                case SphereData::Major:
+                    newMidiNote = octaveRoot + IntervalSpacings::Major[positionInScale];
+                    break;
+                case SphereData::Natural:
+                    newMidiNote = octaveRoot + IntervalSpacings::NaturalMinor[positionInScale];
+                    break;
+                case SphereData::Harmonic:
+                    newMidiNote = octaveRoot + IntervalSpacings::HarmonicMinor[positionInScale];
+                    break;
+                case SphereData::Hungarian:
+                    newMidiNote = octaveRoot + IntervalSpacings::Hungarian[positionInScale];
+                    break;
+                case SphereData::Chromatic:
+                    newMidiNote = i+rootNote;
+                default:
+                    newMidiNote = 0;
+                    break;
+            }
+            if (!playablePads.getUnchecked(i)->setMidiNote(newMidiNote)) //overrun protection. If Midi note is out of range, set to max.
+            {
+                playablePads.getUnchecked(i)->setMidiNote(127);
+            }
+        }
     }
 }
 
 
-void PlayableSphere::mapSphere(const int key, const int octave, const MappedScale scale, const RowConfig config = OneRow)
-{
-    int rootNote = 36 + (key + 12*octave); //C3 = 60; C-2 = 0;
-    
-    mapSphere(rootNote, scale, config);
-}
-
 void PlayableSphere::setRootNote(const int newRootNote)
 {
-    mapSphere(newRootNote, currentScale, currentRowConfig);
+    mapSphere(newRootNote, sphereData->getScale(), sphereData->getRowConfig());
 }
 
-const int PlayableSphere::getRootNote()
-{
-    return currentRootNote;
-}
 
-void PlayableSphere::setRowConfig(const RowConfig newConfig)
+void PlayableSphere::setRowConfig(const SphereData::RowConfig newConfig)
 {
-    mapSphere(currentRootNote, currentScale, newConfig);
+    mapSphere(sphereData->getRootNote(), sphereData->getScale(), newConfig);
 }
 
 
 void PlayableSphere::hitPad(const int padID, const int vel)
 {
-    if (sphereMidiEnabled)
+    if (sphereData->getSphereMidiEnabled())
     {
-        if (padID < playablePads.size())
+        if (padID < playablePads.size() && padID > -1)
         {
             playablePads[padID]->hitPad(vel);
         }
@@ -177,9 +180,9 @@ void PlayableSphere::hitPad(const int padID, const int vel)
 }
 void PlayableSphere::pressPad(const int padID, const float pressure)
 {
-    if (sphereMidiEnabled)
+    if (sphereData->getSphereMidiEnabled())
     {
-        if (padID < playablePads.size())
+        if (padID < playablePads.size() && padID > -1)
         {
             playablePads[padID]->pressPad(pressure);
         }
@@ -187,9 +190,25 @@ void PlayableSphere::pressPad(const int padID, const float pressure)
     
 }
 
+void PlayableSphere::killPad(const int padID)
+{
+    if (padID < playablePads.size() && padID > -1)
+    {
+        playablePads[padID]->killPad();
+    }
+}
+
+void PlayableSphere::killAllPads()
+{
+    for (int i = 0; i < playablePads.size(); i++)
+    {
+        playablePads[i]->killPad();
+    }
+}
+
 void PlayableSphere::midiThruToDestination (const int note, const int vel)
 {
-    if (midiThruEnabled)
+    if (sphereData->getMidiThruEnabled())
     {
         router->handleInternalMidiNoteWithDestination(destination, note, vel);
 
@@ -202,19 +221,14 @@ void PlayableSphere::setDestination (const InternalMidiRouter::MidiDestination n
 }
 
 
-const PlayableSphere::MappedScale PlayableSphere::getCurrentScale()
+void PlayableSphere::setScale (SphereData::MappedScale newScale)
 {
-    return currentScale;
-}
-
-void PlayableSphere::setScale (MappedScale newScale)
-{
-    mapSphere(currentRootNote, newScale, currentRowConfig);
+    mapSphere(sphereData->getRootNote(), newScale, sphereData->getRowConfig());
 }
 
 void PlayableSphere::setMidiThruEnabled (bool shouldBeEnabled)
 {
-    midiThruEnabled = shouldBeEnabled;
+    sphereData->setMidiThruEnabled(shouldBeEnabled);
     if (!shouldBeEnabled)
     {
         router->panic(destination);
@@ -223,7 +237,7 @@ void PlayableSphere::setMidiThruEnabled (bool shouldBeEnabled)
 
 void PlayableSphere::setSphereMidiEnabled(bool shouldBeEnabled)
 {
-    sphereMidiEnabled = shouldBeEnabled;
+    sphereData->setSphereMidiEnabled(shouldBeEnabled);
     if (!shouldBeEnabled)
     {
         router->panic(destination);
@@ -242,13 +256,109 @@ const int PlayableSphere::getSphereID()
 
 void PlayableSphere::transposeMidiByOctave(const int octavesToTranspose)
 {
-    mapSphere(currentRootNote + (octavesToTranspose*12), currentScale, currentRowConfig);
+    //mapSphere(sphereData->getRootNote() + (octavesToTranspose*12), sphereData->getScale(), sphereData->getRowConfig());
+    if(sphereData->getScaleData()->setOctave(sphereData->getScaleData()->getOctave()+octavesToTranspose))
+    {
+        PadData* workingPData;
+        int hadVelocity;
+        for (int i = 0 ; i < playablePads.size(); i++)
+        {
+            workingPData = sphereData->getPadData(i);
+            hadVelocity = workingPData->getVelocity();
+            if (hadVelocity > 0)
+            {
+                killPad(i);
+                
+            }
+            
+            
+            Array<PadData::MidiNote> midiNotes = workingPData->getMidiNotes();
+            for (int j = 0; j < midiNotes.size(); j++)
+            {
+                workingPData->setMidiNote(j, midiNotes[j].noteNumber+12 * octavesToTranspose, midiNotes[j].velocityPercentage);
+                
+            }
+            
+            
+            if (workingPData->getPadFunction() == PadData::PadFunctions::Midi && hadVelocity > 0);
+            {
+                hitPad(i, hadVelocity);
+            }
+        }
+    }
 }
 
 void PlayableSphere::transposeMidiByNote(const int semiTonesToTranspose)
 {
-    mapSphere(currentRootNote + semiTonesToTranspose, currentScale, currentRowConfig);
+    //mapSphere(sphereData->getRootNote() + semiTonesToTranspose, sphereData->getScale(), sphereData->getRowConfig());
+    
+    if(sphereData->getScaleData()->setKey(sphereData->getScaleData()->getKey()+semiTonesToTranspose))
+    {
+        PadData* workingPData;
+        int hadVelocity;
+        for (int i = 0 ; i < playablePads.size(); i++)
+        {
+            workingPData = sphereData->getPadData(i);
+            hadVelocity = workingPData->getVelocity();
+           
+            if (hadVelocity > 0)
+            {
+                killPad(i);
+                
+            }
+            
+            Array<PadData::MidiNote> midiNotes = workingPData->getMidiNotes();
+            for (int j = 0; j < midiNotes.size(); j++)
+            {
+                workingPData->setMidiNote(j, midiNotes[j].noteNumber+semiTonesToTranspose, midiNotes[j].velocityPercentage);
 
+            }
+            
+            if (workingPData->getPadFunction() == PadData::PadFunctions::Midi && hadVelocity > 0)
+            {
+                hitPad(i, hadVelocity);
+            }
+        }
+    }
+    
+  
+}
+
+SphereData* PlayableSphere::getSphereDataObject()
+{
+    return sphereData;
+}
+
+PlayablePad* PlayableSphere::getPad(const int padToGet)
+{
+    if (padToGet >= 0 && padToGet < playablePads.size())
+    {
+        return playablePads[padToGet];
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
+
+//=====================================================================
+//  Audio callbacks
+//=====================================================================
+
+void PlayableSphere::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
+{
+    
+}
+
+void PlayableSphere::releaseResources()
+{
+    
+}
+
+void PlayableSphere::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
+{
+    
 }
 
 

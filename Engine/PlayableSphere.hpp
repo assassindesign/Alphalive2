@@ -19,26 +19,10 @@
  
     @see PlayablePad
 */
-class PlayableSphere
+class PlayableSphere : public AudioSource
 {
 public:
     
-    
-    enum MappedScale
-    {
-        Major = 1,
-        Natural,
-        Harmonic,
-        Hungarian,
-        Chromatic
-    };
-    
-    enum RowConfig
-    {
-        OneRow = 1,
-        TwoRow,
-        CenterRow
-    };
     
     PlayableSphere(const int numPads = 48, const int _sphereID = 0);
     
@@ -48,6 +32,10 @@ public:
     
     void pressPad(const int padID, const float pressure);
     
+    void killPad(const int padID);
+    
+    void killAllPads();
+        
     void midiThruToDestination (const int note, const int vel);
     
     void setDestination (const InternalMidiRouter::MidiDestination);
@@ -57,21 +45,18 @@ public:
     
     void setRootNote(const int newRootNote);
     
-    const int getRootNote();
     
-    const MappedScale getCurrentScale();
+    const SphereData::MappedScale getCurrentScale();
     
-    void setScale (MappedScale newScale);
+    void setScale (SphereData::MappedScale newScale);
     
-    void mapSphere(const int rootNote, const MappedScale scale, const RowConfig config);
-    
-    void mapSphere(const int key, const int octave, const MappedScale scale, const RowConfig config);
+    void mapSphere(const int rootNote, const SphereData::MappedScale scale, const SphereData::RowConfig config = SphereData::OneRow);
 
     void setMidiThruEnabled (bool shouldBeEnabled);
     
     void setSphereMidiEnabled(bool shouldBeEnabled);
     
-    void setRowConfig(const RowConfig newConfig);
+    void setRowConfig(const SphereData::RowConfig newConfig);
     
     void setSphereID(const int newID);
     
@@ -81,19 +66,31 @@ public:
     
     void transposeMidiByNote(const int semiTonesToTranspose);
     
+    SphereData* getSphereDataObject();
+    
+    PlayablePad* getPad(const int padToGet);
+
+    //=====================================================================
+    //  Audio callbacks
+    //=====================================================================
+    
+    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
+    
+    void releaseResources() override;
+    
+    void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)override;
+    
 private:
     OwnedArray<PlayablePad> playablePads;
     InternalMidiRouter::MidiDestination destination;
     InternalMidiRouter* router;
     
-    int currentRootNote, currentKey, currentOctave;
-    MappedScale currentScale;
-    RowConfig currentRowConfig;
-    bool midiThruEnabled, sphereMidiEnabled;
+    int sphereID;
     
+    MixerAudioSource mixer;
+        
     SphereData* sphereData;
     
-    int sphereID;
 };
 
 #endif /* PlayableSphere_hpp */

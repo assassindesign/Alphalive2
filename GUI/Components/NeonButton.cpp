@@ -10,8 +10,8 @@
 
 NeonButton::NeonButton() : Button("NeonButton")
 {
-    setColour(Colour(GUIColours::Background));
-    font = new Font("Eurostile", 14, Font::plain);
+    setColour(GUIColours::Background);
+    font = GUIFonts::Roboto;
 }
 
 NeonButton::~NeonButton()
@@ -43,11 +43,11 @@ void NeonButton::paintButton (Graphics& g, bool isMouseOverButton, bool isButton
     //g.drawRoundedRectangle(getBounds().toFloat(), 5, 3);
     
     g.setColour(Colours::white);
-    g.setFont(*font);
+    g.setFont(font);
     
     g.setFont(getHeight()*0.62);
 
-    if (font->getStringWidthFloat(getButtonText()) >= getWidth())
+    if (font.getStringWidthFloat(getButtonText()) >= getWidth())
     {
         g.setFont(getWidth()*0.62);
     }

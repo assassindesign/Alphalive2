@@ -11,8 +11,8 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AppData.hpp"
-#include "GUIColours.h"
-
+#include "GUIStyle.h"
+#include "MainPadInspectorPanels.hpp"
 
 class PadInspector : public AppDataListener,
                      public Component
@@ -35,19 +35,21 @@ public:
     void paint(Graphics& g) override;
     void resized() override;
     void appDataChangeCallback(const int changedData) override;
-    void setPadDataToInspect(PadData* newPadData);
-    void refreshData();
     
 private:
     PadData* padDataToInspect;
     
     Colour backgroundColour;
     
-    Rectangle<int> leftBumperBox, titleBox;
+    Rectangle<int> leftBumperBox, titleBox, mainViewportBox;
     
     //OwnedArray<ListEntry> listEntrys;
     
     Slider midiNoteSlider;
+    
+    Viewport mainViewport;
+    
+    MainInspectorPanel mainInspectorPanel;
     
     
     /*Midi note(s)

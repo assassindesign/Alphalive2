@@ -15,6 +15,8 @@
 
 SphereView::SphereView(const int _sphereID, MainContentComponent &ref) : sphereID(_sphereID), mainComponent(&ref)
 {
+    //setBufferedToImage(true);
+    
     sphereData = AppData::Instance()->getSphereData(sphereID);
     
     for (int i = 0 ; i < NUM_SEGEMENTS; i++)
@@ -24,7 +26,7 @@ SphereView::SphereView(const int _sphereID, MainContentComponent &ref) : sphereI
     
     for (int i = 0 ; i < sphereData->getNumPadDataObjects(); i++)
     {
-        pads.add(new Pad(sphereData->getPadData(i), ref));
+        pads.add(new Pad(sphereData->getPadData(i)));
         pads.getLast()->setSize(50,50);
         
         addAndMakeVisible(pads.getLast());
@@ -35,12 +37,15 @@ SphereView::SphereView(const int _sphereID, MainContentComponent &ref) : sphereI
     }
     
     numRows = 6;
+    mouseCurrentlyOverCircle = -1;
+    allPadsSelected = false;
     
     for (int i = 0 ; i < numRows; i++)
     {
         rowRadii.add(0.0);
+        backgroundCircleBoxes.add(*new Rectangle<float>());
+        padRowSelected.add(false);
     }
-    
     
     //set size and radius ratios for each row
     padSizeModifiers.add(0.68);
@@ -80,8 +85,8 @@ SphereView::SphereView(const int _sphereID, MainContentComponent &ref) : sphereI
     colourSelector.setOpaque(true);
     colourSelector.setSize(300, 300);
     colourSelector.setTopLeftPosition(200, 200);
-    addAndMakeVisible(colourSelector);
-    colourSelector.addToDesktop(ComponentPeer::StyleFlags::windowHasCloseButton || ComponentPeer::StyleFlags::windowHasTitleBar);
+    //addAndMakeVisible(colourSelector);
+    //colourSelector.addToDesktop(ComponentPeer::StyleFlags::windowHasCloseButton || ComponentPeer::StyleFlags::windowHasTitleBar);
 
 
 }
@@ -115,32 +120,35 @@ void SphereView::sliderValueChanged (Slider* slider)
 void SphereView::paint(Graphics& g)
 {
   
-    
-    g.setColour(*new Colour(0x33FFFFFF));
-
+    //draw outer circle
+    g.setColour(Colours::white.withAlpha(uint8(0x33)));
     
     g.drawEllipse(segmentLines[12]->getEnd().x+3, segmentLines[0]->getEnd().y+3, (segmentLines[0]->getLength()*2.0)-6, (segmentLines[0]->getLength()*2.0)-6, 3);
     
-    Colour backgroundColour = Colour(GUIColours::Background);
+    //draw sphere background
+    static Colour backgroundColour;
+    
+    backgroundColour = GUIColours::Background;
+    
     backgroundColour = backgroundColour.withBrightness(backgroundColour.getBrightness()+0.03);
     g.setColour(backgroundColour);
-    g.fillEllipse(segmentLines[12]->getEnd().x+3, segmentLines[0]->getEnd().y+3, (segmentLines[0]->getLength()*2.0)-6, (segmentLines[0]->getLength()*2.0)-6);
+    g.fillEllipse(backgroundCircleBoxes[0]);
     
-    for (int i = numRows; i >= 0; i--)
+    //draw inner stacking circles
+    for (int i = numRows; i >= 1; i--)
     {
         backgroundColour = backgroundColour.withBrightness(backgroundColour.getBrightness()+0.02);
         g.setColour(backgroundColour);
-        g.fillEllipse(segmentLines[12]->getPointAlongLine(rowRadii[i]).getX(), segmentLines[0]->getPointAlongLine(rowRadii[i]).getY(), rowRadii[i]*2, rowRadii[i]*2);
+        g.fillEllipse(backgroundCircleBoxes[i]);
     }
     
+    //draw positioning lines
     g.setColour(*new Colour(0x15FFFFFF));
     
     for (int i = 0 ; i < segmentLines.size(); i++)
     {
         g.drawLine(*segmentLines[i],1);
-        
     }
-    
 }
 
 void SphereView::resized()
@@ -181,9 +189,15 @@ void SphereView::resized()
     for (int i = 0; i < numRows; i++)
     {
         rowRadii.set(i, circleRadius*rowRadiusModifiers[i]);
+        backgroundCircleBoxes.getReference(i).setBounds(segmentLines[12]->getPointAlongLine(rowRadii[i]).getX(), segmentLines[0]->getPointAlongLine(rowRadii[i]).getY(), rowRadii[i]*2, rowRadii[i]*2);
     }
-
     
+    //set background circle bounds
+    backgroundCircleBoxes.getReference(0).setBounds(segmentLines[12]->getEnd().x+3, segmentLines[0]->getEnd().y+3, (segmentLines[0]->getLength()*2.0)-6, (segmentLines[0]->getLength()*2.0)-6);
+    for (int i = 1; i < numRows; i++)
+    {
+        backgroundCircleBoxes.getReference(i).setBounds(segmentLines[12]->getPointAlongLine(rowRadii[i]).getX(), segmentLines[0]->getPointAlongLine(rowRadii[i]).getY(), rowRadii[i]*2, rowRadii[i]*2);
+    }
     
     //position first row of pads
     positionPad(pads[47], 3, 0);
@@ -245,8 +259,6 @@ void SphereView::resized()
     positionPad(pads[1], 0, 5);
     positionPad(pads[0], 2, 5);
     
-    
-    
     //temp slider positioning
     //ratioSliders[0]->setBounds(getWidth() - getWidth()/3.0, 0, getWidth()/3.0, 30);
     for (int i = 1; i < ratioSliders.size(); i++)
@@ -292,7 +304,7 @@ void SphereView::clearSelectedPads()
     {
         selectedPads[i]->setSelected(false);
     }
-    selectedPads.clear();
+    selectedPads.clearQuick();
 }
 
 
@@ -311,8 +323,10 @@ void SphereView::mouseDown (const MouseEvent &event)
 {
     if (event.eventComponent != this)
     {
+        bool clickOnPad = false;
+        
         Pad* sourcePad = nullptr;
-        for (int i = 0; i < pads.size(); i++)
+        for (int i = 0; i < pads.size(); i++) //search pad array to fetch padUI object for clicked pad
         {
             if (event.eventComponent == pads[i])
             {
@@ -321,47 +335,141 @@ void SphereView::mouseDown (const MouseEvent &event)
             }
         }
         
-        if (sourcePad != nullptr)
+        
+        if (sourcePad != nullptr) //if the source component was a pad that exists
         {
-            if (event.mods.isShiftDown())
+            if (sourcePad->isPointInsideCircle(event.getMouseDownPosition())) //if mouse is actually in the circle of the padUI
             {
-                sourcePad->setSelected(!sourcePad->getSelected());
-                if (sourcePad->getSelected())
+                //DBG("Click in Pad");
+                clickOnPad = true;
+                
+                if (event.mods.isShiftDown()) // clicking single pad with shift down - add/remove from selected
                 {
-                    selectedPads.add(sourcePad);
-                }
-                else
-                {
-                    for (int i = 0; i < selectedPads.size(); i++)
+                    sourcePad->setSelected(!sourcePad->getSelected()); // toggle boolean value
+                    
+                    if (sourcePad->getSelected()) //either add pad to selected group
                     {
-                        if (selectedPads[i] == sourcePad)
+                        selectedPads.add(sourcePad);
+                    }
+                    else // or remove it
+                    {
+                        for (int i = 0; i < selectedPads.size(); i++)
                         {
-                            selectedPads.remove(i);
+                            if (selectedPads[i] == sourcePad)
+                            {
+                                selectedPads.remove(i);
+                            }
                         }
                     }
+                    
+                    if (selectedPads.size() != 1) //if there is more than one pad selcted at the moment, don't display inspector. This will probably change later to switch padinspector to group edit mode
+                    {
+                        AppData::Instance()->setCurrentlyInspectingPad(-1, -1);
+                    }
+                }
+                else if (!event.mods.isAnyModifierKeyDown()) // clicking in single pad with no modifiers
+                {
+                    for (int i = 0; i < padRowSelected.size(); i++) // reset any padRowSelected flags
+                    {
+                        padRowSelected.set(i, false);
+                    }
+                    
+                    sourcePad->setSelected(!sourcePad->getSelected());
+                    
+                    clearSelectedPads();
+                    
+                    if (sourcePad->getSelected()) // clicked pad is now selected
+                    {
+                        selectedPads.add(sourcePad);
+                        sourcePad->setAsCurrentlyInspectedPad();//AppData::Instance()->setCurrentlyInspectingPad(sourcePad->, <#const int padID#>)
+                    }
+                    else
+                    {
+                        AppData::Instance()->setCurrentlyInspectingPad(-1, -1);
+                    }
+                    
                 }
             }
-            else if (!event.mods.isAnyModifierKeyDown())
+            
+        }
+    }
+    else // if click was not on a pad
+    {
+        if (!event.mods.isAltDown())
+        {
+            int circleID = isMouseInCircle(event);
+            if (circleID > -1) //if a ring has been selected
             {
-                sourcePad->setSelected(!sourcePad->getSelected());
+                //DBG("Clicked Within Circle: " + String(circleID));
+                selectedPads.clearQuick();
                 
-                clearSelectedPads();
-                
-                if (sourcePad->getSelected())
+                for (int i = 0; i < padRowSelected.size(); i++)
                 {
-                    selectedPads.add(sourcePad);
+                    if (i == circleID-1)
+                    {
+                        padRowSelected.set(i, !padRowSelected[i]);
+                    }
+                    else
+                    {
+                        padRowSelected.set(i, false);
+                    }
                 }
-
+                
+                if (circleID == 0) //center - select all pads
+                {
+                    allPadsSelected = !allPadsSelected;
+                    
+                    for (int i = 0; i < pads.size(); i++)
+                    {
+                        pads[i]->setSelected(allPadsSelected);
+                        if (pads[i]->getSelected())
+                        {
+                            selectedPads.add(pads[i]);
+                        }
+                    }
+                    
+                    AppData::Instance()->setCurrentlyInspectingPad(-1, -1);
+                    
+                }
+                else // select a ring of pads
+                {
+                    allPadsSelected = false;
+                    int rangeMin = ((numRows - circleID)*8);
+                    int rangeMax = rangeMin + 8;
+                    for (int i = 0; i < pads.size(); i++)
+                    {
+                        
+                        if (i >= rangeMin && i < rangeMax)
+                        {
+                            pads[i]->setSelected(padRowSelected[circleID-1]);
+                        }
+                        else
+                        {
+                            if (!event.mods.isShiftDown())
+                            {
+                                pads[i]->setSelected(false);
+                            }
+                        }
+                        
+                        
+                        if (pads[i]->getSelected())
+                        {
+                            selectedPads.addIfNotAlreadyThere(pads[i]);
+                        }
+                        
+                    }
+                }
+                
+                if (selectedPads.size() == 0)
+                {
+                    AppData::Instance()->setCurrentlyInspectingPad(-1, -1);
+                }
             }
         }
-        
-       
     }
-    else
-    {
-        DBG("Click in Sphere");
-        //clearSelectedPads();
-    }
+    
+    
+    
     
 }
 
@@ -409,4 +517,36 @@ void SphereView::mouseDoubleClick (const MouseEvent &event)
     
 }
 
+void SphereView::mouseMove (const MouseEvent& event)
+{
+    mouseCurrentlyOverCircle = isMouseInCircle(event);
+    //repaint();
+}
+
+
+int SphereView::isMouseInCircle(const MouseEvent &event)
+{
+    Point<int> centerPointOnScreen = getScreenPosition();
+    centerPointOnScreen.addXY(centerPoint.getX(), centerPoint.getY());
+    for (int i = 0; i < rowRadii.size() + 1; i++)
+    {
+        int radius;
+        if (i < rowRadii.size())
+        {
+            radius = rowRadii[i];
+        }
+        else
+        {
+            radius = getWidth()/2.0;
+        }
+        
+        if (event.getMouseDownScreenPosition().getDistanceFrom(centerPointOnScreen) < radius)
+        {
+            return i;
+        }
+        
+    }
+    
+    return -1;
+}
 

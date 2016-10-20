@@ -14,8 +14,6 @@
 #include "PadUI.hpp"
 
 class MainContentComponent;
-static int64 PadColours[25] = {0xffff0000, 0xffff4000, 0xffff8000, 0xffffc000, 0xffffff00, 0xffc0ff00, 0xff80ff00, 0xff80ff00, 0xff40ff00, 0xff00ff00, 0xff00ff40, 0xff00ff80, 0xff00ffc0, 0xff00ffff, 0xff00c0ff, 0xff0080ff, 0xff0040ff, 0xff0000ff, 0xff4000ff, 0xff8000ff, 0xffc000ff, 0xffff00ff, 0xff0000c0, 0xff000080, 0xff000040};
-
 
 class SphereView : public Component,
                    public Slider::Listener,
@@ -46,6 +44,9 @@ private:
     void mouseDrag (const MouseEvent &event) override;
     void mouseUp (const MouseEvent &event) override;
     void mouseDoubleClick (const MouseEvent &event) override;
+    void mouseMove (const MouseEvent&) override;
+    
+    int isMouseInCircle(const MouseEvent &event);
     
     void clearSelectedPads();
     
@@ -61,10 +62,13 @@ private:
     Point<int> centerPoint;
     
     int numRows;
+    int mouseCurrentlyOverCircle;
     
     float padSpacing, circleRadius;
     
     Array<float> rowRadii, padSizeModifiers, rowRadiusModifiers;
+    Array<Rectangle<float>> backgroundCircleBoxes;
+    Array<Path> backgroundCirclePaths;
     
     OwnedArray<Slider> ratioSliders;
     
@@ -76,7 +80,10 @@ private:
     
     MainContentComponent* mainComponent;
     
-    Array<Pad*> selectedPads;
+    Array<Pad*> selectedPads, prevSelectedPads;
+    
+    bool allPadsSelected;
+    Array<bool> padRowSelected;
 };
 
 #endif /* SphereView_hpp */

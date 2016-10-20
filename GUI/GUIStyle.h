@@ -13,12 +13,12 @@
 
 class GUIColours {
 public:
-    static const Colour Background, Main, MainBlue, PanelBackground, RackScrewAccent, RecButtonRed;
+    static const Colour Background, Main, AlphaGreen, PanelBackground, RackScrewAccent, RecButtonRed;
 };
 
 class GUIFonts {
 public:
-    static const Font Roboto, TestFont;
+    static const Font Roboto;
 };
 
 #endif /* GUIColours_h */

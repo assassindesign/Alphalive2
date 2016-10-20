@@ -52,7 +52,7 @@ void PadTriggerModePanel::paint(Graphics &g)
 {
     g.fillAll(GUIColours::PanelBackground);
     
-    g.setColour(GUIColours::MainBlue);
+    g.setColour(GUIColours::AlphaGreen);
     g.drawRect(1, 1, getWidth()-2, getHeight()-2);
     
     g.setColour(Colours::white);
@@ -94,7 +94,7 @@ void PadTriggerModePanel::buttonClicked(Button* button)
         return;
     }
     
-    AppData::Instance()->getEnginePointer()->getSpherePointer(padData->getParentSphere()->getSphereID())->killPad(padData->getPadID());
+    AppData::Instance()->getEnginePointer()->getSpherePointer(padData->getParentSphereID())->killPad(padData->getPadID());
 }
 
 void PadTriggerModePanel::padDataChangeCallback(const int changedData)

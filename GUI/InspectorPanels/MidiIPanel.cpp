@@ -16,7 +16,7 @@ MidiIPanel::MidiIPanel()
     addAndMakeVisible(noteButton);
 
 //    noteButton.addListener(this);
-//    noteButton.setColour(TextButton::ColourIds::buttonOnColourId, Colour(GUIColours::MainBlue));
+//    noteButton.setColour(TextButton::ColourIds::buttonOnColourId, Colour(GUIColours::AlphaGreen));
     
     pressureButton = new TabButton("Pressure");
     pressureButton->addListener(this);
@@ -39,12 +39,12 @@ void MidiIPanel::resized()
     thirdWidth = getWidth()/3.0;
     twelthHeight = getHeight()/12.0;
     
-    static int borderPadding = 10;
+    //static int borderPadding = 10;
     
-    noteButton->setBounds(thirdWidth*0.5, 0, thirdWidth, twelthHeight);
+    noteButton->setBounds(thirdWidth*0.5, 0, thirdWidth, 25);
     pressureButton->setBounds(noteButton->getBounds().translated(thirdWidth, 0));
     
-    midiNoteSettingsPanel->setBounds(borderPadding, noteButton->getBottom(), getWidth() - borderPadding*2, getHeight() - noteButton->getHeight());
+    midiNoteSettingsPanel->setBounds(0, noteButton->getBottom(), getWidth(), getHeight() - noteButton->getHeight());
     midiPressureSettingsPanel->setBounds(midiNoteSettingsPanel->getBounds());
     
 }
@@ -105,7 +105,7 @@ void MidiIPanel::tabLightClicked(const TabButton* button)
         if (padData->getNoteEnabled() == true && padData->getVelocity() > 0)
         {
             AppData::Instance()->getEnginePointer()->
-                getSpherePointer(padData->getParentSphere()->getSphereID())->hitPad(padData->getPadID(), 0);
+                getSpherePointer(padData->getParentSphereID())->hitPad(padData->getPadID(), 0);
         }
         
         padData->setNoteEnabled(!padData->getNoteEnabled());
@@ -117,7 +117,7 @@ void MidiIPanel::tabLightClicked(const TabButton* button)
         if (padData->getPressureEnabled() == true && padData->getPadPressure() > 0)
         {
             AppData::Instance()->getEnginePointer()->
-                getSpherePointer(padData->getParentSphere()->getSphereID())->pressPad(padData->getPadID(), 0);
+                getSpherePointer(padData->getParentSphereID())->pressPad(padData->getPadID(), 0);
             padData->setPressureEnabled(!padData->getPressureEnabled());
 
         }

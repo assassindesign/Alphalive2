@@ -7,6 +7,7 @@
 //
 
 #include "PadData.hpp"
+#include "SphereData.hpp"
 
 PadData::PadData(SphereData* _parent) : parent(_parent)
 {
@@ -145,10 +146,10 @@ bool PadData::fromValueTree(ValueTree* treeToImport)
 }
 
 
-SphereData* PadData::getParentSphere()
-{
-    return parent;
-}
+//SphereData* PadData::getParentSphere()
+//{
+//    return parent;
+//}
 
 //============= SETS ===========================================
 
@@ -796,6 +797,33 @@ void PadData::setDynamicMidiChannel(const bool enabled)
     callListeners(DataIDs::DynamicMidiChannel, AppDataFormat::PadDataType);
 }
 
+void PadData::setPadEnabled(const bool enabled)
+{
+    dataLock.enter();
+    padEnabled = enabled;
+    dataLock.exit();
+    
+    callListeners(DataIDs::DynamicMidiChannel, AppDataFormat::PadDataType);
+}
+
+bool PadData::setMidiCC(const int newCC)
+{
+    bool success = false;
+    if (newCC >= 0 && newCC <= 128)
+    {
+        dataLock.enter();
+        midiCC = newCC;
+        dataLock.exit();
+        callListeners(DataIDs::MidiCCType, AppDataFormat::PadDataType);
+        success = true;
+    }
+    else{
+        jassertfalse; //value out of range
+    }
+    return success;
+    
+}
+
 
 //============= GETS ===========================================
 int PadData::getPadID()
@@ -820,6 +848,10 @@ Array<PadData::MidiNote> PadData::getMidiNotes()
     return midiNotes;
 }
 
+int PadData::getNumMidiNotes()
+{
+    return midiNotes.size();
+}
 
 int PadData::getPadFunction()
 {
@@ -940,4 +972,25 @@ bool PadData::getDynamicMidiChannel()
     return dynamicMidiChannel;
 }
 
+bool PadData::getPadEnabled()
+{
+    return padEnabled;
+}
+
+int PadData::getParentSphereID()
+{
+    if (parent != nullptr)
+    {
+        return parent->getSphereID();
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+int PadData::getMidiCC()
+{
+    return midiCC;
+}
 

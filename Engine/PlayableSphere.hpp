@@ -68,7 +68,7 @@ public:
     
     SphereData* getSphereDataObject();
     
-    PlayablePad* getPlayablePad(const int padToGet);
+    PlayablePad* getPad(const int padToGet);
 
     //=====================================================================
     //  Audio callbacks

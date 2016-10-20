@@ -12,7 +12,8 @@
 #include "AppData.hpp"
 
 class AlphaSphereConnectedButton : public Component,
-                                   public AppDataListener
+                                   public AppDataListener,
+                                   public SettableTooltipClient
 {
 public:
     AlphaSphereConnectedButton();

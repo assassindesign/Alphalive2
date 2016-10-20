@@ -335,6 +335,7 @@ void SphereView::mouseDown (const MouseEvent &event)
             }
         }
         
+        
         if (sourcePad != nullptr) //if the source component was a pad that exists
         {
             if (sourcePad->isPointInsideCircle(event.getMouseDownPosition())) //if mouse is actually in the circle of the padUI

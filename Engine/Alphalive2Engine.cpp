@@ -121,6 +121,7 @@ PlayableSphere* Alphalive2Engine::getSpherePointer(const int sphereID)
             return spheres[i];
         }
     }
+    jassertfalse; //invalid sphereID
     return nullptr;
 }
 
@@ -129,10 +130,11 @@ PlayablePad* Alphalive2Engine::getPlayablePadPtr(const int sphereID, const int p
     PlayableSphere* workingSphere= getSpherePointer(sphereID);
     if (workingSphere != nullptr)
     {
-        return workingSphere->getPlayablePad(padID);
+        return workingSphere->getPad(padID);
     }
     else
     {
+        jassertfalse;
         return nullptr;
     }
     

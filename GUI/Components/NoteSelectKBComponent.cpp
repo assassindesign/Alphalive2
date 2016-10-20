@@ -7,6 +7,7 @@
 //
 
 #include "NoteSelectKBComponent.hpp"
+#include "Alphalive2Engine.hpp"
 /** 
     Class to be used to select midi notes in Alphalive 2.
  */
@@ -36,7 +37,7 @@ KBComponentKey::KBComponentKey(const int noteNumber, const String labelText)
             isCNote = true;
         }
     }
-    velPercentageColour = GUIColours::MainBlue;
+    velPercentageColour = GUIColours::AlphaGreen;
     
     labelFont = GUIFonts::Roboto;
     labelFont.setHeight(12.0);
@@ -364,36 +365,52 @@ void NoteSelectKBComponent::mouseDown(const MouseEvent &event)
                 midiNotes = padData->getMidiNotes(); //get midi notes from paddata
 
                 
-                if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::SingleNote)
-                {
+//                if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::SingleNote)
+//                {
                     for (int i = 0; i < keys.size(); i++) //loop through the keys - SHOULD BE OPTIMISED AT SOME POINT
                     {
                         if (event.eventComponent == keys[i] || keys[i]->isParentOf(event.eventComponent)) //when we find the key that has been pressed
                         {
-                            padData->setMidiNote(i, keys[i]->getVelPercentage());
+                            AppData::Instance()->getEnginePointer()->getPlayablePadPtr(padData->getParentSphereID(), padData->getPadID())->killPad();
+                            
+                            int diff = i - padData->getMidiNote();
+                            Array<PadData::MidiNote> currentNotes = padData->getMidiNotes();
+                            padData->clearAllMidiNotes();
+                            for (int j = 0; j < currentNotes.size(); j++)
+                            {
+                                padData->addMidiNote(currentNotes[j].noteNumber + diff, currentNotes[j].velocityPercentage);
+                            }
+                            
+                            //padData->setMidiNote(i, keys[i]->getVelPercentage());
                         }
                     }
-                }
-                else if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::MultiNote)
+//                }
+        
+            }
+        }
+        else if (event.mods.isShiftDown())
+        {
+//            if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::MultiNote)
+//            {
+                for (int i = 0; i < keys.size(); i++) //loop through the keys - SHOULD BE OPTIMISED AT SOME POINT
                 {
-                    for (int i = 0; i < keys.size(); i++) //loop through the keys - SHOULD BE OPTIMISED AT SOME POINT
+                    if (event.eventComponent == keys[i] || keys[i]->isParentOf(event.eventComponent)) //when we find the key that has been pressed
                     {
-                        if (event.eventComponent == keys[i] || keys[i]->isParentOf(event.eventComponent)) //when we find the key that has been pressed
+                        if (!keys[i]->getSelected())
                         {
-                            if (!keys[i]->getSelected())
-                            {
-                                padData->addMidiNote(i);
-                            }
-                            else
+                            padData->addMidiNote(i);
+                        }
+                        else
+                        {
+                            if (padData->getNumMidiNotes() > 1)
                             {
                                 padData->removeMidiNote(i);
                             }
-                            
                         }
+                        
                     }
                 }
-        
-            }
+//            }
         }
     }
 }

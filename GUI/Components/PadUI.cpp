@@ -50,7 +50,7 @@ void Pad::paint(Graphics& g)
     
     if (padData->getVelocity() > 0)
     {
-        if (padData->getNoteTriggerMode() == PadData::NoteTriggerModes::ToggleNoteMode)
+        if (padData->getNoteTriggerMode() != PadData::NoteTriggerModes::StandardNoteMode)
         {
             g.setColour(lightColour.withAlpha(float(0.5)));
             g.drawEllipse(6, 6, getWidth()-12, getHeight()-12, 3);
@@ -153,7 +153,7 @@ bool Pad::isPointInsideCircle(const Point<int> point)
 
 void Pad::setAsCurrentlyInspectedPad()
 {
-    AppData::Instance()->setCurrentlyInspectingPad(padData->getParentSphere()->getSphereID(), padData->getPadID());
+    AppData::Instance()->setCurrentlyInspectingPad(padData->getParentSphereID(), padData->getPadID());
 }
 
 

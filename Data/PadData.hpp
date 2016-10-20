@@ -88,7 +88,7 @@ public:
         ChannetAT,
         PBup,
         PBDown,
-        ControlMessage,
+        ModWheel,
         MidiCC,
         OSC,
         FINAL_PRESSUREDESTINATION
@@ -130,6 +130,8 @@ public:
         MidiDestination,
         PadColour,
         DynamicMidiChannel,
+        PadEnabled,
+        MidiCCType,
         FINAL_DATAID
     };
     
@@ -184,12 +186,15 @@ public:
     bool removeMidiNote(const int noteToRemove);
     void clearAllMidiNotes();
     void setDynamicMidiChannel(const bool enabled);
+    void setPadEnabled (const bool enabled);
+    bool setMidiCC(const int newCC);
     
     //============= GETS ===========================================
     
     int getPadID();
     int getMidiNote();
     Array<PadData::MidiNote> getMidiNotes();
+    int getNumMidiNotes();
     int getPadFunction();
     int getPadAudioFunction();
     int getPadMidiFunction();
@@ -215,8 +220,11 @@ public:
     int getPadColour();
     int getLFOCurveType();
     bool getDynamicMidiChannel();
+    bool getPadEnabled();
+    int getMidiCC();
     
-    SphereData* getParentSphere();
+    //SphereData* getParentSphere();
+    int getParentSphereID();
 
     WeakReference<PadData>::Master masterReference;
 
@@ -225,7 +233,7 @@ private:
     Array<MidiNote> midiNotes;
     int padFunction = 0;
     int padAudioFunction = 0;
-    int padMidiFunction = 0;
+    int padMidiFunction = PadMidiFunctions::MultiNote;
     int padSystemFunction = 0;
     int noteTriggerMode = 0;
     int multiNoteMode = 0;
@@ -246,9 +254,10 @@ private:
     int padColour = 0;
     int lFOCurveType = 0;
     bool dynamicMidiChannel = false;
+    bool padEnabled = true;
+    int midiCC = 0;
     
-    
-    SphereData* parent;
+    SphereData* parent = nullptr;
     
     CriticalSection dataLock;
     

@@ -12,25 +12,22 @@
 
 PadTriggerModePanel::PadTriggerModePanel()
 {
-    stdBtn.setButtonText("STD");
-    stdBtn.addListener(this);
-    stdBtn.setConnectedEdges(3);
+    stdBtn = new CustomIconButton(CustomIconButton::IconPath::StandardIcon);
+    stdBtn->getButtonObject()->addListener(this);
     addAndMakeVisible(stdBtn);
     
-    tglBtn.setButtonText("TGL");
-    tglBtn.addListener(this);
-    tglBtn.setConnectedEdges(3);
+    tglBtn = new CustomIconButton(CustomIconButton::IconPath::ToggleIcon);
+    tglBtn->getButtonObject()->addListener(this);
     addAndMakeVisible(tglBtn);
     
-    ltchBtn.setButtonText("LTCH");
-    ltchBtn.addListener(this);
-    ltchBtn.setConnectedEdges(3);
+    ltchBtn = new CustomIconButton(CustomIconButton::IconPath::LatchIcon);
+    ltchBtn->getButtonObject()->addListener(this);
     addAndMakeVisible(ltchBtn);
     
-    trgrBtn.setButtonText("TRGR");
-    trgrBtn.addListener(this);
-    trgrBtn.setConnectedEdges(3);
+    trgrBtn = new CustomIconButton(CustomIconButton::IconPath::TriggerIcon);
+    trgrBtn->getButtonObject()->addListener(this);
     addAndMakeVisible(trgrBtn);
+    
     
     font = GUIFonts::Roboto.withHeight(8);
     
@@ -62,30 +59,30 @@ void PadTriggerModePanel::paint(Graphics &g)
 
 void PadTriggerModePanel::resized()
 {
-    stdBtn.setBounds(1, 20, getWidth()*0.25, 30);
-    tglBtn.setBounds(stdBtn.getBounds().translated(getWidth()*0.25, 0));
-    ltchBtn.setBounds(tglBtn.getBounds().translated(getWidth()*0.25, 0));
-    trgrBtn.setBounds(ltchBtn.getBounds().translated(getWidth()*0.25, 0));
+    stdBtn->setBounds(1, 20, getWidth()*0.25, 30);
+    tglBtn->setBounds(stdBtn->getBounds().translated(getWidth()*0.25, 0));
+    ltchBtn->setBounds(tglBtn->getBounds().translated(getWidth()*0.25, 0));
+    trgrBtn->setBounds(ltchBtn->getBounds().translated(getWidth()*0.25, 0));
 
 }
 
 void PadTriggerModePanel::buttonClicked(Button* button)
 {
-    if (button == &stdBtn)
+    if (button == stdBtn->getButtonObject())
     {
         padData->setNoteTriggerMode(PadData::NoteTriggerModes::StandardNoteMode);
     }
-    else if (button == &tglBtn)
+    else if (button == tglBtn->getButtonObject())
     {
         padData->setNoteTriggerMode(PadData::NoteTriggerModes::ToggleNoteMode);
 
     }
-    else if (button == &ltchBtn)
+    else if (button == ltchBtn->getButtonObject())
     {
         padData->setNoteTriggerMode(PadData::NoteTriggerModes::LatchNoteMode);
 
     }
-    else if (button == &trgrBtn)
+    else if (button == trgrBtn->getButtonObject())
     {
         padData->setNoteTriggerMode(PadData::NoteTriggerModes::TriggerNoteMode);
     }
@@ -103,28 +100,28 @@ void PadTriggerModePanel::padDataChangeCallback(const int changedData)
     {
         switch (padData->getNoteTriggerMode()) {
             case PadData::NoteTriggerModes::StandardNoteMode:
-                stdBtn.setToggleState(true, dontSendNotification);
-                tglBtn.setToggleState(false, dontSendNotification);
-                ltchBtn.setToggleState(false, dontSendNotification);
-                trgrBtn.setToggleState(false, dontSendNotification);
+                stdBtn->getButtonObject()->setToggleState(true, dontSendNotification);
+                tglBtn->getButtonObject()->setToggleState(false, dontSendNotification);
+                ltchBtn->getButtonObject()->setToggleState(false, dontSendNotification);
+                trgrBtn->getButtonObject()->setToggleState(false, dontSendNotification);
                 break;
             case PadData::NoteTriggerModes::ToggleNoteMode:
-                stdBtn.setToggleState(false, dontSendNotification);
-                tglBtn.setToggleState(true, dontSendNotification);
-                ltchBtn.setToggleState(false, dontSendNotification);
-                trgrBtn.setToggleState(false, dontSendNotification);
+                stdBtn->getButtonObject()->setToggleState(false, dontSendNotification);
+                tglBtn->getButtonObject()->setToggleState(true, dontSendNotification);
+                ltchBtn->getButtonObject()->setToggleState(false, dontSendNotification);
+                trgrBtn->getButtonObject()->setToggleState(false, dontSendNotification);
                 break;
             case PadData::NoteTriggerModes::LatchNoteMode:
-                stdBtn.setToggleState(false, dontSendNotification);
-                tglBtn.setToggleState(false, dontSendNotification);
-                ltchBtn.setToggleState(true, dontSendNotification);
-                trgrBtn.setToggleState(false, dontSendNotification);
+                stdBtn->getButtonObject()->setToggleState(false, dontSendNotification);
+                tglBtn->getButtonObject()->setToggleState(false, dontSendNotification);
+                ltchBtn->getButtonObject()->setToggleState(true, dontSendNotification);
+                trgrBtn->getButtonObject()->setToggleState(false, dontSendNotification);
                 break;
             case PadData::NoteTriggerModes::TriggerNoteMode:
-                stdBtn.setToggleState(false, dontSendNotification);
-                tglBtn.setToggleState(false, dontSendNotification);
-                ltchBtn.setToggleState(false, dontSendNotification);
-                trgrBtn.setToggleState(true, dontSendNotification);
+                stdBtn->getButtonObject()->setToggleState(false, dontSendNotification);
+                tglBtn->getButtonObject()->setToggleState(false, dontSendNotification);
+                ltchBtn->getButtonObject()->setToggleState(false, dontSendNotification);
+                trgrBtn->getButtonObject()->setToggleState(true, dontSendNotification);
                 break;
             default:
                 break;

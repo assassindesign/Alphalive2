@@ -75,7 +75,7 @@ private:
     OwnedArray<KBComponentKey> keys;
     float halfHeight;
     float whiteKeyWidth, blackKeyWidth;
-    PadData* padData;
+    WeakReference<PadData> padData;
     ScopedPointer<NoteSelectPositionerComponent> keyPositioner;
     Viewport mainViewport;
     

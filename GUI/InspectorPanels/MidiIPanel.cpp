@@ -68,14 +68,18 @@ void MidiIPanel::refreshData()
 
 void MidiIPanel::padDataChangeCallback(const int changedData)
 {
-    if (changedData == PadData::DataIDs::NoteEnabled)
+    if (padData != nullptr)
     {
-        noteButton->setLightToggleState(padData->getNoteEnabled());
+        if (changedData == PadData::DataIDs::NoteEnabled)
+        {
+            noteButton->setLightToggleState(padData->getNoteEnabled());
+        }
+        else if (changedData == PadData::DataIDs::PressureEnabled)
+        {
+            pressureButton->setLightToggleState(padData->getPressureEnabled());
+        }
     }
-    else if (changedData == PadData::DataIDs::PressureEnabled)
-    {
-        pressureButton->setLightToggleState(padData->getPressureEnabled());
-    }
+
 }
 
 void MidiIPanel::tabButtonClicked(const TabButton* button)

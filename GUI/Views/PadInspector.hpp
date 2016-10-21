@@ -37,7 +37,7 @@ public:
     void appDataChangeCallback(const int changedData) override;
     
 private:
-    PadData* padDataToInspect;
+    WeakReference<PadData> padDataToInspect;
     
     Colour backgroundColour;
     

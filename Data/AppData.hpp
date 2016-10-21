@@ -65,7 +65,7 @@ public:
     bool getAdvancedFeaturesEnabled();
     bool getPadPressSwitchesInspectedPad();
     PadReference getcurrentlyInspectingPad();
-    PadData* getCurrentlyInspectingPadDataPtr();
+    WeakReference<PadData> getCurrentlyInspectingPadDataPtr();
     //============= SETS ===========================================
     //Objects
     bool setEnginePointer(Alphalive2Engine* newEngine);

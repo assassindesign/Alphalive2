@@ -75,32 +75,36 @@ void MidiNoteSettingsPanel::refreshData()
 void MidiNoteSettingsPanel::padDataChangeCallback(const int changedData)
 {
     padData = AppData::Instance()->getCurrentlyInspectingPadDataPtr();
-    if (changedData == PadData::DataIDs::PadMidiFunction)
+    if (padData != nullptr)
     {
-        if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::SingleNote)
+        if (changedData == PadData::DataIDs::PadMidiFunction)
         {
-            noteModeSwitch->setToggleState(false);
+            if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::SingleNote)
+            {
+                noteModeSwitch->setToggleState(false);
+            }
+            else if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::MultiNote)
+            {
+                noteModeSwitch->setToggleState(true);
+            }
         }
-        else if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::MultiNote)
+        else if (changedData == PadData::DataIDs::NoteTriggerMode)
         {
-            noteModeSwitch->setToggleState(true);
+            if (padData->getNoteTriggerMode() == PadData::NoteTriggerModes::StandardNoteMode)
+            {
+                triggerModeSwitch->setToggleState(false);
+            }
+            else if (padData->getNoteTriggerMode() == PadData::NoteTriggerModes::ToggleNoteMode)
+            {
+                triggerModeSwitch->setToggleState(true);
+            }
+        }
+        else if (changedData == PadData::DataIDs::MidiChannel)
+        {
+            channelSwitcher->setButtonSelected(padData->getMidiChannel()-1, true);
         }
     }
-    else if (changedData == PadData::DataIDs::NoteTriggerMode)
-    {
-        if (padData->getNoteTriggerMode() == PadData::NoteTriggerModes::StandardNoteMode)
-        {
-            triggerModeSwitch->setToggleState(false);
-        }
-        else if (padData->getNoteTriggerMode() == PadData::NoteTriggerModes::ToggleNoteMode)
-        {
-            triggerModeSwitch->setToggleState(true);
-        }
-    }
-    else if (changedData == PadData::DataIDs::MidiChannel)
-    {
-        channelSwitcher->setButtonSelected(padData->getMidiChannel()-1, true);
-    }
+   
 }
 
 

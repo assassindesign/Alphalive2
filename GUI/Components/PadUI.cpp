@@ -32,51 +32,43 @@ Pad::~Pad()
 }
 void Pad::paint(Graphics& g)
 {
-    //g.setColour(Colour(GUIColours::Background));
-    //g.fillEllipse(2, 2, getWidth()-4, getHeight()-4);
-    
-    static float alpha;
-    alpha = 0.15 + (padData->getPadPressure()/127.0) * 0.75;
-    
-    
-    //DBG(String(padData->getPadPressure()) + " : " + String(padData->getPadID()));
-    if (emulatingPadPress) {
-        alpha += 0.07;
-    }
-
-    g.setColour(padColour.withAlpha(alpha));
-    
-    g.fillEllipse(2, 2, getWidth()-4, getHeight()-4);
-    
-    if (padData->getVelocity() > 0)
+    if (padData != nullptr)
     {
-        if (padData->getNoteTriggerMode() != PadData::NoteTriggerModes::StandardNoteMode)
-        {
-            g.setColour(lightColour.withAlpha(float(0.5)));
-            g.drawEllipse(6, 6, getWidth()-12, getHeight()-12, 3);
+        static float alpha;
+        alpha = 0.15 + (padData->getPadPressure()/127.0) * 0.75;
+        
+        
+        //DBG(String(padData->getPadPressure()) + " : " + String(padData->getPadID()));
+        if (emulatingPadPress) {
+            alpha += 0.07;
         }
         
-        g.setColour(lightColour);
-        g.drawEllipse(3, 3, getWidth()-6, getHeight()-6, 3);
-
+        g.setColour(padColour.withAlpha(alpha));
+        
+        g.fillEllipse(2, 2, getWidth()-4, getHeight()-4);
+        
+        if (padData->getVelocity() > 0)
+        {
+            if (padData->getNoteTriggerMode() != PadData::NoteTriggerModes::StandardNoteMode)
+            {
+                g.setColour(lightColour.withAlpha(float(0.5)));
+                g.drawEllipse(6, 6, getWidth()-12, getHeight()-12, 3);
+            }
+            
+            g.setColour(lightColour);
+            g.drawEllipse(3, 3, getWidth()-6, getHeight()-6, 3);
+            
+        }
+        else
+        {
+            g.setColour(padColour);
+            g.drawEllipse(2, 2, getWidth()-4, getHeight()-4, 2);
+            
+        }
     }
     else
-    {
-        g.setColour(padColour);
-        g.drawEllipse(2, 2, getWidth()-4, getHeight()-4, 2);
-
-    }
-
-    //g.setColour(Colours::white);
-    //g.drawFittedText(String(padData->getMidiNote()), getLocalBounds(), Justification::centred, 1);
-//    if (isSelected)
-//    {
-//        g.setColour(lightColour);
-//        for (int i = 0; i < selectDots.size(); i++)
-//        {
-//            g.fillEllipse(selectDots[i]);
-//        }
-//    }
+        jassertfalse;
+    
     
 }
 void Pad::resized()

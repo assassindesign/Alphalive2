@@ -259,30 +259,34 @@ void PlayableSphere::transposeMidiByOctave(const int octavesToTranspose)
     //mapSphere(sphereData->getRootNote() + (octavesToTranspose*12), sphereData->getScale(), sphereData->getRowConfig());
     if(sphereData->getScaleData()->setOctave(sphereData->getScaleData()->getOctave()+octavesToTranspose))
     {
-        PadData* workingPData;
-        int hadVelocity;
-        for (int i = 0 ; i < playablePads.size(); i++)
+        PadData* workingPData = nullptr;
+        
+        if (workingPData != nullptr)
         {
-            workingPData = sphereData->getPadData(i);
-            hadVelocity = workingPData->getVelocity();
-            if (hadVelocity > 0)
+            int hadVelocity;
+            for (int i = 0 ; i < playablePads.size(); i++)
             {
-                killPad(i);
+                workingPData = sphereData->getPadData(i);
+                hadVelocity = workingPData->getVelocity();
+                if (hadVelocity > 0)
+                {
+                    killPad(i);
+                    
+                }
                 
-            }
-            
-            
-            Array<PadData::MidiNote> midiNotes = workingPData->getMidiNotes();
-            for (int j = 0; j < midiNotes.size(); j++)
-            {
-                workingPData->setMidiNote(j, midiNotes[j].noteNumber+12 * octavesToTranspose, midiNotes[j].velocityPercentage);
                 
-            }
-            
-            
-            if (workingPData->getPadFunction() == PadData::PadFunctions::Midi && hadVelocity > 0);
-            {
-                hitPad(i, hadVelocity);
+                Array<PadData::MidiNote> midiNotes = workingPData->getMidiNotes();
+                for (int j = 0; j < midiNotes.size(); j++)
+                {
+                    workingPData->setMidiNote(j, midiNotes[j].noteNumber+12 * octavesToTranspose, midiNotes[j].velocityPercentage);
+                    
+                }
+                
+                
+                if (workingPData->getPadFunction() == PadData::PadFunctions::Midi && hadVelocity > 0);
+                {
+                    hitPad(i, hadVelocity);
+                }
             }
         }
     }
@@ -294,34 +298,35 @@ void PlayableSphere::transposeMidiByNote(const int semiTonesToTranspose)
     
     if(sphereData->getScaleData()->setKey(sphereData->getScaleData()->getKey()+semiTonesToTranspose))
     {
-        PadData* workingPData;
-        int hadVelocity;
-        for (int i = 0 ; i < playablePads.size(); i++)
+        PadData* workingPData = nullptr;
+        if (workingPData != nullptr)
         {
-            workingPData = sphereData->getPadData(i);
-            hadVelocity = workingPData->getVelocity();
-           
-            if (hadVelocity > 0)
+            int hadVelocity;
+            for (int i = 0 ; i < playablePads.size(); i++)
             {
-                killPad(i);
+                workingPData = sphereData->getPadData(i);
+                hadVelocity = workingPData->getVelocity();
                 
-            }
-            
-            Array<PadData::MidiNote> midiNotes = workingPData->getMidiNotes();
-            for (int j = 0; j < midiNotes.size(); j++)
-            {
-                workingPData->setMidiNote(j, midiNotes[j].noteNumber+semiTonesToTranspose, midiNotes[j].velocityPercentage);
-
-            }
-            
-            if (workingPData->getPadFunction() == PadData::PadFunctions::Midi && hadVelocity > 0)
-            {
-                hitPad(i, hadVelocity);
+                if (hadVelocity > 0)
+                {
+                    killPad(i);
+                    
+                }
+                
+                Array<PadData::MidiNote> midiNotes = workingPData->getMidiNotes();
+                for (int j = 0; j < midiNotes.size(); j++)
+                {
+                    workingPData->setMidiNote(j, midiNotes[j].noteNumber+semiTonesToTranspose, midiNotes[j].velocityPercentage);
+                    
+                }
+                
+                if (workingPData->getPadFunction() == PadData::PadFunctions::Midi && hadVelocity > 0)
+                {
+                    hitPad(i, hadVelocity);
+                }
             }
         }
     }
-    
-  
 }
 
 SphereData* PlayableSphere::getSphereDataObject()

@@ -39,7 +39,7 @@ public:
     void mouseDoubleClick (const MouseEvent &event) override;
     
 private:
-    PadData* padData;
+    WeakReference<PadData> padData;
     Colour padColour, lightColour, darkColour, actualColour;
     bool emulatingPadPress;
     bool isSelected;

@@ -88,7 +88,7 @@ AppData::PadReference AppData::getcurrentlyInspectingPad()
     return currentlyInspectingPad;
 }
 
-PadData* AppData::getCurrentlyInspectingPadDataPtr()
+WeakReference<PadData> AppData::getCurrentlyInspectingPadDataPtr()
 {
     if (currentlyInspectingPad.sphereID == -1 || currentlyInspectingPad.padID == -1)
     {

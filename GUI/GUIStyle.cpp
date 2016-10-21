@@ -15,5 +15,3 @@ const Colour GUIColours::AlphaGreen(0xff1d8378);
 const Colour GUIColours::PanelBackground(0xFF21272B);
 const Colour GUIColours::RackScrewAccent(0xFFC1C1C1);
 const Colour GUIColours::RecButtonRed(0xFF5D1F1F);
-
-const Font GUIFonts::Roboto("Roboto", "sans-serif", 14.0);

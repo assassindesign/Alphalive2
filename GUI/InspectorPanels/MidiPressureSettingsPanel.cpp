@@ -118,7 +118,7 @@ void MidiPressureSettingsPanel::paint(Graphics &g)
     g.drawRect(settingsBox, 1);
     
     g.setColour(Colours::white);
-    g.setFont(GUIFonts::Roboto);
+    g.setFont(GUIFonts::getMainFont());
     g.drawSingleLineText("DESTINATION", destinationsBox.getX()+5, destinationsBox.getY()+15);
     g.drawSingleLineText("RANGE", rangeBox.getX()+5, rangeBox.getY()+15);
     g.drawSingleLineText("SETTINGS", settingsBox.getX()+5, settingsBox.getY()+15);

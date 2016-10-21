@@ -16,9 +16,9 @@ public:
     static const Colour Background, Main, AlphaGreen, PanelBackground, RackScrewAccent, RecButtonRed;
 };
 
-class GUIFonts {
+struct GUIFonts {
 public:
-    static const Font Roboto;
+    static Font getMainFont() {return Font("Roboto", "sans-serif", 14.0);}
 };
 
 #endif /* GUIColours_h */

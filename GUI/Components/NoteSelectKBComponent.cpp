@@ -39,7 +39,7 @@ KBComponentKey::KBComponentKey(const int noteNumber, const String labelText)
     }
     velPercentageColour = GUIColours::AlphaGreen;
     
-    labelFont = GUIFonts::Roboto;
+    labelFont = GUIFonts::getMainFont();
     labelFont.setHeight(12.0);
     
     if (labelText != NULLSTRING)

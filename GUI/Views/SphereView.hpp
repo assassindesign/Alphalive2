@@ -84,6 +84,8 @@ private:
     
     bool allPadsSelected;
     Array<bool> padRowSelected;
+    
+    
 };
 
 #endif /* SphereView_hpp */

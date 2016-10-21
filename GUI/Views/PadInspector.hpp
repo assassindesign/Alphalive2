@@ -10,7 +10,7 @@
 #define PadInspector_hpp
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "AppData.hpp"
+//#include "AppData.hpp"
 #include "GUIStyle.h"
 #include "MainPadInspectorPanels.hpp"
 
@@ -42,9 +42,7 @@ private:
     Colour backgroundColour;
     
     Rectangle<int> leftBumperBox, titleBox, mainViewportBox;
-    
-    //OwnedArray<ListEntry> listEntrys;
-    
+        
     Slider midiNoteSlider;
     
     Viewport mainViewport;

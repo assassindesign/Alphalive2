@@ -75,6 +75,7 @@ public:
             centreWithSize (getWidth(), getHeight());
             setVisible (true);
             
+            //openGLContext.setMultisamplingEnabled(true);
             openGLContext.attachTo(*this);
         }
 

@@ -270,7 +270,7 @@ void InspectorTopPanel::buttonGridCallback(ButtonGrid* grid, const int buttonID)
 
 InspectorBottomPanel::InspectorBottomPanel()
 {
-    groupTitleFont = GUIFonts::Roboto.withHeight(30);
+    groupTitleFont = GUIFonts::getMainFont().withHeight(30);
 }
 
 InspectorBottomPanel::~InspectorBottomPanel()

@@ -28,10 +28,12 @@ public:
 private:
     //ToggleSwitch
     
-    ToggleButton polyATButton, channelATButton, pbUpButton, pbDownButton, modWheelButton, midiCCButton;
+    TextButton polyATButton, channelATButton, pbUpButton, pbDownButton, modWheelButton, midiCCButton;
     
     Rectangle<int> destinationsBox, rangeBox, settingsBox;
     Font labelFont;
+    
+    WeakReference<PadData> padData;
 };
 
 #endif /* MidiPressureSettingsPanel_hpp */

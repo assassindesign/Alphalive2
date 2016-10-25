@@ -85,6 +85,7 @@ private:
     bool allPadsSelected;
     Array<bool> padRowSelected;
     
+    OpenGLContext openGLContext;
     
 };
 

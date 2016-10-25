@@ -54,8 +54,7 @@ MainContentComponent::MainContentComponent()
     connectionStatus = new AlphaSphereConnectedButton();
     addAndMakeVisible(connectionStatus);
     
-    tooltip = new TooltipWindow(this, 700);
-    
+    tooltip = new TooltipWindow(this, 700);    
     
     setSize (1200, 700);
     

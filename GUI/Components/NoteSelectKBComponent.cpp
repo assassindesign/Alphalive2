@@ -206,6 +206,8 @@ NoteSelectKBComponent::NoteSelectKBComponent()
     
     setInterceptsMouseClicks(true, true);
     lowestKeytoDisplay = 0;
+    
+    glContext.attachTo(*this);
 }
 
 NoteSelectKBComponent::~NoteSelectKBComponent()
@@ -454,7 +456,7 @@ void NoteSelectKBComponent::mouseDrag (const MouseEvent &event)
 
 void NoteSelectKBComponent::paint(Graphics& g)
 {
-    //g.fillAll(Colours::hotpink);
+    g.fillAll(GUIColours::Background);
 }
 
 

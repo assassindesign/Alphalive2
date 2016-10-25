@@ -49,9 +49,9 @@ private:
     ScopedPointer<TextButton> killButton;
     ScopedPointer<AudioMeterButton> audioMeter;
     
-    
-    
+
     ScopedPointer<TooltipWindow> tooltip;
+    
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)

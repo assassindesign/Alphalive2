@@ -467,7 +467,7 @@ void NoteSelectKBComponent::timerCallback()
     
     increment = 16;
     
-    currentXPosition = mainViewport.getViewPosition().x;
+    currentXPosition = mainViewport.getViewPositionX();
     targetXposition = lowestKeyToDisplayX;
     
     if (currentXPosition > targetXposition)
@@ -487,6 +487,13 @@ void NoteSelectKBComponent::timerCallback()
 
         if (targetXposition - currentXPosition < increment)
         {
+            mainViewport.setViewPosition(targetXposition, 0);
+            stopTimer();
+            scrollingKeys = false;
+        }
+        else if (mainViewport.getViewPositionX() >= keyPositioner->getWidth() - mainViewport.getWidth())
+        {
+            targetXposition =  keyPositioner->getWidth() - mainViewport.getWidth();
             mainViewport.setViewPosition(targetXposition, 0);
             stopTimer();
             scrollingKeys = false;

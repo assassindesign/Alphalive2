@@ -75,13 +75,15 @@ private:
     OwnedArray<KBComponentKey> keys;
     float halfHeight;
     float whiteKeyWidth, blackKeyWidth;
-    PadData* padData;
+    WeakReference<PadData> padData;
     ScopedPointer<NoteSelectPositionerComponent> keyPositioner;
     Viewport mainViewport;
     
     int lowestKeyToDisplayX, lowestKeytoDisplay;
     int totalXDistanceToMove;
     bool scrollingKeys;
+    
+    OpenGLContext glContext;
 };
 
 #endif /* NoteSelectKBComponent_hpp */

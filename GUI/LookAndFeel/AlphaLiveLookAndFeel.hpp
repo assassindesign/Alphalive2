@@ -82,7 +82,7 @@ public:
         myLookAndFeel = new CustomLookAndFeel();
         setupCustomLookAndFeelColours(*myLookAndFeel);
         myLookAndFeel->setUsingNativeAlertWindows(true);
-        myLookAndFeel->setDefaultSansSerifTypefaceName("Roboto");
+        myLookAndFeel->setDefaultSansSerifTypefaceName("Times New Roman");
     }
     ~LookAndFeelManager() {}
     
@@ -117,7 +117,6 @@ public:
         
         // Toggle Button
         laf.setColour(ToggleButton::ColourIds::textColourId, Colours::white);
-        
         
     }
     

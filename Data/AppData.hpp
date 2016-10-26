@@ -65,7 +65,7 @@ public:
     bool getAdvancedFeaturesEnabled();
     bool getPadPressSwitchesInspectedPad();
     PadReference getcurrentlyInspectingPad();
-    PadData* getCurrentlyInspectingPadDataPtr();
+    WeakReference<PadData> getCurrentlyInspectingPadDataPtr();
     //============= SETS ===========================================
     //Objects
     bool setEnginePointer(Alphalive2Engine* newEngine);
@@ -88,7 +88,7 @@ private:
     //Variables
     bool advancedFeaturesEnabled = true;
     PadReference currentlyInspectingPad;
-    bool padPressSwitchesInspectedPad = true;
+    bool padPressSwitchesInspectedPad = false;
     CriticalSection dataLock;
 };
 

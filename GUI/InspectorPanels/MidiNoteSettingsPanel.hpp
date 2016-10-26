@@ -37,7 +37,7 @@ public:
     void buttonGridCallback(ButtonGrid* grid, const int buttonID) override;
 
 private:
-    PadData* padData;
+    WeakReference<PadData> padData;
     
     ScopedPointer<ToggleSwitch> noteModeSwitch, triggerModeSwitch;
     

@@ -20,11 +20,11 @@ class GUIRepaintListener : public Component,
                            public Timer
 {
 public:
-    const int refreshRate = 40;
+    const int refreshRate = 60;
     GUIRepaintListener()
     {
         timeOfLastPaint.set(Time::currentTimeMillis());
-        //startTimer(100);
+        startTimer(100);
     }
     virtual ~GUIRepaintListener(){}
     void refreshUI()
@@ -34,9 +34,9 @@ public:
             repaint();
             timeOfLastPaint.set(Time::currentTimeMillis());
             repaintQueued.set(false);
-            if (!isTimerRunning()) {
-                startTimer(100);
-            }
+//            if (!isTimerRunning()) {
+//                startTimer(100);
+//            }
         }
         else
         {
@@ -55,7 +55,7 @@ private:
         }
         else if (Time::currentTimeMillis() - timeOfLastPaint.get() > 2000)
         {
-            stopTimer();
+            //stopTimer();
         }
     }
     Atomic<int64> timeOfLastPaint;

@@ -12,11 +12,7 @@ PadInspector::PadInspector()
 {
     padDataToInspect = nullptr;
     backgroundColour = GUIColours::Background.withBrightness(GUIColours::Background.getBrightness()+0.05);
-//    for (int i = 0; i < 10; i++)
-//    {
-//        listEntrys.add(new ListEntry());
-//        addAndMakeVisible(listEntrys.getLast());
-//    }
+
     
     midiNoteSlider.setRange(0, 127, 1);
     addAndMakeVisible(midiNoteSlider);
@@ -49,7 +45,7 @@ void PadInspector::paint(Graphics& g)
    
     
     g.setColour(Colours::white);
-    g.setFont(GUIFonts::Roboto);
+    g.setFont(GUIFonts::getMainFont());
     g.drawText("Pad Inspector", titleBox, Justification::centred);
     
 }
@@ -60,7 +56,7 @@ void PadInspector::resized()
     leftBumperBox.removeFromRight(getWidth()-10);
     titleBox.removeFromBottom(getHeight()-20);
     
-    
+
     mainViewportBox.setPosition(leftBumperBox.getRight(), titleBox.getBottom());
     mainViewportBox.setSize(getWidth()-leftBumperBox.getWidth(), getHeight()-titleBox.getHeight());
     
@@ -77,15 +73,17 @@ void PadInspector::appDataChangeCallback(const int changedData)
     {
         padDataToInspect = AppData::Instance()->getCurrentlyInspectingPadDataPtr();
         
-        if (padDataToInspect == nullptr)
+        if (padDataToInspect != nullptr)
         {
-            mainInspectorPanel.setTopPanelEnabled(false);
+            if (padDataToInspect == nullptr)
+            {
+                mainInspectorPanel.setTopPanelEnabled(false);
+            }
+            else
+            {
+                mainInspectorPanel.setTopPanelEnabled(true);
+                mainInspectorPanel.setDataObject(padDataToInspect);
+            }
         }
-        else
-        {
-            mainInspectorPanel.setTopPanelEnabled(true);
-            mainInspectorPanel.setDataObject(padDataToInspect);
-        }
-        
     }
 }

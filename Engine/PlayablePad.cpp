@@ -201,10 +201,10 @@ void PlayablePad::pressPad(const float pressure, const bool killingPad)
                             message = MidiMessage::controllerEvent(padData->getMidiChannel(), 1, receivedPressure);
                             break;
                         case PadData::PressureDestinations::PBup:
-                            message = MidiMessage::pitchWheel(padData->getMidiChannel(), 8192 + receivedPressure * 64.0);
+                            message = MidiMessage::pitchWheel(padData->getMidiChannel(), 8192.0 + (receivedPressure * 64.0));
                             break;
                         case PadData::PressureDestinations::PBDown:
-                            message = MidiMessage::pitchWheel(padData->getMidiChannel(), 8192 - receivedPressure * 64.0);
+                            message = MidiMessage::pitchWheel(padData->getMidiChannel(), 8192.0 - (receivedPressure * 64.0));
                             break;
                         default:
                             break;

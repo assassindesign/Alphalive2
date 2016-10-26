@@ -74,6 +74,8 @@ public:
             
             centreWithSize (getWidth(), getHeight());
             setVisible (true);
+            
+            
         }
 
         void closeButtonPressed() override
@@ -94,7 +96,6 @@ public:
     private:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
         ComponentBoundsConstrainer constrainer;
-        
     };
 
 private:

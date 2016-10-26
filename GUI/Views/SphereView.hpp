@@ -84,6 +84,9 @@ private:
     
     bool allPadsSelected;
     Array<bool> padRowSelected;
+    
+    OpenGLContext openGLContext;
+    
 };
 
 #endif /* SphereView_hpp */

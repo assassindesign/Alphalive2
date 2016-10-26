@@ -39,7 +39,7 @@ private:
     ScopedPointer<MidiNoteSettingsPanel> midiNoteSettingsPanel;
     ScopedPointer<MidiPressureSettingsPanel> midiPressureSettingsPanel;
     // scoped pointer to pressure settings panel
-    PadData* padData;
+    WeakReference<PadData> padData;
     bool panelEnabled;
     
     

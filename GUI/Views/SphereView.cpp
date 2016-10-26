@@ -88,6 +88,9 @@ SphereView::SphereView(const int _sphereID, MainContentComponent &ref) : sphereI
     //addAndMakeVisible(colourSelector);
     //colourSelector.addToDesktop(ComponentPeer::StyleFlags::windowHasCloseButton || ComponentPeer::StyleFlags::windowHasTitleBar);
 
+    
+    openGLContext.setMultisamplingEnabled(true);
+    openGLContext.attachTo(*this);
 
 }
 
@@ -119,7 +122,7 @@ void SphereView::sliderValueChanged (Slider* slider)
 
 void SphereView::paint(Graphics& g)
 {
-  
+    g.fillAll(GUIColours::Background);
     //draw outer circle
     g.setColour(Colours::white.withAlpha(uint8(0x33)));
     

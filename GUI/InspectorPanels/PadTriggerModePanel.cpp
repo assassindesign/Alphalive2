@@ -29,7 +29,6 @@ PadTriggerModePanel::PadTriggerModePanel()
     addAndMakeVisible(trgrBtn);
     
     
-    font = GUIFonts::Roboto.withHeight(8);
     
 }
 
@@ -53,6 +52,7 @@ void PadTriggerModePanel::paint(Graphics &g)
     g.drawRect(1, 1, getWidth()-2, getHeight()-2);
     
     g.setColour(Colours::white);
+    g.setFont(GUIFonts::getMainFont());
     g.drawFittedText("TRIGGER MODE", 4, 4, getWidth(), getHeight(), Justification::topLeft, 1);
     
 }

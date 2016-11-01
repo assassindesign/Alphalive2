@@ -11,7 +11,7 @@
 NeonButton::NeonButton() : Button("NeonButton")
 {
     setColour(GUIColours::Background);
-    font = GUIFonts::Roboto;
+    font = GUIFonts::getMainFont();
 }
 
 NeonButton::~NeonButton()

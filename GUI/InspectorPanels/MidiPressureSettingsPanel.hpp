@@ -34,6 +34,8 @@ private:
     Font labelFont;
     
     WeakReference<PadData> padData;
+    
+    ScopedPointer<Slider> rangeSlider;
 };
 
 #endif /* MidiPressureSettingsPanel_hpp */

@@ -46,6 +46,14 @@ MidiPressureSettingsPanel::MidiPressureSettingsPanel()
     midiCCButton.setConnectedEdges(3);
     midiCCButton.setTooltip(translate("CC"));
     addAndMakeVisible(midiCCButton);
+    
+    rangeSlider = new Slider();
+    rangeSlider->setSliderStyle(Slider::SliderStyle::TwoValueHorizontal);
+    rangeSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, true, 0, 0);
+    rangeSlider->setRange(0, 1, 0.01);
+    rangeSlider->setMinValue(0);
+    rangeSlider->setMaxValue(1);
+    addAndMakeVisible(rangeSlider);
 }
 
 MidiPressureSettingsPanel::~MidiPressureSettingsPanel()
@@ -118,7 +126,7 @@ void MidiPressureSettingsPanel::paint(Graphics &g)
     g.drawRect(settingsBox, 1);
     
     g.setColour(Colours::white);
-    g.setFont(GUIFonts::Roboto);
+    g.setFont(GUIFonts::getMainFont());
     g.drawSingleLineText("DESTINATION", destinationsBox.getX()+5, destinationsBox.getY()+15);
     g.drawSingleLineText("RANGE", rangeBox.getX()+5, rangeBox.getY()+15);
     g.drawSingleLineText("SETTINGS", settingsBox.getX()+5, settingsBox.getY()+15);
@@ -141,7 +149,7 @@ void MidiPressureSettingsPanel::resized()
     modWheelButton.setBounds(pbDownButton.getBounds().translated(polyATButton.getWidth()*1.166, 0));
     midiCCButton.setBounds(modWheelButton.getBounds().translated(polyATButton.getWidth()*1.166, 0));
 
-
+    rangeSlider->setBounds(rangeBox);
 }
 
 void MidiPressureSettingsPanel::buttonClicked(Button* button)

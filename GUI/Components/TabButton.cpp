@@ -36,7 +36,7 @@ void TabButton::paint(Graphics &g)
 
     }
     
-    g.setFont(GUIFonts::Roboto);
+    g.setFont(GUIFonts::getMainFont());
 
     g.drawFittedText(labelText, 0, 0, getWidth(), getHeight(), Justification::centred, 1);
     

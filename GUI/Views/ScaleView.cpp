@@ -31,7 +31,7 @@ ScaleView::ScaleView()
     keyLabel.setText("C", dontSendNotification);
     keyLabel.setColour(Label::ColourIds::textColourId, Colours::white);
     keyLabel.setJustificationType(Justification::centred);
-    keyLabel.setFont(GUIFonts::Roboto.withHeight(50));
+    keyLabel.setFont(GUIFonts::getMainFont().withHeight(50));
     addAndMakeVisible(keyLabel);
     
     labelStrings = new StringArray(keyStrings);

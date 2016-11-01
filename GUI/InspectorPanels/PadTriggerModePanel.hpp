@@ -29,6 +29,5 @@ private:
     
     ScopedPointer<CustomIconButton> stdBtn, tglBtn, ltchBtn, trgrBtn;
     WeakReference<PadData> padData;
-    Font font;
 };
 #endif /* PadTriggerModePanel_hpp */

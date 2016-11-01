@@ -39,7 +39,7 @@ KBComponentKey::KBComponentKey(const int noteNumber, const String labelText)
     }
     velPercentageColour = GUIColours::AlphaGreen;
     
-    labelFont = GUIFonts::Roboto;
+    labelFont = GUIFonts::getMainFont();
     labelFont.setHeight(12.0);
     
     if (labelText != NULLSTRING)
@@ -206,6 +206,8 @@ NoteSelectKBComponent::NoteSelectKBComponent()
     
     setInterceptsMouseClicks(true, true);
     lowestKeytoDisplay = 0;
+    
+    glContext.attachTo(*this);
 }
 
 NoteSelectKBComponent::~NoteSelectKBComponent()
@@ -454,7 +456,7 @@ void NoteSelectKBComponent::mouseDrag (const MouseEvent &event)
 
 void NoteSelectKBComponent::paint(Graphics& g)
 {
-    //g.fillAll(Colours::hotpink);
+    g.fillAll(GUIColours::Background);
 }
 
 
@@ -465,7 +467,7 @@ void NoteSelectKBComponent::timerCallback()
     
     increment = 16;
     
-    currentXPosition = mainViewport.getViewPosition().x;
+    currentXPosition = mainViewport.getViewPositionX();
     targetXposition = lowestKeyToDisplayX;
     
     if (currentXPosition > targetXposition)
@@ -485,6 +487,13 @@ void NoteSelectKBComponent::timerCallback()
 
         if (targetXposition - currentXPosition < increment)
         {
+            mainViewport.setViewPosition(targetXposition, 0);
+            stopTimer();
+            scrollingKeys = false;
+        }
+        else if (mainViewport.getViewPositionX() >= keyPositioner->getWidth() - mainViewport.getWidth())
+        {
+            targetXposition =  keyPositioner->getWidth() - mainViewport.getWidth();
             mainViewport.setViewPosition(targetXposition, 0);
             stopTimer();
             scrollingKeys = false;

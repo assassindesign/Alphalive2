@@ -82,6 +82,8 @@ private:
     int lowestKeyToDisplayX, lowestKeytoDisplay;
     int totalXDistanceToMove;
     bool scrollingKeys;
+    
+    OpenGLContext glContext;
 };
 
 #endif /* NoteSelectKBComponent_hpp */

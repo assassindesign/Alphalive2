@@ -104,13 +104,6 @@ void CustomLookAndFeel::drawTickBox (Graphics& g, Component& component,
                   bool isMouseOverButton,
                   bool isButtonDown)
 {
-    //const float boxSize = w * 0.7f;
-    
-    bool isDownOrDragging = component.isEnabled() && (component.isMouseOverOrDragging() || component.isMouseButtonDown());
-    
-    const Colour colour (component.findColour (TextButton::buttonColourId).withMultipliedSaturation ((component.hasKeyboardFocus (false) || isDownOrDragging) ? 1.3f : 0.9f).withMultipliedAlpha (component.isEnabled() ? 1.0f : 0.7f));
-    
-    //drawRoundThumb (g, x, y + (h - boxSize) * 0.5f, boxSize, colour, 1.0f);
     
     if (ticked)
     {
@@ -122,9 +115,7 @@ void CustomLookAndFeel::drawTickBox (Graphics& g, Component& component,
         toggleOn.loadPathFromData (CustomVectorPaths::ToggleOn, sizeof (CustomVectorPaths::ToggleOn));
         toggleOn.scaleToFit(x, y, w, h, true);
         g.setColour (isEnabled ? findColour (TextButton::buttonOnColourId) : Colours::grey);
-        
-//        const float scale = 9.0f;
-//        const AffineTransform trans (AffineTransform::scale (w / scale, h / scale).translated (x - 2.5f, y + 1.0f));
+
         g.fillPath (toggleOn);
     }
     
@@ -138,6 +129,31 @@ void CustomLookAndFeel::drawTickBox (Graphics& g, Component& component,
         g.fillPath (toggleOff);
         
     }
+}
+
+void CustomLookAndFeel::drawToggleButton (Graphics& g, ToggleButton& button, bool isMouseOverButton, bool isButtonDown)
+{
+        const int tickWidth = jmin (20, button.getHeight() - 4);
+    
+    drawTickBox (g, button, 4.0f, (button.getHeight() - tickWidth) * 0.5f,
+                 (float) tickWidth, (float) tickWidth,
+                 button.getToggleState(),
+                 button.isEnabled(),
+                 isMouseOverButton,
+                 isButtonDown);
+    
+    g.setColour (button.findColour (ToggleButton::textColourId));
+    g.setFont (jmin (15.0f, button.getHeight() * 0.6f));
+    
+    if (! button.isEnabled())
+        g.setOpacity (0.5f);
+    
+    const int textX = tickWidth + 5;
+    
+    g.drawFittedText (button.getButtonText(),
+                      textX, 4,
+                      button.getWidth() - textX - 2, button.getHeight() - 8,
+                      Justification::centredLeft, 10);
 }
 
 void CustomLookAndFeel::drawLinearSliderThumb (Graphics& g, int x, int y, int width, int height,

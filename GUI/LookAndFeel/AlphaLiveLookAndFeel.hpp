@@ -70,7 +70,10 @@ public:
                                                const bool hasSubMenu, const String& text,
                                                const String& shortcutKeyText,
                                                const Drawable* icon, const Colour* const textColourToUse) override;
-private:
+    
+    virtual void drawPointer (Graphics& g, const float x, const float y, const float diameter,
+                            const Colour& colour, const float outlineThickness,
+                            const int direction);
     DropShadow knobShadow;
 };
 
@@ -93,6 +96,8 @@ public:
         laf.setColour (Slider::textBoxOutlineColourId, Colours::transparentWhite);
         laf.setColour (Slider::rotarySliderFillColourId, Colour (0xff4d4d4d));
         laf.setColour (Slider::rotarySliderOutlineColourId, Colours::white);
+        laf.setColour (Slider::trackColourId, Colour (0xff4d4d4d));
+        
         // Text Button
         laf.setColour (TextButton::buttonColourId, Colours::white);
         laf.setColour (TextButton::textColourOffId, Colour (ALPHAGREEN));

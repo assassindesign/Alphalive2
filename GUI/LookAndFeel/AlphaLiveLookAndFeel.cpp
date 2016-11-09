@@ -140,17 +140,15 @@ void CustomLookAndFeel::drawTickBox (Graphics& g, Component& component,
 }
 
 void CustomLookAndFeel::drawLinearSliderThumb (Graphics& g, int x, int y, int width, int height,
-                            float sliderPos, float minSliderPos, float maxSliderPos,
-                            const Slider::SliderStyle style, Slider& slider)
+                                            float sliderPos, float minSliderPos, float maxSliderPos,
+                                            const Slider::SliderStyle style, Slider& slider)
 {
-    const float sliderRadius = (float) (getSliderThumbRadius (slider)); //- 2);
+    const float sliderRadius = (float) (getSliderThumbRadius (slider) - 2);
     
-    bool isDownOrDragging = slider.isEnabled() && (slider.isMouseOverOrDragging() || slider.isMouseButtonDown());
-    Colour knobColour (slider.findColour (Slider::thumbColourId).withMultipliedSaturation ((slider.hasKeyboardFocus (false) || isDownOrDragging) ? 1.3f : 0.9f)
-                       .withMultipliedAlpha (slider.isEnabled() ? 1.0f : 0.7f));
+    Colour knobColour = Colour(ALPHAGREEN);
     
-    g.setColour (knobColour);
     
+    const float outlineThickness = slider.isEnabled() ? 0.8f : 0.3f;
     
     if (style == Slider::LinearHorizontal || style == Slider::LinearVertical)
     {
@@ -160,29 +158,59 @@ void CustomLookAndFeel::drawLinearSliderThumb (Graphics& g, int x, int y, int wi
         {
             kx = x + width * 0.5f;
             ky = sliderPos;
-            g.fillRect (Rectangle<float> (kx - sliderRadius, ky - 2.5f, sliderRadius * 2.0f, 5.0f));
-            
         }
         else
         {
             kx = sliderPos;
             ky = y + height * 0.5f;
-            g.fillRect (Rectangle<float> (kx - 2.5f, ky - sliderRadius, 5.0f, sliderRadius * 2.0f));
-            
         }
         
-        //const float outlineThickness = slider.isEnabled() ? 0.8f : 0.3f;
-        
-//        drawRoundThumb (g,
-//                        kx - sliderRadius,
-//                        ky - sliderRadius,
-//                        sliderRadius * 2.0f,
-//                        knobColour, outlineThickness);
+        drawGlassSphere (g,
+                         kx - sliderRadius,
+                         ky - sliderRadius,
+                         sliderRadius * 2.0f,
+                         knobColour, outlineThickness);
     }
     else
     {
-        // Just call the base class for the demo
-        LookAndFeel_V2::drawLinearSliderThumb (g, x, y, width, height, sliderPos, minSliderPos, maxSliderPos, style, slider);
+        if (style == Slider::ThreeValueVertical)
+        {
+            drawGlassSphere (g, x + width * 0.5f - sliderRadius,
+                             sliderPos - sliderRadius,
+                             sliderRadius * 2.0f,
+                             knobColour, outlineThickness);
+        }
+        else if (style == Slider::ThreeValueHorizontal)
+        {
+            drawGlassSphere (g,sliderPos - sliderRadius,
+                             y + height * 0.5f - sliderRadius,
+                             sliderRadius * 2.0f,
+                             knobColour, outlineThickness);
+        }
+        
+        if (style == Slider::TwoValueVertical || style == Slider::ThreeValueVertical)
+        {
+            const float sr = jmin (sliderRadius, width * 0.4f);
+            
+            drawPointer (g, jmax (0.0f, x + width * 0.5f - sliderRadius * 2.0f),
+                              minSliderPos - sliderRadius,
+                              sliderRadius * 2.0f, knobColour, outlineThickness, 1);
+            
+            drawPointer (g, jmin (x + width - sliderRadius * 2.0f, x + width * 0.5f), maxSliderPos - sr,
+                              sliderRadius * 2.0f, knobColour, outlineThickness, 3);
+        }
+        else if (style == Slider::TwoValueHorizontal || style == Slider::ThreeValueHorizontal)
+        {
+            const float sr = jmin (sliderRadius, height * 0.4f);
+            
+            drawPointer (g, minSliderPos - sr,
+                              jmax (0.0f, y + height * 0.5f - sliderRadius * 2.0f),
+                              sliderRadius * 2.0f, knobColour, outlineThickness, 2);
+            
+            drawPointer (g, maxSliderPos - sliderRadius,
+                              jmin (y + height - sliderRadius * 2.0f, y + height * 0.5f),
+                              sliderRadius * 2.0f, knobColour, outlineThickness, 4);
+        }
     }
 }
 
@@ -225,18 +253,27 @@ void CustomLookAndFeel::drawLinearSliderBackground (Graphics& g, int x, int y, i
                                  float /*sliderPos*/,
                                  float /*minSliderPos*/,
                                  float /*maxSliderPos*/,
-                                 const Slider::SliderStyle /*style*/, Slider& slider)
+                                 const Slider::SliderStyle style, Slider& slider)
 {
     const float sliderRadius = getSliderThumbRadius (slider) - 5.0f;
     Path on, off;
     
-    if (slider.isHorizontal())
+    if (style == Slider::SliderStyle::LinearHorizontal)
     {
         const float iy = y + height * 0.5f - sliderRadius * 0.5f;
         Rectangle<float> r (x - sliderRadius * 0.5f, iy, width + sliderRadius, sliderRadius);
         const float onW = r.getWidth() * ((float) slider.valueToProportionOfLength (slider.getValue()));
-        
         on.addRectangle (r.removeFromLeft (onW));
+        off.addRectangle (r);
+    }
+    else if (style == Slider::SliderStyle::TwoValueHorizontal)
+    {
+        const float iy = y + height * 0.5f - sliderRadius * 0.5f;
+        Rectangle<float> r (x - sliderRadius * 0.5f, iy, width + sliderRadius, sliderRadius);
+        
+        //const float onW = r.getWidth() * ((float) slider.valueToProportionOfLength (slider.getValue()));
+        //on.addRectangle (r.removeFromLeft (onW));
+        
         off.addRectangle (r);
     }
     else
@@ -482,3 +519,24 @@ void CustomLookAndFeel::drawPopupMenuItem (Graphics& g, const Rectangle<int>& ar
     }
 }
 
+//=======================================================================
+
+void CustomLookAndFeel::drawPointer (Graphics& g,
+                                       const float x, const float y, const float diameter,
+                                       const Colour& colour, const float outlineThickness,
+                                       const int direction)
+{
+    if (diameter <= outlineThickness)
+        return;
+    
+    Path p;
+    p.addTriangle(x + diameter * 0.5f, y, x + diameter, y + diameter, x, y + diameter);
+    
+    p.applyTransform (AffineTransform::rotation (direction * (float_Pi * 0.5f), x + diameter * 0.5f, y + diameter * 0.5f));
+    
+    g.setColour(Colour(ALPHAGREEN));
+    g.fillPath(p);
+    
+    g.setColour (Colours::black.withAlpha (0.5f * colour.getFloatAlpha()));
+    g.strokePath (p, PathStrokeType (outlineThickness));
+}

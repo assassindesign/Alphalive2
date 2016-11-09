@@ -132,6 +132,7 @@ public:
         DynamicMidiChannel,
         PadEnabled,
         MidiCCType,
+        PressureRange,
         FINAL_DATAID
     };
     
@@ -168,6 +169,7 @@ public:
     void clearAllMidiChannels();
     bool setPressureMode(const int newMode);
     bool setPressureDestination(const int newDestination);
+    bool setPressureRange(const float newMin, const float newMax);
     void setSticky(const bool shouldBeSticky);
     void setNoteEnabled(const bool shouldBeEnabled);
     void setPressureEnabled(const bool shouldBeEnabled);
@@ -208,6 +210,8 @@ public:
     int getNumMidiChannels();
     int getPressureMode();
     int getPressureDestination();
+    float getPressureMin();
+    float getPressureRange();
     bool getSticky();
     bool getNoteEnabled();
     bool getPressureEnabled();
@@ -242,6 +246,8 @@ private:
     Array<int> midiChannels;
     int pressureMode = 0;
     int pressureDestination = 0;
+    float pressureMin = 0;
+    float pressureRange = 1;
     bool sticky = false;
     bool noteEnabled = true;
     bool pressureEnabled = true;

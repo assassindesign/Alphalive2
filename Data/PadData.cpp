@@ -555,6 +555,17 @@ bool PadData::setPressureDestination(const int newDestination)
     return success;
 }
 
+bool PadData::setPressureRange(const float newMin, const float newMax)
+{
+    if (newMin >= 0 && newMin <= 1.0)
+    {
+        if (newMax > newMin && newMax >= 0 && newMax <= 1.0)
+        {
+            
+        }
+    }
+}
+
 void PadData::setSticky(const bool shouldBeSticky)
 {
     dataLock.enter();
@@ -915,6 +926,16 @@ int PadData::getPressureMode()
 int PadData::getPressureDestination()
 {
     return pressureDestination;
+}
+
+float PadData::getPressureMin()
+{
+    return 0;
+}
+
+float PadData::getPressureRange()
+{
+    return 1;
 }
 
 bool PadData::getSticky()

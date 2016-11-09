@@ -73,7 +73,6 @@ ButtonGrid::ButtonGrid(int numButtons, String _labelText, bool showTopButton, St
     }
     
     topRightButton = new ToggleButton(topButtonText);
-    topRightButton->setRadioGroupId(1);
     if (showTopButton)
     {
         addAndMakeVisible(topRightButton);
@@ -200,5 +199,15 @@ void ButtonGrid::setIsExclusive(const bool shouldBeExclusive)
 bool ButtonGrid::getIsExclusive()
 {
     return isExclusive;
+}
+
+void ButtonGrid::setToggleButtonState(const bool newState)
+{
+    toggleButtonState = newState;
+}
+
+bool ButtonGrid::getToggleButtonState()
+{
+    return toggleButtonState;
 }
 

@@ -37,6 +37,8 @@ public:
                       bool isMouseOverButton,
                       bool isButtonDown) override;
     
+    void drawToggleButton (Graphics& g, ToggleButton& button, bool isMouseOverButton, bool isButtonDown) override;
+    
     
     void drawLinearSliderThumb (Graphics& g, int x, int y, int width, int height,
                                 float sliderPos, float minSliderPos, float maxSliderPos,
@@ -70,7 +72,10 @@ public:
                                                const bool hasSubMenu, const String& text,
                                                const String& shortcutKeyText,
                                                const Drawable* icon, const Colour* const textColourToUse) override;
-private:
+    
+    virtual void drawPointer (Graphics& g, const float x, const float y, const float diameter,
+                            const Colour& colour, const float outlineThickness,
+                            const int direction);
     DropShadow knobShadow;
 };
 
@@ -89,10 +94,12 @@ public:
     void setupCustomLookAndFeelColours (LookAndFeel& laf)
     {
         // Slider
-        laf.setColour (Slider::thumbColourId, Colour (ALPHAGREEN));
+        laf.setColour (Slider::thumbColourId, (GUIColours::AlphaGreen));
         laf.setColour (Slider::textBoxOutlineColourId, Colours::transparentWhite);
         laf.setColour (Slider::rotarySliderFillColourId, Colour (0xff4d4d4d));
         laf.setColour (Slider::rotarySliderOutlineColourId, Colours::white);
+        laf.setColour (Slider::trackColourId, Colour (0xff4d4d4d));
+        
         // Text Button
         laf.setColour (TextButton::buttonColourId, Colours::white);
         laf.setColour (TextButton::textColourOffId, Colour (ALPHAGREEN));

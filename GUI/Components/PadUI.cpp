@@ -35,7 +35,7 @@ void Pad::paint(Graphics& g)
     if (padData != nullptr)
     {
         static float alpha;
-        alpha = 0.15 + (padData->getPadPressure()/127.0) * 0.75;
+        alpha = 0.15 + (padData->getPadPressure()/MAX_PRESSURE) * 0.75;
         
         
         //DBG(String(padData->getPadPressure()) + " : " + String(padData->getPadID()));

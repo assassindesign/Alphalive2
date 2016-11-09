@@ -28,20 +28,20 @@ ValueTree* PadData::toValueTree()
 
     dataLock.enter();
     
-    outputTree->setProperty("padID", padID, 0);
-    outputTree->setProperty("padFunction", padFunction, 0);
-    outputTree->setProperty("velocity", velocity, 0);
-    outputTree->setProperty("padPressure", padPressure, 0);
-    outputTree->setProperty("pressureMode", pressureMode, 0);
-    outputTree->setProperty("sticky", sticky, 0);
-    outputTree->setProperty("noteEnabled", noteEnabled, 0);
-    outputTree->setProperty("pressureEnabled", pressureEnabled, 0);
-    outputTree->setProperty("quantiseEnabled", quantiseEnabled, 0);
-    outputTree->setProperty("reversePressure", reversePressure, 0);
-    outputTree->setProperty("velocityCurve", velocityCurve, 0);
-    outputTree->setProperty("pressureCurve", pressureCurve, 0);
-    outputTree->setProperty("padGroup", padGroup, 0);
-    
+//    outputTree->setProperty("padID", padID.get(), 0);
+//    outputTree->setProperty("padFunction", padFunction, 0);
+//    outputTree->setProperty("velocity", velocity, 0);
+//    outputTree->setProperty("padPressure", padPressure, 0);
+//    outputTree->setProperty("pressureMode", pressureMode, 0);
+//    outputTree->setProperty("sticky", sticky, 0);
+//    outputTree->setProperty("noteEnabled", noteEnabled, 0);
+//    outputTree->setProperty("pressureEnabled", pressureEnabled, 0);
+//    outputTree->setProperty("quantiseEnabled", quantiseEnabled, 0);
+//    outputTree->setProperty("reversePressure", reversePressure, 0);
+//    outputTree->setProperty("velocityCurve", velocityCurve, 0);
+//    outputTree->setProperty("pressureCurve", pressureCurve, 0);
+//    outputTree->setProperty("padGroup", padGroup, 0);
+//    
     for (int i = 0; i < midiNoteTree->getNumChildren(); i++)
     {
         midiNoteTree->setProperty("MidiNote" + String(i), midiNotes[i].noteNumber, 0);
@@ -158,9 +158,7 @@ bool PadData::setPadID (const int newPadID)
     bool success = false;
     if (newPadID >= 0)
     {
-        dataLock.enter();
-        padID = newPadID;
-        dataLock.exit();
+        padID.set(newPadID);
         
         callListeners(DataIDs::PadID, AppDataFormat::PadDataType);
         success = true;
@@ -303,9 +301,7 @@ bool PadData::setPadFunction (const int newFunction)
     bool success = false;
     if (newFunction >= 0 && newFunction <= FINAL_PADFUNCTION)
     {
-        dataLock.enter();
-        padFunction = newFunction;
-        dataLock.exit();
+        padFunction.set(newFunction);
         
         callListeners(DataIDs::PadFunction, AppDataFormat::PadDataType);
         success = true;
@@ -321,9 +317,7 @@ bool PadData::setPadAudioFunction (const int newFunction)
     bool success = false;
     if (newFunction >= 0 && newFunction <= FINAL_PADAUDIOFUNCTION)
     {
-        dataLock.enter();
-        padAudioFunction = newFunction;
-        dataLock.exit();
+        padAudioFunction.set(newFunction);
         
         callListeners(DataIDs::PadAudioFunction, AppDataFormat::PadDataType);
         success = true;
@@ -339,9 +333,7 @@ bool PadData::setPadMidiFunction (const int newFunction)
     bool success = false;
     if (newFunction >= 0 && newFunction <= FINAL_PADMIDIFUNCTION)
     {
-        dataLock.enter();
-        padMidiFunction = newFunction;
-        dataLock.exit();
+        padMidiFunction.set(newFunction);;
         
         callListeners(DataIDs::PadMidiFunction, AppDataFormat::PadDataType);
         success = true;
@@ -357,9 +349,7 @@ bool PadData::setPadSystemFunction (const int newFunction)
     bool success = false;
     if (newFunction >= 0 && newFunction <= FINAL_PADSYSFUNCTION)
     {
-        dataLock.enter();
-        padSystemFunction = newFunction;
-        dataLock.exit();
+        padSystemFunction.set(newFunction);
         
         callListeners(DataIDs::PadSystemFunction, AppDataFormat::PadDataType);
         success = true;
@@ -375,9 +365,7 @@ bool PadData::setNoteTriggerMode(const int newMode)
     bool success = false;
     if (newMode >= 0 && newMode <= FINAL_SINGLENOTEMODE)
     {
-        dataLock.enter();
-        noteTriggerMode = newMode;
-        dataLock.exit();
+        noteTriggerMode.set(newMode);
         
         callListeners(DataIDs::NoteTriggerMode, AppDataFormat::PadDataType);
         success = true;
@@ -393,9 +381,7 @@ bool PadData::setMultiNoteMode(const int newMode)
     bool success = false;
     if (newMode >= 0 && newMode <= FINAL_MULTINOTEMODE)
     {
-        dataLock.enter();
-        multiNoteMode = newMode;
-        dataLock.exit();
+        multiNoteMode.set(newMode);
         
         callListeners(DataIDs::MultiNoteMode, AppDataFormat::PadDataType);
         success = true;
@@ -411,9 +397,7 @@ bool PadData::setVelocity (const int newVel)
     bool success = false;
     if (newVel >= 0 && newVel < 128)
     {
-        dataLock.enter();
-        velocity = newVel;
-        dataLock.exit();
+        velocity.set(newVel);
         
         callRepaintListeners();
         success = true;
@@ -429,12 +413,10 @@ bool PadData::setPadPressure (const float newPressure)
 {
     bool succeed = false;
 
-    if (newPressure >= 0 && newPressure < 128)
+    if (newPressure >= 0 && newPressure < 512)
     {
-        dataLock.enter();
-        padPressure = newPressure;
-        dataLock.exit();
-        //callListeners(DataIDs::Pressure);
+        padPressure.set(newPressure);
+
         callRepaintListeners();
         succeed = true;
     }
@@ -524,9 +506,8 @@ bool PadData::setPressureMode(const int newMode)
     bool success = false;
     if (newMode >= 0 && newMode <= FINAL_PRESSUREMODE)
     {
-        dataLock.enter();
-        pressureMode = newMode;
-        dataLock.exit();
+        pressureMode.set(newMode);
+        
         callListeners(DataIDs::PressureMode, AppDataFormat::PadDataType);
         success = true;
     }
@@ -542,9 +523,8 @@ bool PadData::setPressureDestination(const int newDestination)
     bool success = false;
     if (newDestination >= 0 && newDestination <= FINAL_PRESSUREDESTINATION)
     {
-        dataLock.enter();
-        pressureDestination = newDestination;
-        dataLock.exit();
+        pressureDestination.set(newDestination);
+
         callListeners(DataIDs::PressureDestination, AppDataFormat::PadDataType);
         success = true;
     }
@@ -555,48 +535,59 @@ bool PadData::setPressureDestination(const int newDestination)
     return success;
 }
 
+bool PadData::setPressureRange(const float newMin, const float newMax)
+{
+    bool success = false;
+    if (newMin >= 0 && newMin <= 1.0)
+    {
+        if (newMax >= newMin && newMax >= 0 && newMax <= 1.0)
+        {
+            pressureMin.set(newMin);
+            pressureRange.set(newMax-newMin);
+            
+            callListeners(DataIDs::PressureRange, AppDataFormat::PadDataType);
+            success = true;
+        }
+    }
+    
+    return success;
+}
+
 void PadData::setSticky(const bool shouldBeSticky)
 {
-    dataLock.enter();
-    sticky = shouldBeSticky;
-    dataLock.exit();
+    sticky.set(shouldBeSticky);
+
     callListeners(DataIDs::Sticky, AppDataFormat::PadDataType);
-    
 }
 
 void PadData::setNoteEnabled(const bool shouldBeEnabled)
 {
-    dataLock.enter();
-    noteEnabled = shouldBeEnabled;
-    dataLock.exit();
+    noteEnabled.set(shouldBeEnabled);
+    
     callListeners(DataIDs::NoteEnabled, AppDataFormat::PadDataType);
     
 }
 
 void PadData::setPressureEnabled(const bool shouldBeEnabled)
 {
-    dataLock.enter();
-    pressureEnabled = shouldBeEnabled;
-    dataLock.exit();
-    callListeners(DataIDs::PressureEnabled, AppDataFormat::PadDataType);
+    pressureEnabled.set(shouldBeEnabled);
     
+    callListeners(DataIDs::PressureEnabled, AppDataFormat::PadDataType);
 }
+
 
 void PadData::setQuantiseEnabled(const bool shouldBeQuantised)
 {
-    dataLock.enter();
-    quantiseEnabled = shouldBeQuantised;
-    dataLock.exit();
-    callListeners(DataIDs::QuantiseEnabled, AppDataFormat::PadDataType);
+    quantiseEnabled.set(shouldBeQuantised);
     
+    callListeners(DataIDs::QuantiseEnabled, AppDataFormat::PadDataType);
 }
+
 void PadData::setReversePressure(const bool shouldReversePressure)
 {
-    dataLock.enter();
-    reversePressure = shouldReversePressure;
-    dataLock.exit();
-    callListeners(DataIDs::ReversePressure, AppDataFormat::PadDataType);
+    reversePressure.set(shouldReversePressure);
     
+    callListeners(DataIDs::ReversePressure, AppDataFormat::PadDataType);
 }
     
 bool PadData::setVelocityCurve(const int newCurve)
@@ -604,9 +595,8 @@ bool PadData::setVelocityCurve(const int newCurve)
     bool success = false;
     if (newCurve >= 0 && newCurve <= CurveTypes::StaticCurve)
     {
-        dataLock.enter();
-        pressureMode = newCurve;
-        dataLock.exit();
+        pressureMode.set(newCurve);
+        
         callListeners(DataIDs::VelocityCurve, AppDataFormat::PadDataType);
         success = true;
     }
@@ -622,9 +612,8 @@ bool PadData::setPressureCurve(const int newCurve)
     bool success = false;
     if (newCurve >= 0 && newCurve <= FINAL_CURVETYPE)
     {
-        dataLock.enter();
-        pressureMode = newCurve;
-        dataLock.exit();
+        pressureMode.set(newCurve);
+
         callListeners(DataIDs::PressureCurve, AppDataFormat::PadDataType);
         success = true;
     }
@@ -639,9 +628,8 @@ bool PadData::setPadGroup(const int newGroup)
     bool success = false;
     if (newGroup >= 0 && newGroup <= MAX_GROUPS)
     {
-        dataLock.enter();
-        pressureMode = newGroup;
-        dataLock.exit();
+        pressureMode.set(newGroup);
+
         callListeners(DataIDs::PadGroup, AppDataFormat::PadDataType);
         success = true;
     }
@@ -658,9 +646,8 @@ bool PadData::setMidiDestination(const int newDestination)
     
     if (newDestination >= 0)
     {
-        dataLock.enter();
-        midiDestination = newDestination;
-        dataLock.exit();
+        midiDestination.set(newDestination);
+        
         callListeners(DataIDs::MidiDestination, AppDataFormat::PadDataType);
         success = true;
     }
@@ -760,9 +747,7 @@ bool PadData::setPadColour(const int newColour)
     
     if (newColour > -1 && newColour < NUM_PAD_COLOURS)
     {
-        dataLock.enter();
-        padColour = newColour;
-        dataLock.exit();
+        padColour.set(newColour);
         
         callListeners(DataIDs::PadColour, AppDataFormat::PadDataType);
         success = true;
@@ -777,9 +762,7 @@ bool PadData::setLFOCurveType(const int newType)
     
     if (newType > -1 && newType < FINAL_LFOCURVETYPE)
     {
-        dataLock.enter();
-        padColour = newType;
-        dataLock.exit();
+        padColour.set(newType);
         
         callListeners(DataIDs::PadColour, AppDataFormat::PadDataType);
         success = true;
@@ -790,18 +773,14 @@ bool PadData::setLFOCurveType(const int newType)
 
 void PadData::setDynamicMidiChannel(const bool enabled)
 {
-    dataLock.enter();
-    dynamicMidiChannel = enabled;
-    dataLock.exit();
+    dynamicMidiChannel.set(enabled);
     
     callListeners(DataIDs::DynamicMidiChannel, AppDataFormat::PadDataType);
 }
 
 void PadData::setPadEnabled(const bool enabled)
 {
-    dataLock.enter();
-    padEnabled = enabled;
-    dataLock.exit();
+    padEnabled.set(enabled);
     
     callListeners(DataIDs::DynamicMidiChannel, AppDataFormat::PadDataType);
 }
@@ -811,9 +790,8 @@ bool PadData::setMidiCC(const int newCC)
     bool success = false;
     if (newCC >= 0 && newCC <= 128)
     {
-        dataLock.enter();
-        midiCC = newCC;
-        dataLock.exit();
+        midiCC.set(newCC);
+
         callListeners(DataIDs::MidiCCType, AppDataFormat::PadDataType);
         success = true;
     }
@@ -828,7 +806,7 @@ bool PadData::setMidiCC(const int newCC)
 //============= GETS ===========================================
 int PadData::getPadID()
 {
-    return padID;
+    return padID.get();
 }
 
 int PadData::getMidiNote()
@@ -855,42 +833,42 @@ int PadData::getNumMidiNotes()
 
 int PadData::getPadFunction()
 {
-    return padFunction;
+    return padFunction.get();
 }
 
 int PadData::getPadAudioFunction()
 {
-    return padAudioFunction;
+    return padAudioFunction.get();
 }
 
 int PadData::getPadMidiFunction()
 {
-    return padMidiFunction;
+    return padMidiFunction.get();
 }
 
 int PadData::getPadSystemFunction()
 {
-    return padSystemFunction;
+    return padSystemFunction.get();
 }
 
 int PadData::getNoteTriggerMode()
 {
-    return noteTriggerMode;
+    return noteTriggerMode.get();
 }
 
 int PadData::getMultiNoteMode()
 {
-    return multiNoteMode;
+    return multiNoteMode.get();
 }
 
 int PadData::getVelocity()
 {
-    return velocity;
+    return velocity.get();
 }
 
 float PadData::getPadPressure()
 {
-    return padPressure;
+    return padPressure.get();
 }
 
 int PadData::getMidiChannel()
@@ -910,71 +888,81 @@ int PadData::getNumMidiChannels()
 
 int PadData::getPressureMode()
 {
-    return pressureMode;
+    return pressureMode.get();
 }
 int PadData::getPressureDestination()
 {
-    return pressureDestination;
+    return pressureDestination.get();
+}
+
+float PadData::getPressureMin()
+{
+    return pressureMin.get();
+}
+
+float PadData::getPressureRange()
+{
+    return pressureRange.get();
 }
 
 bool PadData::getSticky()
 {
-    return sticky;
+    return sticky.get();
 }
 
 bool PadData::getNoteEnabled()
 {
-    return noteEnabled;
+    return noteEnabled.get();
 }
 
 bool PadData::getPressureEnabled()
 {
-    return pressureEnabled;
+    return pressureEnabled.get();
 }
 
 bool PadData::getQuantiseEnabled()
 {
-    return quantiseEnabled;
+    return quantiseEnabled.get();
 }
 
 bool PadData::getReversePressure()
 {
-    return reversePressure;
+    return reversePressure.get();
 }
 
 int PadData::getVelocityCurve()
 {
-    return velocityCurve;
+    return velocityCurve.get();
 }
 
 int PadData::getPressureCurve()
 {
-    return pressureCurve;
+    return pressureCurve.get();
 }
 
 int PadData::getPadGroup()
 {
-    return padGroup;
+    return padGroup.get();
 }
 
 int PadData::getMidiDestination()
 {
-    return midiDestination;
+    return midiDestination.get();
 }
 
 int PadData::getLFOCurveType()
 {
-    return lFOCurveType;
+    return lFOCurveType.get();
 }
 
 bool PadData::getDynamicMidiChannel()
 {
-    return dynamicMidiChannel;
+    return dynamicMidiChannel.get();
 }
 
 bool PadData::getPadEnabled()
 {
-    return padEnabled;
+    return padEnabled.get();
 }
 
 int PadData::getParentSphereID()
@@ -991,6 +979,6 @@ int PadData::getParentSphereID()
 
 int PadData::getMidiCC()
 {
-    return midiCC;
+    return midiCC.get();
 }
 

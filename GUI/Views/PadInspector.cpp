@@ -72,18 +72,18 @@ void PadInspector::appDataChangeCallback(const int changedData)
     if (changedData == AppData::DataIDs::InspectingPad)
     {
         padDataToInspect = AppData::Instance()->getCurrentlyInspectingPadDataPtr();
-        
-        if (padDataToInspect != nullptr)
+    
+    
+        if (padDataToInspect == nullptr)
         {
-            if (padDataToInspect == nullptr)
-            {
-                mainInspectorPanel.setTopPanelEnabled(false);
-            }
-            else
-            {
-                mainInspectorPanel.setTopPanelEnabled(true);
-                mainInspectorPanel.setDataObject(padDataToInspect);
-            }
+            mainInspectorPanel.setTopPanelEnabled(false);
         }
+        else
+        {
+            mainInspectorPanel.setTopPanelEnabled(true);
+            mainInspectorPanel.setDataObject(padDataToInspect);
+        }
+            
+        
     }
 }

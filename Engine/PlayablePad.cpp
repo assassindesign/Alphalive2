@@ -179,11 +179,14 @@ void PlayablePad::pressPad(const float pressure, const bool killingPad)
             static float receivedPressure;
             receivedPressure = pressure;
             
+            //apply range 
+            receivedPressure = (receivedPressure * padData->getPressureRange()) + (padData->getPressureMin()*MAX_PRESSURE);
+            
             if (padData->getPressureDestination() != PadData::PressureDestinations::OSC) // if pressure mode requires value between 0-127
             {
-                receivedPressure = (pressure / MAX_PRESSURE) * 127.0;
+                receivedPressure = (receivedPressure / MAX_PRESSURE) * 127.0;
                 
-                if (padData->setPadPressure(receivedPressure));
+                if (padData->setPadPressure(pressure));
                 {
                     MidiMessage message;
 
@@ -226,7 +229,7 @@ void PlayablePad::pressPad(const float pressure, const bool killingPad)
                 minPressure = pressure;
             }
             
-            DBG(String(minPressure) + ":" + String(pressure));
+            //DBG(String(minPressure) + ":" + String(pressure));
             
             
             if (padData->Velocity > 0 && pressure >= 511) //if pad is on and pressure is at max

@@ -86,14 +86,19 @@ public:
         TempoDataType,
     };
     
-    struct DataChange{
+    class DataChange
+    {
+    public:
+        DataChange(const int data, const int listener) : dataID(data), listenerType(listener){};
+        ~DataChange(){};
         int dataID;
         int listenerType;
     };
         
-    AppDataFormat()
+    AppDataFormat() : workingDataChange(0,0)
     {
         changedDataIDs.clear();
+        changedDataIDs.ensureStorageAllocated(2048);
         addActionListener(this);
     }
     ~AppDataFormat()
@@ -124,11 +129,7 @@ public:
     
     void callListeners(const int changedData, const int listenerType)
     {
-        DataChange* change = new DataChange();
-        change->dataID = changedData;
-        change->listenerType = listenerType;
-        changedDataIDs.add(*change);
-        //triggerAsyncUpdate();
+        changedDataIDs.add(DataChange(changedData, listenerType));
         
         sendActionMessage("DATA");
     }
@@ -175,7 +176,6 @@ private:
                 changedDataIDs.remove(0);
             }
         }
-        
         
     }
     

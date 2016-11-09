@@ -132,6 +132,7 @@ public:
         DynamicMidiChannel,
         PadEnabled,
         MidiCCType,
+        PressureRange,
         FINAL_DATAID
     };
     
@@ -168,6 +169,7 @@ public:
     void clearAllMidiChannels();
     bool setPressureMode(const int newMode);
     bool setPressureDestination(const int newDestination);
+    bool setPressureRange(const float newMin, const float newMax);
     void setSticky(const bool shouldBeSticky);
     void setNoteEnabled(const bool shouldBeEnabled);
     void setPressureEnabled(const bool shouldBeEnabled);
@@ -208,6 +210,8 @@ public:
     int getNumMidiChannels();
     int getPressureMode();
     int getPressureDestination();
+    float getPressureMin();
+    float getPressureRange();
     bool getSticky();
     bool getNoteEnabled();
     bool getPressureEnabled();
@@ -229,33 +233,35 @@ public:
     WeakReference<PadData>::Master masterReference;
 
 private:
-    int padID = -1;
+    Atomic<int> padID {-1};
     Array<MidiNote> midiNotes;
-    int padFunction = 0;
-    int padAudioFunction = 0;
-    int padMidiFunction = PadMidiFunctions::MultiNote;
-    int padSystemFunction = 0;
-    int noteTriggerMode = 0;
-    int multiNoteMode = 0;
-    int velocity = 0;
-    float padPressure = 0;
+    Atomic<int> padFunction {0};
+    Atomic<int> padAudioFunction {0};
+    Atomic<int> padMidiFunction  {PadMidiFunctions::MultiNote};
+    Atomic<int> padSystemFunction {0};
+    Atomic<int> noteTriggerMode {0};
+    Atomic<int> multiNoteMode {0};
+    Atomic<int> velocity {0};
+    Atomic<float> padPressure {0};
     Array<int> midiChannels;
-    int pressureMode = 0;
-    int pressureDestination = 0;
-    bool sticky = false;
-    bool noteEnabled = true;
-    bool pressureEnabled = true;
-    bool quantiseEnabled = false;
-    bool reversePressure = false;
-    int velocityCurve = CurveTypes::Linear;
-    int pressureCurve = 0;
-    int padGroup = 0;
-    int midiDestination = 0;
-    int padColour = 0;
-    int lFOCurveType = 0;
-    bool dynamicMidiChannel = false;
-    bool padEnabled = true;
-    int midiCC = 0;
+    Atomic<int> pressureMode {0};
+    Atomic<int> pressureDestination {0};
+    Atomic<float> pressureMin {0.0};
+    Atomic<float> pressureRange {1.0};
+    Atomic<int> sticky {false};
+    Atomic<int> noteEnabled {true};
+    Atomic<int> pressureEnabled {true};
+    Atomic<int> quantiseEnabled {false};
+    Atomic<int> reversePressure {false};
+    Atomic<int> velocityCurve {CurveTypes::Linear};
+    Atomic<int> pressureCurve {0};
+    Atomic<int> padGroup {0};
+    Atomic<int> midiDestination {0};
+    Atomic<int> padColour {0};
+    Atomic<int> lFOCurveType {0};
+    Atomic<int> dynamicMidiChannel {false};
+    Atomic<int> padEnabled {true};
+    Atomic<int> midiCC {0};
     
     SphereData* parent = nullptr;
     

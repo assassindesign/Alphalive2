@@ -54,6 +54,7 @@ MidiPressureSettingsPanel::MidiPressureSettingsPanel()
     rangeSlider->setMinValue(0);
     rangeSlider->setMaxValue(1);
     addAndMakeVisible(rangeSlider);
+    rangeSlider->addListener(this);
 }
 
 MidiPressureSettingsPanel::~MidiPressureSettingsPanel()
@@ -182,5 +183,20 @@ void MidiPressureSettingsPanel::buttonClicked(Button* button)
         }
     }
 
+}
+
+void MidiPressureSettingsPanel::sliderValueChanged (Slider* slider)
+{
+    if (slider == rangeSlider)
+    {
+        if (padData.get() != nullptr)
+        {
+            if(!padData->setPressureRange(rangeSlider->getMinValue(), rangeSlider->getMaxValue()))
+               {
+                   DBG("Pressure Range out of Range");
+               }
+        }
+    }
+    
 }
 

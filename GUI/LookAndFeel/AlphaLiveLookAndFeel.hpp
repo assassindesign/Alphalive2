@@ -92,7 +92,7 @@ public:
     void setupCustomLookAndFeelColours (LookAndFeel& laf)
     {
         // Slider
-        laf.setColour (Slider::thumbColourId, Colour (ALPHAGREEN));
+        laf.setColour (Slider::thumbColourId, (GUIColours::AlphaGreen));
         laf.setColour (Slider::textBoxOutlineColourId, Colours::transparentWhite);
         laf.setColour (Slider::rotarySliderFillColourId, Colour (0xff4d4d4d));
         laf.setColour (Slider::rotarySliderOutlineColourId, Colours::white);

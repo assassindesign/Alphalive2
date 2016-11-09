@@ -123,8 +123,8 @@ void CustomLookAndFeel::drawTickBox (Graphics& g, Component& component,
         toggleOn.scaleToFit(x, y, w, h, true);
         g.setColour (isEnabled ? findColour (TextButton::buttonOnColourId) : Colours::grey);
         
-        //const float scale = 9.0f;
-        //const AffineTransform trans (AffineTransform::scale (w / scale, h / scale).translated (x - 2.5f, y + 1.0f));
+//        const float scale = 9.0f;
+//        const AffineTransform trans (AffineTransform::scale (w / scale, h / scale).translated (x - 2.5f, y + 1.0f));
         g.fillPath (toggleOn);
     }
     
@@ -136,6 +136,7 @@ void CustomLookAndFeel::drawTickBox (Graphics& g, Component& component,
         
         g.setColour (Colour (0xff4d4d4d));
         g.fillPath (toggleOff);
+        
     }
 }
 
@@ -271,10 +272,15 @@ void CustomLookAndFeel::drawLinearSliderBackground (Graphics& g, int x, int y, i
         const float iy = y + height * 0.5f - sliderRadius * 0.5f;
         Rectangle<float> r (x - sliderRadius * 0.5f, iy, width + sliderRadius, sliderRadius);
         
-        //const float onW = r.getWidth() * ((float) slider.valueToProportionOfLength (slider.getValue()));
+        const float onW = r.getWidth() * ((float) slider.valueToProportionOfLength (slider.getMaxValue())) + r.getX();
+        const float onX = (r.getWidth() * ((float) slider.valueToProportionOfLength (slider.getMinValue())) + r.getX());
+
         //on.addRectangle (r.removeFromLeft (onW));
         
+        
         off.addRectangle (r);
+        on.addRectangle(onX, r.getY(), onW - onX, r.getHeight());
+        
     }
     else
     {
@@ -285,12 +291,12 @@ void CustomLookAndFeel::drawLinearSliderBackground (Graphics& g, int x, int y, i
         on.addRectangle (r.removeFromBottom (onH));
         off.addRectangle (r);
     }
-    
-    g.setColour (slider.findColour (Slider::rotarySliderFillColourId));
-    g.fillPath (on);
-    
     g.setColour (slider.findColour (Slider::trackColourId));
     g.fillPath (off);
+    
+    g.setColour (slider.findColour (Slider::thumbColourId));
+    g.fillPath (on);
+    
 }
 
 void CustomLookAndFeel::drawRotarySlider (Graphics& g, int x, int y, int width, int height, float sliderPos,
@@ -534,7 +540,7 @@ void CustomLookAndFeel::drawPointer (Graphics& g,
     
     p.applyTransform (AffineTransform::rotation (direction * (float_Pi * 0.5f), x + diameter * 0.5f, y + diameter * 0.5f));
     
-    g.setColour(Colour(ALPHAGREEN));
+    g.setColour(findColour(Slider::ColourIds::thumbColourId));
     g.fillPath(p);
     
     g.setColour (Colours::black.withAlpha (0.5f * colour.getFloatAlpha()));

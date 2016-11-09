@@ -413,7 +413,7 @@ bool PadData::setPadPressure (const float newPressure)
 {
     bool succeed = false;
 
-    if (newPressure >= 0 && newPressure < 128)
+    if (newPressure >= 0 && newPressure < 512)
     {
         padPressure.set(newPressure);
 
@@ -540,7 +540,7 @@ bool PadData::setPressureRange(const float newMin, const float newMax)
     bool success = false;
     if (newMin >= 0 && newMin <= 1.0)
     {
-        if (newMax > newMin && newMax >= 0 && newMax <= 1.0)
+        if (newMax >= newMin && newMax >= 0 && newMax <= 1.0)
         {
             pressureMin.set(newMin);
             pressureRange.set(newMax-newMin);

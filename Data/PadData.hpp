@@ -247,7 +247,7 @@ private:
     Atomic<int> pressureMode {0};
     Atomic<int> pressureDestination {0};
     Atomic<float> pressureMin {0.0};
-    Atomic<float> pressureRange {0.0};
+    Atomic<float> pressureRange {1.0};
     Atomic<int> sticky {false};
     Atomic<int> noteEnabled {true};
     Atomic<int> pressureEnabled {true};

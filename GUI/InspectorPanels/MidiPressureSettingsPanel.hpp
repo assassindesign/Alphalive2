@@ -14,7 +14,8 @@
 #include "ToggleSwitch.hpp"
 
 class MidiPressureSettingsPanel : public PadInspectorPanelBase,
-                                  public Button::Listener
+                                  public Button::Listener,
+                                  public Slider::Listener
 {
 public:
     MidiPressureSettingsPanel();
@@ -24,6 +25,8 @@ public:
     void paint(Graphics &g) override;
     void resized() override;
     void buttonClicked(Button* button) override;
+
+    void sliderValueChanged (Slider* slider) override;
 
 private:
     //ToggleSwitch

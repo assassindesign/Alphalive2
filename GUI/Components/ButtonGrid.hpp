@@ -63,6 +63,9 @@ public:
     void setIsExclusive(const bool shouldBeExclusive);
     bool getIsExclusive();
     
+    void setToggleButtonState(const bool newState);
+    bool getToggleButtonState();
+    
 private:
     String labelText;
     Rectangle<int> titleBox;
@@ -71,7 +74,7 @@ private:
     OwnedArray<ButtonGridButton> gridButtons;
     ScopedPointer<ToggleButton> topRightButton;
     
-    bool isExclusive;
+    bool isExclusive, toggleButtonState;
     ListenerList<ButtonGrid::Listener> listeners;
 };
 

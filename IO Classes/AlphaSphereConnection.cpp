@@ -148,22 +148,22 @@ void AlphaSphereConnection::sendMidiMessage(MidiMessage midiMessage)
 {
     //sharedMemoryMidi.enter();
     
-//    if (getDeviceStatus() != 0)
-//    {
-//        //===============================================================
-//        //Sending MIDI over HID
-//        
-//        unsigned char dataToSend[4];
-//        
-//        const uint8 *rawMidiMessage = midiMessage.getRawData();
-//        
-//        dataToSend[0] = 0x00; //MIDI command ID
-//        dataToSend[1] = rawMidiMessage[0]; //midi status byte
-//        dataToSend[2] = rawMidiMessage[1]; //midi data byte 1
-//        dataToSend[3] = rawMidiMessage[2]; //midi data byte 2
-//        
-//        addMessageToHidOutReport (dataToSend);
-//    }
+    if (getDeviceStatus() != 0)
+    {
+        //===============================================================
+        //Sending MIDI over HID
+        
+        unsigned char dataToSend[4];
+        
+        const uint8 *rawMidiMessage = midiMessage.getRawData();
+        
+        dataToSend[0] = 0x00; //MIDI command ID
+        dataToSend[1] = rawMidiMessage[0]; //midi status byte
+        dataToSend[2] = rawMidiMessage[1]; //midi data byte 1
+        dataToSend[3] = rawMidiMessage[2]; //midi data byte 2
+        
+        addMessageToHidOutReport (dataToSend);
+    }
 //    else
 //    {
 //        //===============================================================

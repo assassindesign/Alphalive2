@@ -628,7 +628,7 @@ bool PadData::setPadGroup(const int newGroup)
     bool success = false;
     if (newGroup >= 0 && newGroup <= MAX_GROUPS)
     {
-        pressureMode.set(newGroup);
+        padGroup.set(newGroup);
 
         callListeners(DataIDs::PadGroup, AppDataFormat::PadDataType);
         success = true;

@@ -20,7 +20,9 @@ Alphalive2Engine::~Alphalive2Engine()
 
 void Alphalive2Engine::initialise()
 {
-    midiOut = new ExternalMidiOut("Alphalive 2");
+    sphereConnection = new AlphaSphereConnection();
+
+    midiOut = new ExternalMidiOut("Alphalive 2", sphereConnection);
     
     //midiIn = new ExternalMidiIn(&deviceManager);
     
@@ -28,7 +30,6 @@ void Alphalive2Engine::initialise()
     
     spheres.add(new PlayableSphere(48, 0));
     
-    sphereConnection = new AlphaSphereConnection();
     
     setHIDLinkedSphere(0);
     

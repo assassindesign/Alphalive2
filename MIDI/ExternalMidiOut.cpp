@@ -8,16 +8,21 @@
 
 #include "ExternalMidiOut.hpp"
 
-ExternalMidiOut::ExternalMidiOut(String name)
+ExternalMidiOut::ExternalMidiOut(String name, AlphaSphereConnection* alphaSphere = nullptr)
 {
-    channel = 1;
-    
     while (midiOutput == NULL)
     {
         midiOutput = midiOutput->createNewDevice(name);
     }
     
     midiOutput->startBackgroundThread();
+    
+    sphereConnection = alphaSphere;
+    
+    if (sphereConnection != nullptr)
+    {
+        outputThruSphere = true;
+    }
 }
 
 ExternalMidiOut::~ExternalMidiOut()
@@ -30,8 +35,8 @@ void ExternalMidiOut::handleInternalMidiNote(const int note, const int vel)
     //DBG("Output Note : " + String(note) + "," + String(vel));
     
     MidiMessage message = MidiMessage::noteOn(channel, note, uint8(vel));
+    handleMidiMessage(&message);
     
-    midiOutput->sendMessageNow(message);
 }
 
 void ExternalMidiOut::setMidiChannel(const int newChannel)
@@ -45,6 +50,13 @@ void ExternalMidiOut::setMidiChannel(const int newChannel)
 
 void ExternalMidiOut::handleMidiMessage(const MidiMessage* message)
 {
-    midiOutput->sendMessageNow(*message);
     
+    if (outputThruSphere)
+    {
+        sphereConnection->sendMidiMessage(*message);
+    }
+    else
+    {
+        midiOutput->sendMessageNow(*message);
+    }
 }

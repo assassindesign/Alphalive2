@@ -257,7 +257,7 @@ void InspectorTopPanel::buttonGridCallback(ButtonGrid* grid, const int buttonID)
 {
     if (grid == groupSelector)
     {
-        padData->setPadGroup(buttonID+1);
+        padData->setPadGroup(buttonID);
         DBG(padData->getPadGroup());
     }
 }

@@ -52,6 +52,7 @@ private:
     
     void positionPad(Pad* padToPosition, const int segment, const int row);
     
+    
     float gridDivisions;
     
     OwnedArray<Line<float>> segmentLines;

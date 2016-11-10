@@ -15,7 +15,8 @@
 #include "MainPadInspectorPanels.hpp"
 
 class PadInspector : public AppDataListener,
-                     public Component
+                     public Component,
+                     public Timer
 {
 public:
     
@@ -35,6 +36,7 @@ public:
     void paint(Graphics& g) override;
     void resized() override;
     void appDataChangeCallback(const int changedData) override;
+    void timerCallback() override;
     
 private:
     WeakReference<PadData> padDataToInspect;
@@ -49,7 +51,7 @@ private:
     
     MainInspectorPanel mainInspectorPanel;
     
-    
+    bool inspectingPadChanged = false;
     /*Midi note(s)
       Velocity
       Midi Channel

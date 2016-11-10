@@ -25,6 +25,8 @@ PadInspector::PadInspector()
     
     AppData::Instance()->addListener(this);
     
+    startTimer(250);
+    
 }
 
 PadInspector::~PadInspector()
@@ -62,7 +64,7 @@ void PadInspector::resized()
     
     
     mainViewport.setBounds(mainViewportBox);
-    mainInspectorPanel.setSize(mainViewportBox.getWidth(), mainViewportBox.getHeight());
+    mainInspectorPanel.setSize(mainViewportBox.getWidth(), mainViewportBox.getHeight() *1.5);
 
 }
 
@@ -71,9 +73,20 @@ void PadInspector::appDataChangeCallback(const int changedData)
 {
     if (changedData == AppData::DataIDs::InspectingPad)
     {
+      
+        inspectingPadChanged = true;
+            
+        
+    }
+}
+
+
+void PadInspector::timerCallback()
+{
+    if (inspectingPadChanged)
+    {
         padDataToInspect = AppData::Instance()->getCurrentlyInspectingPadDataPtr();
-    
-    
+        
         if (padDataToInspect == nullptr)
         {
             mainInspectorPanel.setTopPanelEnabled(false);
@@ -83,7 +96,10 @@ void PadInspector::appDataChangeCallback(const int changedData)
             mainInspectorPanel.setTopPanelEnabled(true);
             mainInspectorPanel.setDataObject(padDataToInspect);
         }
-            
         
+        inspectingPadChanged = false;
     }
+    
 }
+
+

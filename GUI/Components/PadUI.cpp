@@ -9,6 +9,7 @@
 #include "PadUI.hpp"
 #include "MainComponent.h"
 
+
 Pad::Pad(PadData* _padData) : padData(_padData)
 {
     setColour(Colours::whitesmoke);
@@ -32,6 +33,7 @@ Pad::~Pad()
 }
 void Pad::paint(Graphics& g)
 {
+    //g.fillAll(GUIColours::Background);
     if (padData != nullptr)
     {
         static float alpha;
@@ -65,6 +67,10 @@ void Pad::paint(Graphics& g)
             g.drawEllipse(2, 2, getWidth()-4, getHeight()-4, 2);
             
         }
+        
+        g.drawFittedText(String(padData->getPadID()), getLocalBounds(), Justification::centred, 1);
+        
+        //DBG("PAD Paint: " + String(padData->getPadID()));
     }
     else
         jassertfalse;

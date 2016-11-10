@@ -49,7 +49,7 @@ MainContentComponent::MainContentComponent()
     addAndMakeVisible(killButton);
     
     audioMeter = new AudioMeterButton();
-    addAndMakeVisible(audioMeter);
+    //addAndMakeVisible(audioMeter);
     
     connectionStatus = new AlphaSphereConnectedButton();
     addAndMakeVisible(connectionStatus);

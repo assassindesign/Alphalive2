@@ -90,7 +90,9 @@ SphereView::SphereView(const int _sphereID, MainContentComponent &ref) : sphereI
 
     
     openGLContext.setMultisamplingEnabled(true);
-    openGLContext.attachTo(*this);
+    //openGLContext.attachTo(*this)
+        
+    //setBufferedToImage(true);
 
 }
 
@@ -122,7 +124,7 @@ void SphereView::sliderValueChanged (Slider* slider)
 
 void SphereView::paint(Graphics& g)
 {
-    g.fillAll(GUIColours::Background);
+    //g.fillAll(GUIColours::Background);
     //draw outer circle
     g.setColour(Colours::white.withAlpha(uint8(0x33)));
     
@@ -151,7 +153,9 @@ void SphereView::paint(Graphics& g)
     for (int i = 0 ; i < segmentLines.size(); i++)
     {
         g.drawLine(*segmentLines[i],1);
+ 
     }
+
 }
 
 void SphereView::resized()

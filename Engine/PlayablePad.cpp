@@ -134,6 +134,7 @@ void PlayablePad::hitPad(const int velocity, const bool killingPad)
                         //                            router->sendMidiToDestination(padData->getMidiDestination(), &outputMessage);
                         //
                         //                    }
+                        jassertfalse;
                     }
                     if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::MultiNote)
                     {
@@ -173,14 +174,43 @@ void PlayablePad::pressPad(const float pressure, const bool killingPad)
 {
     if (padData->getPadEnabled())
     {
+
         //static float rawPressure;
         if (padData->getPressureEnabled() || killingPad)
         {
             static float receivedPressure;
             receivedPressure = pressure;
             
+            static float prevPressure = 0;
+
+            
+            if (padData->getSticky()) // implement sticky pressure
+            {
+
+                if (pressure == 0.0)
+                {
+                    prevPressure = 0;
+                }
+
+                if (receivedPressure < prevPressure)
+                {
+                    receivedPressure = prevPressure;
+                }
+                
+                // update previous pressure value
+                prevPressure = receivedPressure;
+            }
+            
+            
+            if (padData->getReversePressure()) //apply pressure reverse
+            {
+                receivedPressure = MAX_PRESSURE - receivedPressure;
+            }
+            
+            
             //apply range 
             receivedPressure = (receivedPressure * padData->getPressureRange()) + (padData->getPressureMin()*MAX_PRESSURE);
+            
             
             if (padData->getPressureDestination() != PadData::PressureDestinations::OSC) // if pressure mode requires value between 0-127
             {
@@ -219,9 +249,11 @@ void PlayablePad::pressPad(const float pressure, const bool killingPad)
             }
         }
         
+        
+        // Processing for latch/trigger modes. Uses raw pressure value, ignoring any other processing.
         if (padData->getNoteTriggerMode() == PadData::NoteTriggerModes::LatchNoteMode || padData->getNoteTriggerMode() == PadData::NoteTriggerModes::TriggerNoteMode)
         {
-            static int minPressure = 511;
+            static int minPressure = MAX_PRESSURE;
             static bool stopNoteOnRelease = false;
             
             if (pressure < minPressure && padData->getVelocity() > 0)
@@ -232,11 +264,11 @@ void PlayablePad::pressPad(const float pressure, const bool killingPad)
             //DBG(String(minPressure) + ":" + String(pressure));
             
             
-            if (padData->Velocity > 0 && pressure >= 511) //if pad is on and pressure is at max
+            if (padData->Velocity > 0 && pressure >= MAX_PRESSURE) //if pad is on and pressure is at max
             {
                 if (minPressure == 0)
                 {
-                    minPressure = 511;
+                    minPressure = MAX_PRESSURE;
                     stopNoteOnRelease = true;
                 }
             }
@@ -247,6 +279,8 @@ void PlayablePad::pressPad(const float pressure, const bool killingPad)
                 hitPad(0, true);
             }
         }
+        
+ 
     }
 }
 

@@ -33,6 +33,8 @@ private:
     
     TextButton polyATButton, channelATButton, pbUpButton, pbDownButton, modWheelButton, midiCCButton;
     
+    ToggleButton reverseButton, stickyButton;
+    
     Rectangle<int> destinationsBox, rangeBox, settingsBox;
     Font labelFont;
     

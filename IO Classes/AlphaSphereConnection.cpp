@@ -164,31 +164,33 @@ void AlphaSphereConnection::sendMidiMessage(MidiMessage midiMessage)
         
         addMessageToHidOutReport (dataToSend);
     }
-//    else
-//    {
-//        //===============================================================
-//        //Sending MIDI using MidiOutput object
-//        
-//#if JUCE_MAC || JUCE_LINUX
+    
+    else
+    {
+        //===============================================================
+        //Sending MIDI using MidiOutput object
+        
+#if JUCE_MAC || JUCE_LINUX
 //        if(midiOutputDevice)
 //        {
 //            midiOutputDevice->sendBlockOfMessages(MidiBuffer(midiMessage), Time::getMillisecondCounter(), 44100);
 //        }
 //        else
 //        {
-//            if (!hasDisplayedNoMidiDeviceWarning)
-//            {
-//                String instructionString = translate("AlphaLive cannot currently send any MIDI messages as the AlphaSphere has been disconnected. To start sending MIDI messages again please reconnect the AlphaSphere, or if you would like to use AlphaLive's virtual MIDI port, quit and relaunch AlphaLive without the AlphaSphere connected.");
-//                AlertWindow::showMessageBoxAsync (AlertWindow::WarningIcon,
-//                                                  translate("No MIDI device available!"),
-//                                                  translate(instructionString));
-//            }
-//            
-//            hasDisplayedNoMidiDeviceWarning = true;
-//        }
-//        
-//#elif JUCE_WINDOWS
-//        
+            if (!hasDisplayedNoMidiDeviceWarning)
+            {
+                String instructionString = translate("AlphaLive cannot currently send any MIDI messages as the AlphaSphere has been disconnected. To start sending MIDI messages again please reconnect the AlphaSphere, or if you would like to use AlphaLive's virtual MIDI port, quit and relaunch AlphaLive without the AlphaSphere connected.");
+                AlertWindow::showMessageBoxAsync (AlertWindow::WarningIcon,
+                                                  translate("No MIDI device available!"),
+                                                  translate(instructionString));
+            }
+            
+            hasDisplayedNoMidiDeviceWarning = true;
+ //       }
+        
+#elif JUCE_WINDOWS
+        
+        jassertfalse;
 //        //If midi output exists (it won't if the user hasn't chosen an output device...)
 //        if (audioDeviceManager.getDefaultMidiOutput())
 //        {
@@ -207,10 +209,10 @@ void AlphaSphereConnection::sendMidiMessage(MidiMessage midiMessage)
 //            
 //            hasDisplayedNoMidiDeviceWarning = true;
 //        }
-//        
-//#endif
-//        
-//    }
+        
+#endif
+        
+    }
     
 }
 
@@ -241,6 +243,10 @@ void AlphaSphereConnection::setFirmwareUpdateStatus (bool status)
 void AlphaSphereConnection::setDeviceStatus()
 {
     AppData::Instance()->refreshHIDDeviceConnected();
+    if (hasDisplayedNoMidiDeviceWarning && getDeviceStatus())
+    {
+        hasDisplayedNoMidiDeviceWarning = false;
+    }
 }
 
 void AlphaSphereConnection::setFirmwareDetails (String version, String serial)

@@ -73,5 +73,7 @@ private:
     
     Alphalive2Engine* engine;
     
+    bool hasDisplayedNoMidiDeviceWarning = false;
+    
 };
 #endif /* AlphaSphereConnection_hpp */

@@ -64,15 +64,21 @@ void AlphaSphereConnectedButton::appDataChangeCallback(const int changedData)
 {
     if (changedData == AppData::DataIDs::HIDSphereConnected)
     {
+        static bool lastState;
+        lastState = alphaSphereConnected;
+        
         alphaSphereConnected = AppData::Instance()->getEnginePointer()->getHIDSphereConnected();
-        if (alphaSphereConnected)
+        if (alphaSphereConnected != lastState)
         {
-            setTooltip(translate("AlphaSphere connected."));
+            if (alphaSphereConnected)
+            {
+                setTooltip(translate("AlphaSphere connected."));
+            }
+            else
+            {
+                setTooltip(translate("AlphaSphere not connected."));
+            }
+            repaint();
         }
-        else
-        {
-            setTooltip(translate("AlphaSphere not connected."));
-        }
-        repaint();
     }
 }

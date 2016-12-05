@@ -39,6 +39,8 @@ void Alphalive2Engine::initialise()
     
     masterMixer.addInputSource(masterClock, false);
     
+    
+    sphereConnection->setAppHasInitialised(true);
     //masterClock->startClock();
     
 }

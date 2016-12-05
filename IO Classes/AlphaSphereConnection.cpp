@@ -60,7 +60,7 @@ AlphaSphereConnection::AlphaSphereConnection()
         removeMidiInAndOut();
     #endif
 
-    setAppHasInitialised();
+    HidComms::setAppHasInitialised();
     //setLedColour(0, Colours::black);
     
 //    setLedColour(0, Colours::orangered);
@@ -79,6 +79,11 @@ AlphaSphereConnection::~AlphaSphereConnection()
 {
     stopThread(1000);
 
+}
+
+void AlphaSphereConnection::setAppHasInitialised(const bool initialised)
+{
+    appHasInitialised = initialised;
 }
 
 void AlphaSphereConnection::hidInputCallback (int pad, int value, int velocity)
@@ -120,27 +125,37 @@ void AlphaSphereConnection::hidInputCallback (int pad, int value, int velocity)
 
 void AlphaSphereConnection::processMidiInput (const MidiMessage midiMessage)
 {
+    if(appHasInitialised)
+    {
+        if (midiMessage.isSongPositionPointer() || midiMessage.isMidiStart() || midiMessage.isMidiContinue() || midiMessage.isMidiStop() || midiMessage.isMidiClock())
+        {
+            static MasterClock* masterClock = engine->getMasterClockPointer();
+            masterClock->handleExternalMidiClock(midiMessage);
+            
+            //        if (midiMessage.isMidiClock())
+            //        {
+            //            DBG("EXT Clock Tick");
+            //        }
+            //
+            
+        }
+        else if (midiMessage.isQuarterFrame())
+        {
+            DBG(midiMessage.getQuarterFrameValue());
+        }
+        else if (midiMessage.isTempoMetaEvent())
+        {
+            //static int tempo;
+            midiMessage.getTempoSecondsPerQuarterNote();
+            DBG(midiMessage.getTempoSecondsPerQuarterNote());
+        }
+        else
+        {
+            DBG("ASC:" + String(*midiMessage.getRawData()));
+        }
+    }
     
-    if (midiMessage.isSongPositionPointer() || midiMessage.isMidiStart() || midiMessage.isMidiContinue() || midiMessage.isMidiStop() || midiMessage.isMidiClock())
-    {
-        static MasterClock* masterClock = engine->getMasterClockPointer();
-        masterClock->handleExternalMidiClock(midiMessage);
-        //DBG("EXT Clock Tick");
-    }
-    else if (midiMessage.isQuarterFrame())
-    {
-        DBG(midiMessage.getQuarterFrameValue());
-    }
-    else if (midiMessage.isTempoMetaEvent())
-    {
-        //static int tempo;
-        midiMessage.getTempoSecondsPerQuarterNote();
-        DBG(midiMessage.getTempoSecondsPerQuarterNote());
-    }
-    else
-    {
-        DBG("ASC:" + String(*midiMessage.getRawData()));
-    }
+  
     
 }
 
@@ -183,9 +198,10 @@ void AlphaSphereConnection::sendMidiMessage(MidiMessage midiMessage)
                 AlertWindow::showMessageBoxAsync (AlertWindow::WarningIcon,
                                                   translate("No MIDI device available!"),
                                                   translate(instructionString));
+                hasDisplayedNoMidiDeviceWarning = true;
+
             }
             
-            hasDisplayedNoMidiDeviceWarning = true;
  //       }
         
 #elif JUCE_WINDOWS

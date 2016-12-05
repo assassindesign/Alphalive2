@@ -60,7 +60,6 @@ AlphaSphereConnection::AlphaSphereConnection()
         removeMidiInAndOut();
     #endif
 
-    HidComms::setAppHasInitialised();
     //setLedColour(0, Colours::black);
     
 //    setLedColour(0, Colours::orangered);
@@ -84,49 +83,53 @@ AlphaSphereConnection::~AlphaSphereConnection()
 void AlphaSphereConnection::setAppHasInitialised(const bool initialised)
 {
     appHasInitialised = initialised;
+    HidComms::setAppHasInitialised();
 }
 
 void AlphaSphereConnection::hidInputCallback (int pad, int value, int velocity)
 {
-    recievedPad = pad;
-    recievedValue = float(value);
-    recievedVelocity = float(velocity);
-
-    //DBG(String(pad) + ":" + String(value) + ":" + String(velocity));
-    
-    if (pad < 48)
+    if (appHasInitialised)
     {
-        if (padVelocity[pad] != velocity)
+        recievedPad = pad;
+        recievedValue = float(value);
+        recievedVelocity = float(velocity);
+        
+        //DBG(String(pad) + ":" + String(value) + ":" + String(velocity));
+        
+        if (pad < 48)
         {
-            //insert pad velocity curve mapping here
+            if (padVelocity[pad] != velocity)
+            {
+                //insert pad velocity curve mapping here
+                
+                //            //exponential mapping of velocity
+                //            recievedVelocity = exp((float)recievedVelocity/MAX_VELOCITY)-1;
+                //            recievedVelocity = recievedVelocity * (MAX_VELOCITY/1.71828);
+                //            if (recievedVelocity > MAX_VELOCITY)
+                //                recievedVelocity = MAX_VELOCITY;
+                //            if (recievedVelocity > 0 && recievedVelocity < 1) //value 1 = 0.6, which is rounded to 0
+                //                recievedVelocity = 1;
+                
+                engine->hitPad(recievedPad, recievedVelocity);
+                padVelocity[pad] = velocity;
+            }
             
-            //            //exponential mapping of velocity
-            //            recievedVelocity = exp((float)recievedVelocity/MAX_VELOCITY)-1;
-            //            recievedVelocity = recievedVelocity * (MAX_VELOCITY/1.71828);
-            //            if (recievedVelocity > MAX_VELOCITY)
-            //                recievedVelocity = MAX_VELOCITY;
-            //            if (recievedVelocity > 0 && recievedVelocity < 1) //value 1 = 0.6, which is rounded to 0
-            //                recievedVelocity = 1;
+            if (padPressure[pad] != value)
+            {
+                engine->pressPad(pad, value);
+                padPressure[pad] = value;
+            }
             
-            engine->hitPad(recievedPad, recievedVelocity);
-            padVelocity[pad] = velocity;
+            
         }
-
-        if (padPressure[pad] != value)
-        {
-            engine->pressPad(pad, value);
-            padPressure[pad] = value;
-        }
-
-  
     }
+    
 
 }
 
 void AlphaSphereConnection::processMidiInput (const MidiMessage midiMessage)
 {
-    if(appHasInitialised)
-    {
+
         if (midiMessage.isSongPositionPointer() || midiMessage.isMidiStart() || midiMessage.isMidiContinue() || midiMessage.isMidiStop() || midiMessage.isMidiClock())
         {
             static MasterClock* masterClock = engine->getMasterClockPointer();
@@ -153,7 +156,6 @@ void AlphaSphereConnection::processMidiInput (const MidiMessage midiMessage)
         {
             DBG("ASC:" + String(*midiMessage.getRawData()));
         }
-    }
     
   
     

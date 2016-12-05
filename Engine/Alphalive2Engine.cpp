@@ -25,6 +25,8 @@ void Alphalive2Engine::initialise()
     midiOut = new ExternalMidiOut("Alphalive 2", sphereConnection);
     
     //midiIn = new ExternalMidiIn(&deviceManager);
+    masterClock = new MasterClock();
+
     
     router = new InternalMidiRouter(midiOut);
     
@@ -33,7 +35,6 @@ void Alphalive2Engine::initialise()
     
     setHIDLinkedSphere(0);
     
-    masterClock = new MasterClock();
     
     setAudioChannels(0, 2);
     
@@ -41,7 +42,7 @@ void Alphalive2Engine::initialise()
     
     
     sphereConnection->setAppHasInitialised(true);
-    //masterClock->startClock();
+    masterClock->startClock();
     
 }
 

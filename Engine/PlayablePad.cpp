@@ -22,7 +22,23 @@ PlayablePad::PlayablePad(PadData* dataForPad)
     }
     
     router = AppData::Instance()->getEnginePointer()->getMidiRouterPointer();
+    if (!router)
+    {
+        jassertfalse; // These objects should be created ahead of pad objects;
+    }
     
+    masterClock = AppData::Instance()->getEnginePointer()->getMasterClockPointer();
+    
+    if (masterClock)
+    {
+        masterClock->addListener(this);
+    }
+    else
+    {
+        jassertfalse; // These objects should be created ahead of pad objects;
+
+    }
+  
 
 }
 PlayablePad::~PlayablePad()
@@ -328,6 +344,41 @@ void PlayablePad::setPadEnabled(const bool enabled)
         }
         padData->setPadEnabled(enabled);
 
+    }
+}
+
+
+// Master Clock ======================================================
+void PlayablePad::barClockCallback()
+{
+    
+}
+
+void PlayablePad::stepClockCallback(const int currentPositionInLoop)
+{
+    
+}
+
+void PlayablePad::masterClockStopped()
+{
+    
+}
+
+void PlayablePad::masterTempoChanged(const int beatsInLoop, const float newTempo)
+{
+    
+}
+
+void PlayablePad::rawClockCallback(const int clock)
+{
+    if (padData->getVelocity() > 0)
+    {
+        if ((clock % 6) == 0)
+        {
+            hitPad(127.0* padData->getPadPressure() / MAX_PRESSURE);
+            DBG(padData->getVelocity());
+
+        }
     }
 }
 

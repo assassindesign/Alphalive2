@@ -83,7 +83,7 @@ void SimpleAudioBufferSource::getNextAudioBlock (const AudioSourceChannelInfo& b
             playing = false;
         }
 
-        }
+    }
 }
 
 //==PositionableAudioSource==========================================

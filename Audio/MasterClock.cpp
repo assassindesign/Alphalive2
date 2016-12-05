@@ -29,20 +29,17 @@ MasterClock::MasterClock() : metronomeTimeslice(new TimeSliceThread("Metro Times
     int fileSize;
     tickBufferSource->loadBinaryResource(BinaryData::getNamedResource("Tick_wav", fileSize), fileSize);
     tickTransportSource = new AudioTransportSource();
-    tickTransportSource->setSource(tickBufferSource, 65536, metronomeTimeslice, currentSampleRate.get());
+    tickTransportSource->setSource(tickBufferSource);
     
     tockBufferSource = new SimpleAudioBufferSource();
     tockBufferSource->loadBinaryResource(BinaryData::getNamedResource("Tock_wav", fileSize), fileSize);
     tockTransportSource = new AudioTransportSource();
-    tockTransportSource->setSource(tockBufferSource, 65536, metronomeTimeslice, currentSampleRate.get());
+    tockTransportSource->setSource(tockBufferSource);
     
     mixer = new MixerAudioSource();
     mixer->addInputSource(tickTransportSource, false);
     mixer->addInputSource(tockTransportSource, false);
     
-    metronomeEnabled = true;
-    
-    isRunning = false;
     //isRunning = true;
 }
 
@@ -108,7 +105,6 @@ void MasterClock::actionListenerCallback (const String& message)
         masterClockListeners.call(&MasterClock::Listener::masterTempoChanged, beatsInLoop.get(), tempo.get());
 
     }
-
    
 }
 
@@ -170,7 +166,7 @@ void MasterClock::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
     queue.process();
     
-    if (isRunning)
+    if (isRunning && !useExternalClock)
     {
         for (int i = 0; i < bufferToFill.numSamples; i++)
         {
@@ -178,34 +174,40 @@ void MasterClock::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
             if (currentSample.get() > samplesPerTick.get())
             {
                 currentSample = 0;
-                currentPositionInLoop.set(currentPositionInLoop.get()+1);
-                if (metronomeEnabled)
-                {
-                    //audioBufferSource->setNextReadPosition(0);
-                    if (currentPositionInLoop.get() % beatsInBar.get() == 0)
-                    {
-                        tickTransportSource->setPosition(0);
-                        tickTransportSource->start();
-                        currentPositionInLoop.set(0);
-                    }
-                    else
-                    {
-                        tockTransportSource->setPosition(0);
-                        tockTransportSource->start();
-                    }
-                    
-                }
-                sendActionMessage ("TICK");
-
+                tick();
             }
         }
     }
     bufferToFill.clearActiveBufferRegion();
     
     mixer->getNextAudioBlock(bufferToFill);
+    //tickTransportSource->getNextAudioBlock(bufferToFill);
     //tockTransportSource->getNextAudioBlock(bufferToFill);
 
     //audioBufferSource->getNextAudioBlock(bufferToFill);
+}
+
+void MasterClock::tick()
+{
+    currentPositionInLoop.set(currentPositionInLoop.get()+1);
+    if (metronomeEnabled)
+    {
+        //audioBufferSource->setNextReadPosition(0);
+        if (currentPositionInLoop.get() % beatsInBar.get() == 0)
+        {
+            tickTransportSource->setPosition(0);
+            tickTransportSource->start();
+            currentPositionInLoop.set(0);
+        }
+        else
+        {
+            tockTransportSource->setPosition(0);
+            tockTransportSource->start();
+        }
+        
+    }
+    
+    sendActionMessage ("TICK");
 }
 
 void MasterClock::releaseResources()
@@ -232,26 +234,62 @@ bool MasterClock::getMetronomeEnabled()
 }
 
 
+void MasterClock::setUsingExternalClock(const bool useExternal)
+{
+    useExternalClock = useExternal;
+}
+
+bool MasterClock::getUsingExternalClock()
+{
+    return useExternalClock;
+}
+
 void MasterClock::handleExternalMidiClock(const MidiMessage midiMessage)
 {
+    if (useExternalClock)
+    {
+        static int count = 0;
+        static int lastSPP = 0;
+        
         if (midiMessage.isSongPositionPointer())
         {
-            DBG("Song Position:" + String(midiMessage.getSongPositionPointerMidiBeat()));
+            lastSPP = midiMessage.getSongPositionPointerMidiBeat();
+            DBG("Song Position:" + String(lastSPP));
+            
         }
         else if (midiMessage.isMidiStart())
         {
             DBG("Start");
+            count = 0;
+            tick();
+            currentPositionInLoop.set(0);
         }
         else if (midiMessage.isMidiContinue())
         {
-            DBG("Continue");
+            
+            count = (lastSPP - ((lastSPP % 16) * 16) / 4) * 6;
+            //DBG("Continue");
+            
         }
         else if (midiMessage.isMidiStop())
         {
             DBG("Stop");
+            resetAndStopClock();
         }
         else if(midiMessage.isMidiClock())
         {
-            //   DBG("EXT Clock Tick");
+            // DBG("EXT Clock Tick");
+            masterClockListeners.call(&MasterClock::Listener::rawClockCallback, count);
+            
+            if (count > 23)
+            {
+                tick();
+                count = 0;
+            }
+            
+            count++;
         }
+    }
+    
+   
 }

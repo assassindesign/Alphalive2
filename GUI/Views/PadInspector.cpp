@@ -27,6 +27,7 @@ PadInspector::PadInspector()
     
     startTimer(250);
     
+    setInterceptsMouseClicks(false, true);
 }
 
 PadInspector::~PadInspector()
@@ -64,7 +65,7 @@ void PadInspector::resized()
     
     
     mainViewport.setBounds(mainViewportBox);
-    mainInspectorPanel.setSize(mainViewportBox.getWidth(), mainViewportBox.getHeight() *1.5);
+    mainInspectorPanel.setSize(mainViewportBox.getWidth(), mainViewportBox.getHeight() * 1.5);
 
 }
 
@@ -100,6 +101,13 @@ void PadInspector::timerCallback()
         inspectingPadChanged = false;
     }
     
+}
+
+void PadInspector::mouseDown(const MouseEvent& event)
+{
+//    if (event.eventComponent == ) {
+//        <#statements#>
+//    }
 }
 
 

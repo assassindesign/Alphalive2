@@ -17,7 +17,8 @@ class MainContentComponent;
 
 class SphereView : public Component,
                    public Slider::Listener,
-                   public ChangeListener
+                   public ChangeListener,
+                   public AppDataListener
 {
 public:
     SphereView(const int _sphereID, MainContentComponent &ref);
@@ -36,6 +37,8 @@ public:
     
     
 private:
+    void appDataChangeCallback(const int changedData) override;
+
     
     //Mouse Listener============================
     void mouseEnter (const MouseEvent &event) override;

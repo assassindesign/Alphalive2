@@ -151,7 +151,8 @@ bool PadData::fromValueTree(ValueTree* treeToImport)
 //    return parent;
 //}
 
-//============= SETS ===========================================
+
+
 
 bool PadData::setPadID (const int newPadID)
 {
@@ -708,6 +709,31 @@ bool PadData::addMidiNote(const int newNote, const int velPercentage)
     
     return success;
 }
+
+bool PadData::setAllMidiNotes(Array<PadData::MidiNote> newNotes)
+{
+    int successfulAdds = 0;
+    
+    clearAllMidiNotes();
+    
+    for (int i = 0; newNotes.size(); ++i)
+    {
+        if (addMidiNote(newNotes[i].noteNumber, newNotes[i].velocityPercentage))
+        {
+            ++successfulAdds;
+        }
+    }
+    
+    if (successfulAdds == newNotes.size())
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 
 bool PadData::removeMidiNote(const int noteToRemove)
 {

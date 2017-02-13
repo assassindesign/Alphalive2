@@ -85,6 +85,8 @@ public:
     void setMidiThruEnabled(const bool isEnabled);
     void setSphereMidiEnabled(const bool isEnabled);
     
+    bool editPadGroup(const int groupID, const PadData::DataIDs dataID, const var changedData);
+    
 private:
     
     //Objects

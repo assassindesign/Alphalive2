@@ -133,6 +133,7 @@ public:
         PadEnabled,
         MidiCCType,
         PressureRange,
+        NoteRepeat,
         FINAL_DATAID
     };
     
@@ -148,8 +149,9 @@ public:
     ValueTree* toValueTree();
     bool fromValueTree(ValueTree* treeToImport);
 
+    void testFunction() {}
     //============= SETS ===========================================
-
+    
     bool setPadID (const int newID);
     bool setMidiNote (const int newNote);
     bool setMidiNote (const int newNote, const int velPercentage);
@@ -184,7 +186,8 @@ public:
     
     bool addMidiNote(const int newNote);
     bool addMidiNote(const int newNote, const int velPercentage);
-
+    bool setAllMidiNotes(Array<PadData::MidiNote> newNotes);
+    
     bool removeMidiNote(const int noteToRemove);
     void clearAllMidiNotes();
     void setDynamicMidiChannel(const bool enabled);
@@ -233,6 +236,7 @@ public:
     WeakReference<PadData>::Master masterReference;
 
 private:
+    
     Atomic<int> padID {-1};
     Array<MidiNote> midiNotes;
     Atomic<int> padFunction {0};

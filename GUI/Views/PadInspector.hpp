@@ -38,6 +38,8 @@ public:
     void appDataChangeCallback(const int changedData) override;
     void timerCallback() override;
     
+    void mouseDown(const MouseEvent& event) override;
+    
 private:
     WeakReference<PadData> padDataToInspect;
     

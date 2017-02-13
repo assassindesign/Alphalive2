@@ -18,6 +18,7 @@ SphereView::SphereView(const int _sphereID, MainContentComponent &ref) : sphereI
     //setBufferedToImage(true);
     
     sphereData = AppData::Instance()->getSphereData(sphereID);
+    AppData::Instance()->addListener(this);
     
     for (int i = 0 ; i < NUM_SEGEMENTS; i++)
     {
@@ -556,4 +557,37 @@ int SphereView::isMouseInCircle(const MouseEvent &event)
     
     return -1;
 }
+
+
+void SphereView::appDataChangeCallback(const int changedData)
+{
+//    if (changedData == AppData::DataIDs::InspectingPad)
+//    {
+//        AppData::PadReference newInspectingPad = AppData::Instance()->getcurrentlyInspectingPad();
+//        
+//        if (newInspectingPad.sphereID == sphereData->getSphereID())
+//        {
+//            if (newInspectingPad.padID > -1 && newInspectingPad.padID < sphereData->getNumPadDataObjects())
+//            {
+//                for (int i = 0; i < pads.size(); ++i)
+//                {
+//                    if (sphereData->getPadData(i)->getPadID() == newInspectingPad.padID)
+//                    {
+//                        clearSelectedPads();
+//                        selectedPads.add(pads[i]);
+//                        pads[i]->setSelected(true);
+//                        break;
+//                    }
+//                }
+//            }
+//            
+//        }
+//        else if (newInspectingPad.sphereID == -1)
+//        {
+//            clearSelectedPads();
+//        }
+//    }
+}
+
+
 

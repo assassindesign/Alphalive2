@@ -1,6 +1,6 @@
 //
 //  AppData.cpp
-//  AlphaLive Midi
+//  AlphaLive 2
 //
 //  Created by Luke Saxton on 13/06/2016.
 //

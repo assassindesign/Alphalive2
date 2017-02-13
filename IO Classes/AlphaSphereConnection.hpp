@@ -44,6 +44,8 @@ public:
     AlphaSphereConnection();
     ~AlphaSphereConnection();
     
+    void setAppHasInitialised(const bool initialised);
+    
     // Virtual functions from HIDComms
     void hidInputCallback (int pad, int value, int velocity) override;
     void processMidiInput (const MidiMessage midiMessage) override;
@@ -72,6 +74,9 @@ private:
     int velocityMaxRange;
     
     Alphalive2Engine* engine;
+    
+    bool appHasInitialised = false;
+    bool hasDisplayedNoMidiDeviceWarning = true;
     
 };
 #endif /* AlphaSphereConnection_hpp */

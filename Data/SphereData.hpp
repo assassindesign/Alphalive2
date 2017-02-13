@@ -11,6 +11,17 @@
 #include "AppDataTypes.h"
 #include "PadData.hpp"
 
+/*
+    AppDataFormat object containing a number of PadData objects. Contains all the data you need for a 
+    PlayableSphere - Key, Scale and Tempo info as well as misc state flags and child PadData objects.
+ 
+    When saving is finally implemented, this class should convert its data to a ValueTree for export
+    to XML.
+ 
+    See AppDataListeners for more info on AppDataFomat.
+ 
+*/
+
 class SphereData : public AppDataFormat
 {
 public:
@@ -84,6 +95,8 @@ public:
     bool setRowConfig(const int newConfig);
     void setMidiThruEnabled(const bool isEnabled);
     void setSphereMidiEnabled(const bool isEnabled);
+    
+    bool editPadGroup(const int groupID, const PadData::DataIDs dataID, const var changedData);
     
 private:
     

@@ -15,6 +15,44 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AppDataTypes.h"
 
+/*
+    Main data storage class. Contains all variables and state information for a PlayablePad.
+    Designed to be thread-safe and as lock-free as possible using atomic variables, so it is
+    safe to access and modify this data from any thread, including the audio thread. Update
+    notifications are queued by the AppDataFormat class and handled on the message thread.
+ 
+    The various modes and functions are all using enums to keep code simple to understand, 
+    I have tried to include all the modes and variables that will be needed, but some may have 
+    been missed.
+ 
+    As this can be accessed from almost anywhere in the program (probably a bad idea.. but 
+    here we are) all data is validated before anything is changed. 'set()' functions should always
+    return a bool so that the calling object knows if the data was valid.
+ 
+    In order to add more variables:
+ 
+    - Add actual variable (preferably atomic)
+    - Create get and set accessor functions
+    - Add the variable name to DataIDs
+    - Ensure that the data is validated before it is set
+    - Ensure that you are calling the right listener type for the type of data - realtime/not
+    - If the data type cannot be atomic, is there a way it could be? if not, make it thread safe
+      using a CriticalSection
+ 
+    Classes that would like to be notified of data changes should call the addListener() function.
+ 
+    In order to implement saving, the to/fromValueTree() functions need to be fleshed out.
+    I was toying with the idea of creating a monstrous setParameter() function that would allow you
+    to set any variable using the dataID as a reference and a var to pass the data in, this seems
+    pretty horrible but it would allow iterating through an XML file and loading/validating the saved 
+    data to be a simple process. The setParamter() function may also be needed for group edit, as
+    currently the ListenerList class doesn't allow you to call functions with a return value, so 
+    the existing 'set' functions are not usable.
+ 
+    Has been set up to enable the use of WeakReference and shared pointers, making access a little
+    easier in some cases
+*/
+
 
 class SphereData;
 class PadData : public AppDataFormat
@@ -133,6 +171,7 @@ public:
         PadEnabled,
         MidiCCType,
         PressureRange,
+        NoteRepeat,
         FINAL_DATAID
     };
     
@@ -148,8 +187,9 @@ public:
     ValueTree* toValueTree();
     bool fromValueTree(ValueTree* treeToImport);
 
+    void testFunction() {}
     //============= SETS ===========================================
-
+    
     bool setPadID (const int newID);
     bool setMidiNote (const int newNote);
     bool setMidiNote (const int newNote, const int velPercentage);
@@ -184,7 +224,8 @@ public:
     
     bool addMidiNote(const int newNote);
     bool addMidiNote(const int newNote, const int velPercentage);
-
+    bool setAllMidiNotes(Array<PadData::MidiNote> newNotes);
+    
     bool removeMidiNote(const int noteToRemove);
     void clearAllMidiNotes();
     void setDynamicMidiChannel(const bool enabled);
@@ -233,6 +274,7 @@ public:
     WeakReference<PadData>::Master masterReference;
 
 private:
+    
     Atomic<int> padID {-1};
     Array<MidiNote> midiNotes;
     Atomic<int> padFunction {0};

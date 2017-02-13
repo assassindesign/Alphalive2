@@ -52,7 +52,7 @@ public:
         virtual void masterClockStopped() = 0;
 
         virtual void masterTempoChanged(const int beatsInLoop, const float newTempo) {}
-
+        virtual void rawClockCallback(const int clock){};
     private:
 
     };
@@ -89,10 +89,15 @@ public:
     
     void handleExternalMidiClock(const MidiMessage midiMessage);
     
+    void setUsingExternalClock(const bool useExternal);
+    bool getUsingExternalClock();
+    
 private:
     void setMetronomeEnabledInternal(bool enabled);
 
     void setTempoInternal(const float newTempo);
+    
+    void tick();
 
     //ValueTree transportTree;
     ListenerList<MasterClock::Listener> masterClockListeners;
@@ -110,8 +115,9 @@ private:
     
     ScopedPointer<TimeSliceThread> metronomeTimeslice;
 
-    bool isRunning;
-    bool metronomeEnabled;
+    bool isRunning = false;
+    bool metronomeEnabled = true;
+    bool useExternalClock = false;
     //CriticalSection sharedMemory;
 
     ThreadQueue queue;

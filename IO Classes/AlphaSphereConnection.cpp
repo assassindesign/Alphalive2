@@ -60,7 +60,6 @@ AlphaSphereConnection::AlphaSphereConnection()
         removeMidiInAndOut();
     #endif
 
-    setAppHasInitialised();
     //setLedColour(0, Colours::black);
     
 //    setLedColour(0, Colours::orangered);
@@ -81,66 +80,84 @@ AlphaSphereConnection::~AlphaSphereConnection()
 
 }
 
+void AlphaSphereConnection::setAppHasInitialised(const bool initialised)
+{
+    appHasInitialised = initialised;
+    HidComms::setAppHasInitialised();
+}
+
 void AlphaSphereConnection::hidInputCallback (int pad, int value, int velocity)
 {
-    recievedPad = pad;
-    recievedValue = float(value);
-    recievedVelocity = float(velocity);
-
-    //DBG(String(pad) + ":" + String(value) + ":" + String(velocity));
-    
-    if (pad < 48)
+    if (appHasInitialised)
     {
-        if (padVelocity[pad] != velocity)
+        recievedPad = pad;
+        recievedValue = float(value);
+        recievedVelocity = float(velocity);
+        
+        //DBG(String(pad) + ":" + String(value) + ":" + String(velocity));
+        
+        if (pad < 48)
         {
-            //insert pad velocity curve mapping here
+            if (padVelocity[pad] != velocity)
+            {
+                //insert pad velocity curve mapping here
+                
+                //            //exponential mapping of velocity
+                //            recievedVelocity = exp((float)recievedVelocity/MAX_VELOCITY)-1;
+                //            recievedVelocity = recievedVelocity * (MAX_VELOCITY/1.71828);
+                //            if (recievedVelocity > MAX_VELOCITY)
+                //                recievedVelocity = MAX_VELOCITY;
+                //            if (recievedVelocity > 0 && recievedVelocity < 1) //value 1 = 0.6, which is rounded to 0
+                //                recievedVelocity = 1;
+                
+                engine->hitPad(recievedPad, recievedVelocity);
+                padVelocity[pad] = velocity;
+            }
             
-            //            //exponential mapping of velocity
-            //            recievedVelocity = exp((float)recievedVelocity/MAX_VELOCITY)-1;
-            //            recievedVelocity = recievedVelocity * (MAX_VELOCITY/1.71828);
-            //            if (recievedVelocity > MAX_VELOCITY)
-            //                recievedVelocity = MAX_VELOCITY;
-            //            if (recievedVelocity > 0 && recievedVelocity < 1) //value 1 = 0.6, which is rounded to 0
-            //                recievedVelocity = 1;
+            if (padPressure[pad] != value)
+            {
+                engine->pressPad(pad, value);
+                padPressure[pad] = value;
+            }
             
-            engine->hitPad(recievedPad, recievedVelocity);
-            padVelocity[pad] = velocity;
+            
         }
-
-        if (padPressure[pad] != value)
-        {
-            engine->pressPad(pad, value);
-            padPressure[pad] = value;
-        }
-
-  
     }
+    
 
 }
 
 void AlphaSphereConnection::processMidiInput (const MidiMessage midiMessage)
 {
+
+        if (midiMessage.isSongPositionPointer() || midiMessage.isMidiStart() || midiMessage.isMidiContinue() || midiMessage.isMidiStop() || midiMessage.isMidiClock())
+        {
+            static MasterClock* masterClock = engine->getMasterClockPointer();
+            masterClock->handleExternalMidiClock(midiMessage);
+            
+            //        if (midiMessage.isMidiClock())
+            //        {
+            //            DBG("EXT Clock Tick");
+            //        }
+            //
+            
+        }
+        else if (midiMessage.isQuarterFrame())
+        {
+            DBG(midiMessage.getQuarterFrameValue());
+        }
+        else if (midiMessage.isTempoMetaEvent())
+        {
+            //static int tempo;
+            midiMessage.getTempoSecondsPerQuarterNote();
+            DBG(midiMessage.getTempoSecondsPerQuarterNote());
+        }
+        else
+        {
+            DBG("ASC:" + String(*midiMessage.getRawData()));
+        }
     
-    if (midiMessage.isSongPositionPointer() || midiMessage.isMidiStart() || midiMessage.isMidiContinue() || midiMessage.isMidiStop() || midiMessage.isMidiClock())
-    {
-        static MasterClock* masterClock = engine->getMasterClockPointer();
-        masterClock->handleExternalMidiClock(midiMessage);
-        //DBG("EXT Clock Tick");
-    }
-    else if (midiMessage.isQuarterFrame())
-    {
-        DBG(midiMessage.getQuarterFrameValue());
-    }
-    else if (midiMessage.isTempoMetaEvent())
-    {
-        //static int tempo;
-        midiMessage.getTempoSecondsPerQuarterNote();
-        DBG(midiMessage.getTempoSecondsPerQuarterNote());
-    }
-    else
-    {
-        DBG("ASC:" + String(*midiMessage.getRawData()));
-    }
+  
     
 }
 
@@ -164,31 +181,34 @@ void AlphaSphereConnection::sendMidiMessage(MidiMessage midiMessage)
         
         addMessageToHidOutReport (dataToSend);
     }
-//    else
-//    {
-//        //===============================================================
-//        //Sending MIDI using MidiOutput object
-//        
-//#if JUCE_MAC || JUCE_LINUX
+    
+    else
+    {
+        //===============================================================
+        //Sending MIDI using MidiOutput object
+        
+#if JUCE_MAC || JUCE_LINUX
 //        if(midiOutputDevice)
 //        {
 //            midiOutputDevice->sendBlockOfMessages(MidiBuffer(midiMessage), Time::getMillisecondCounter(), 44100);
 //        }
 //        else
 //        {
-//            if (!hasDisplayedNoMidiDeviceWarning)
-//            {
-//                String instructionString = translate("AlphaLive cannot currently send any MIDI messages as the AlphaSphere has been disconnected. To start sending MIDI messages again please reconnect the AlphaSphere, or if you would like to use AlphaLive's virtual MIDI port, quit and relaunch AlphaLive without the AlphaSphere connected.");
-//                AlertWindow::showMessageBoxAsync (AlertWindow::WarningIcon,
-//                                                  translate("No MIDI device available!"),
-//                                                  translate(instructionString));
-//            }
-//            
-//            hasDisplayedNoMidiDeviceWarning = true;
-//        }
-//        
-//#elif JUCE_WINDOWS
-//        
+            if (!hasDisplayedNoMidiDeviceWarning)
+            {
+                String instructionString = translate("AlphaLive cannot currently send any MIDI messages as the AlphaSphere has been disconnected. To start sending MIDI messages again please reconnect the AlphaSphere, or if you would like to use AlphaLive's virtual MIDI port, quit and relaunch AlphaLive without the AlphaSphere connected.");
+                AlertWindow::showMessageBoxAsync (AlertWindow::WarningIcon,
+                                                  translate("No MIDI device available!"),
+                                                  translate(instructionString));
+                hasDisplayedNoMidiDeviceWarning = true;
+
+            }
+            
+ //       }
+        
+#elif JUCE_WINDOWS
+        
+        jassertfalse;
 //        //If midi output exists (it won't if the user hasn't chosen an output device...)
 //        if (audioDeviceManager.getDefaultMidiOutput())
 //        {
@@ -207,10 +227,10 @@ void AlphaSphereConnection::sendMidiMessage(MidiMessage midiMessage)
 //            
 //            hasDisplayedNoMidiDeviceWarning = true;
 //        }
-//        
-//#endif
-//        
-//    }
+        
+#endif
+        
+    }
     
 }
 
@@ -241,6 +261,10 @@ void AlphaSphereConnection::setFirmwareUpdateStatus (bool status)
 void AlphaSphereConnection::setDeviceStatus()
 {
     AppData::Instance()->refreshHIDDeviceConnected();
+    if (hasDisplayedNoMidiDeviceWarning && getDeviceStatus())
+    {
+        hasDisplayedNoMidiDeviceWarning = false;
+    }
 }
 
 void AlphaSphereConnection::setFirmwareDetails (String version, String serial)

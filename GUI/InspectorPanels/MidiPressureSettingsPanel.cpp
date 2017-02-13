@@ -55,6 +55,14 @@ MidiPressureSettingsPanel::MidiPressureSettingsPanel()
     rangeSlider->setMaxValue(1);
     addAndMakeVisible(rangeSlider);
     rangeSlider->addListener(this);
+    
+    reverseButton.setButtonText(translate("Reverse"));
+    reverseButton.addListener(this);
+    addAndMakeVisible(reverseButton);
+    
+    stickyButton.setButtonText(translate("Sticky"));
+    stickyButton.addListener(this);
+    addAndMakeVisible(stickyButton);
 }
 
 MidiPressureSettingsPanel::~MidiPressureSettingsPanel()
@@ -66,6 +74,9 @@ void MidiPressureSettingsPanel::refreshData()
 {
     padData = AppData::Instance()->getCurrentlyInspectingPadDataPtr();
     padDataChangeCallback(PadData::DataIDs::PressureDestination);
+    padDataChangeCallback(PadData::DataIDs::ReversePressure);
+    padDataChangeCallback(PadData::DataIDs::Sticky);
+
 }
 
 void MidiPressureSettingsPanel::padDataChangeCallback(const int changedData)
@@ -105,6 +116,14 @@ void MidiPressureSettingsPanel::padDataChangeCallback(const int changedData)
                 default:
                     break;
             }
+        }
+        else if (changedData == PadData::DataIDs::ReversePressure)
+        {
+            reverseButton.setToggleState(padData->getReversePressure(), dontSendNotification);
+        }
+        else if (changedData == PadData::DataIDs::Sticky)
+        {
+            stickyButton.setToggleState(padData->getSticky(), dontSendNotification);
         }
     }
     else
@@ -151,6 +170,11 @@ void MidiPressureSettingsPanel::resized()
     midiCCButton.setBounds(modWheelButton.getBounds().translated(polyATButton.getWidth()*1.166, 0));
 
     rangeSlider->setBounds(rangeBox);
+    
+    reverseButton.setBounds(settingsBox.withWidth(getWidth()*0.5));
+    
+    stickyButton.setBounds(reverseButton.getBounds().translated(getWidth()*0.5, 0));
+    
 }
 
 void MidiPressureSettingsPanel::buttonClicked(Button* button)
@@ -180,6 +204,14 @@ void MidiPressureSettingsPanel::buttonClicked(Button* button)
         else if (button == &midiCCButton)
         {
             padData->setPressureDestination(PadData::PressureDestinations::MidiCC);
+        }
+        else if (button == &reverseButton)
+        {
+            padData->setReversePressure(!padData->getReversePressure());
+        }
+        else if (button == &stickyButton)
+        {
+            padData->setSticky(!padData->getSticky());
         }
     }
 

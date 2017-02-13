@@ -19,6 +19,16 @@
 #include "AppData.hpp"
 #include "AudioMeterButton.hpp"
 
+/*
+    Top level engine. Contains all functionality classes related to audio, midi and
+    Alphasphere connection. AppData holds a pointer to this so it can be accessed by GUI 
+    components.
+ 
+    Main function of this class to to provide pointers to sub-classes. Should be 
+    expandable to support multiple PlayableSphere(s) so enable scene-like behavior and
+    have multiple spheres running at the same time.
+*/
+
 class Alphalive2Engine : public DeletedAtShutdown,
                          public AudioAppComponent
 {

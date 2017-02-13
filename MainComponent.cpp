@@ -105,10 +105,5 @@ void MainContentComponent::buttonClicked (Button* button)
     }
 }
 
-    //==============================================================================
-
-    // Your private member variables go here...
-
-
 
 #endif  // MAINCOMPONENT_CPP_INCLUDED

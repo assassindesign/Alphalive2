@@ -22,7 +22,23 @@ PlayablePad::PlayablePad(PadData* dataForPad)
     }
     
     router = AppData::Instance()->getEnginePointer()->getMidiRouterPointer();
+    if (!router)
+    {
+        jassertfalse; // These objects should be created ahead of pad objects;
+    }
     
+    masterClock = AppData::Instance()->getEnginePointer()->getMasterClockPointer();
+    
+    if (masterClock)
+    {
+        masterClock->addListener(this);
+    }
+    else
+    {
+        jassertfalse; // These objects should be created ahead of pad objects;
+
+    }
+  
 
 }
 PlayablePad::~PlayablePad()
@@ -134,6 +150,7 @@ void PlayablePad::hitPad(const int velocity, const bool killingPad)
                         //                            router->sendMidiToDestination(padData->getMidiDestination(), &outputMessage);
                         //
                         //                    }
+                        jassertfalse;
                     }
                     if (padData->getPadMidiFunction() == PadData::PadMidiFunctions::MultiNote)
                     {
@@ -173,14 +190,43 @@ void PlayablePad::pressPad(const float pressure, const bool killingPad)
 {
     if (padData->getPadEnabled())
     {
+
         //static float rawPressure;
         if (padData->getPressureEnabled() || killingPad)
         {
             static float receivedPressure;
             receivedPressure = pressure;
             
+            static float prevPressure = 0;
+
+            
+            if (padData->getSticky()) // implement sticky pressure
+            {
+
+                if (pressure == 0.0)
+                {
+                    prevPressure = 0;
+                }
+
+                if (receivedPressure < prevPressure)
+                {
+                    receivedPressure = prevPressure;
+                }
+                
+                // update previous pressure value
+                prevPressure = receivedPressure;
+            }
+            
+            
+            if (padData->getReversePressure()) //apply pressure reverse
+            {
+                receivedPressure = MAX_PRESSURE - receivedPressure;
+            }
+            
+            
             //apply range 
             receivedPressure = (receivedPressure * padData->getPressureRange()) + (padData->getPressureMin()*MAX_PRESSURE);
+            
             
             if (padData->getPressureDestination() != PadData::PressureDestinations::OSC) // if pressure mode requires value between 0-127
             {
@@ -219,9 +265,11 @@ void PlayablePad::pressPad(const float pressure, const bool killingPad)
             }
         }
         
+        
+        // Processing for latch/trigger modes. Uses raw pressure value, ignoring any other processing.
         if (padData->getNoteTriggerMode() == PadData::NoteTriggerModes::LatchNoteMode || padData->getNoteTriggerMode() == PadData::NoteTriggerModes::TriggerNoteMode)
         {
-            static int minPressure = 511;
+            static int minPressure = MAX_PRESSURE;
             static bool stopNoteOnRelease = false;
             
             if (pressure < minPressure && padData->getVelocity() > 0)
@@ -232,11 +280,11 @@ void PlayablePad::pressPad(const float pressure, const bool killingPad)
             //DBG(String(minPressure) + ":" + String(pressure));
             
             
-            if (padData->Velocity > 0 && pressure >= 511) //if pad is on and pressure is at max
+            if (padData->Velocity > 0 && pressure >= MAX_PRESSURE) //if pad is on and pressure is at max
             {
                 if (minPressure == 0)
                 {
-                    minPressure = 511;
+                    minPressure = MAX_PRESSURE;
                     stopNoteOnRelease = true;
                 }
             }
@@ -247,6 +295,8 @@ void PlayablePad::pressPad(const float pressure, const bool killingPad)
                 hitPad(0, true);
             }
         }
+        
+ 
     }
 }
 
@@ -295,5 +345,40 @@ void PlayablePad::setPadEnabled(const bool enabled)
         padData->setPadEnabled(enabled);
 
     }
+}
+
+
+// Master Clock ======================================================
+void PlayablePad::barClockCallback()
+{
+    
+}
+
+void PlayablePad::stepClockCallback(const int currentPositionInLoop)
+{
+    
+}
+
+void PlayablePad::masterClockStopped()
+{
+    
+}
+
+void PlayablePad::masterTempoChanged(const int beatsInLoop, const float newTempo)
+{
+    
+}
+
+void PlayablePad::rawClockCallback(const int clock)
+{
+//    if (padData->getVelocity() > 0)
+//    {
+//        if ((clock % 6) == 0)
+//        {
+//            hitPad(127.0* padData->getPadPressure() / MAX_PRESSURE);
+//            DBG(padData->getVelocity());
+//
+//        }
+//    }
 }
 

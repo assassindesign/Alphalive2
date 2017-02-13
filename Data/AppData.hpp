@@ -1,6 +1,6 @@
 //
 //  AppData.hpp
-//  AlphaLive Midi
+//  AlphaLive 2
 //
 //  Created by Luke Saxton on 13/06/2016.
 //
@@ -10,7 +10,6 @@
 #define AppData_hpp
 
 #include "../JuceLibraryCode/JuceHeader.h"
-//#include "MidiSequencerEngine.hpp"
 #include "AppDataTypes.h"
 #include "SphereData.hpp"
 #include "PadData.hpp"
@@ -20,7 +19,28 @@
 /*
     THIS CLASS IS A SINGLETON. 
  
+    This is the main class that holds all the runtime and state data for the app.
+    This class can be accessed from anywhere in the program by using AppData::Instance();
+    Access to member variables is threadsafe (Locking), this is one of the first classes 
+    created so it's a little behind on best coding practices, I have begun moving
+    sub-classes to use lock-free (atomic) data storage, This class should evenutally
+    follow suit.
+ 
+    So that the GUI can issue commands to the engine without pointer-passing gore,
+    this class contains a pointer to the Alphalive2Engine, which is initialised and passed
+    in by MainContentComponent. Note the forward definition of the Alphalive2Engine class,
+    avoiding self-referencing issues.
+ 
+    Inherits from AppDataFormat (see AppDataListeners.h for more info) to allow a broadcaster
+    -listener relationship with the UI.
+ 
+    Stores data relevant to the whole app.
+ 
+    As it is accessible from anywhere, this class also contains pointers to the MasterClock
+    and the InternalMidiRouter, so MIDI clock Messages can be passed directly to and from 
+    the relevant objects
  */
+
 class Alphalive2Engine;
 
 
@@ -45,9 +65,6 @@ public:
     ~AppData();
     
     static AppData* Instance();
-    
-    
-    
     
     //Adds a new SphereData object to the array and returns the array index of
     //the new object.

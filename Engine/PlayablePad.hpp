@@ -12,11 +12,20 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AppData.hpp"
 #include "InternalMidiRouter.hpp"
-/**
-   Holds information on what each pad of an alphasphere is set to do. In future, this class will return audio as well as midi information. ALearn doesn't require this.
+#include "MasterClock.hpp"
+
+/*
+    Main functionality class. Acts as a virtul representation of a pad on and Alphasphere.
+    
+    Relies on a PadData object to store variables, actually turns pad presses into audio/midi
+    data. Currently only performing masic midi functions, but most of the variables for more 
+    complex functionality should already be present in the PadData class so it should be really
+    straightforward to make cool things happen.
+ 
+    See rawClockCallback() for beginnings of MasterClock integration.
  */
 
-class PlayablePad
+class PlayablePad : public MasterClock::Listener
 {
     
 public:
@@ -35,9 +44,21 @@ public:
     void killPad();
     void setPadEnabled(const bool enabled);
     
-private:    
-    PadData* padData;
-    InternalMidiRouter* router;
+    
+    
+    
+private:
+    // Master Clock ======================================================
+    void barClockCallback() override;
+    void stepClockCallback(const int currentPositionInLoop) override;
+    void masterClockStopped() override;
+    void masterTempoChanged(const int beatsInLoop, const float newTempo) override;
+    void rawClockCallback(const int clock) override;
+    
+    
+    PadData* padData = 0;
+    InternalMidiRouter* router = 0;
+    MasterClock* masterClock = 0;
     
 };
 

@@ -13,7 +13,7 @@
 #include "AppDataListeners.h"
 
 /*
-    Catch-all file for AppDataTypes not big enough to warrant their own files
+    Catch-all file for AppDataFormat objects not big enough to warrant their own files yet
 */
 
 class ScaleData : public AppDataFormat

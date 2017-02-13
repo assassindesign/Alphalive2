@@ -10,12 +10,25 @@
 #define AppDataListeners_h
 #include "../JuceLibraryCode/JuceHeader.h"
 
-/* 
+/*
     This file contains the basic templates for classes that listen to changes in appdata.
     AppData data objects should inherit from AppDataFormat, allowing them to register and call 
     Listeners when data is updated.
+ 
  */
 
+//=====================================================================================================
+
+/* 
+    UI elements that are updated frequently (like the pads) are set up so they pull the value of variables
+    direct from an AppData class in the paint() function. Inheriting from this class allows a UI Component
+    to receive a repaint() call when data it is listening to is changed. The refreshUI() call just sets a 
+    boolean and the actual call is made by a timerCallback, this improves thread-safety and stops rapid 
+    repaints from causing huge CPU usage.
+ 
+    To make use of this functionality, the UI component should inherit from GUIRepaintListener and 
+    call the addListener function of an AppDataFormat object.
+*/
 class GUIRepaintListener : public Component,
                            public Timer
 {
@@ -34,9 +47,7 @@ public:
             repaint();
             timeOfLastPaint.set(Time::currentTimeMillis());
             repaintQueued.set(false);
-//            if (!isTimerRunning()) {
-//                startTimer(100);
-//            }
+
         }
         else
         {
@@ -62,6 +73,15 @@ private:
     Atomic<int> repaintQueued;
 };
 
+
+/* 
+    Base Class for UI elements that need to react to changes in the app state. AppDataFormat classes 
+    will call these functions when relevant data changes. To receive updates, inherit from AppDataListener
+    and call the addListenerFunction on any AppDataFormat object.
+ 
+    changedData refers to the DataIDs enum that each AppDataFormat class should have, which allows you to
+    identify exactly which variables have changed and react accordingly.
+ */
 class AppDataListener
 {
 public:
@@ -73,6 +93,17 @@ public:
     virtual void tempoDataChangeCallback(const int changedData) {};
 
 };
+
+/*
+    Base class for all AppData objects. Keeps a ListenerList of both current types of data listener
+    and triggers updates on the Message thread. To keep this class as light is possible, incoming
+    calls are just stored as 2 integer values in a FIFO queue.
+ 
+    All AppData objects should inherit from this  class, and contain a DataIDs enum that gives each
+    accessible variable a unique ID. the 'set' variable functions should call the relevant callListeners(,)
+    function once the input data has been validated and the variable set, this should trigger an update of 
+    any UI elements that are listening to this object.
+ */
 
 class AppDataFormat : public ActionBroadcaster,
                       public ActionListener

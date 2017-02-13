@@ -11,6 +11,7 @@
 
 Alphalive2Engine::Alphalive2Engine()
 {
+    
 }
 
 Alphalive2Engine::~Alphalive2Engine()
@@ -21,28 +22,25 @@ Alphalive2Engine::~Alphalive2Engine()
 void Alphalive2Engine::initialise()
 {
     sphereConnection = new AlphaSphereConnection();
-
+    
     midiOut = new ExternalMidiOut("Alphalive 2", sphereConnection);
     
     //midiIn = new ExternalMidiIn(&deviceManager);
+    
     masterClock = new MasterClock();
-
     
     router = new InternalMidiRouter(midiOut);
     
     spheres.add(new PlayableSphere(48, 0));
     
-    
     setHIDLinkedSphere(0);
-    
     
     setAudioChannels(0, 2);
     
     masterMixer.addInputSource(masterClock, false);
     
-    
     sphereConnection->setAppHasInitialised(true);
-    masterClock->startClock();
+    //masterClock->startClock();
     
 }
 

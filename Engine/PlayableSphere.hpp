@@ -13,11 +13,23 @@
 #include "PlayablePad.hpp"
 #include "InternalMidiRouter.hpp"
 #include "AppData.hpp"
-//#include "MidiSequencerEngine.cpp"
-/**
-    Class that converts pad hits to useful data. the sphere contains a collection of pad objects that hold information on what each pad on the alphasphere is currently set to do and return midi, control, system or audio data accordingly. In Alphalearn, that data is only midi note and aftertouch data, but the classes can be expanded in future versions of the engine.
+
+/*
+    This class is the main concept behind Alphalive 2. It is a 'Virtual Sphere', basically a virtual
+    representation of an Alphasphere that can be 'hit' or 'pressed' just like the real version. This
+    allows for multiple inputs and for the HID input from the physical controller to be switched 
+    between different virtual spheres, allowing for mutliple scenes to be played at the same time.
+    This should open up different ways of playing the Alphasphere, mapping the whole controller to a
+    single instrument and switching between virtual spheres to change functionality with no lag.
  
-    @see PlayablePad
+    Support to add multiple spheres or other midi devices should all be possible in the future,
+ 
+    Contains algorithmic mapping of midi notes to the sphere, see MidiScales.h for more info on 
+    supported scales and note layouts, this allows quick switching of key/scales/layouts with a
+    single function call rather than having to remap from scratch. functionality is limited at the 
+    moment to 7 note scales, though it should be fairly straightforward to add support for more 
+    scales and layouts.
+ 
 */
 class PlayableSphere : public AudioSource
 {

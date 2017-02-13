@@ -14,8 +14,15 @@
 #include "InternalMidiRouter.hpp"
 #include "MasterClock.hpp"
 
-/**
-   Holds information on what each pad of an alphasphere is set to do. In future, this class will return audio as well as midi information. ALearn doesn't require this.
+/*
+    Main functionality class. Acts as a virtul representation of a pad on and Alphasphere.
+    
+    Relies on a PadData object to store variables, actually turns pad presses into audio/midi
+    data. Currently only performing masic midi functions, but most of the variables for more 
+    complex functionality should already be present in the PadData class so it should be really
+    straightforward to make cool things happen.
+ 
+    See rawClockCallback() for beginnings of MasterClock integration.
  */
 
 class PlayablePad : public MasterClock::Listener

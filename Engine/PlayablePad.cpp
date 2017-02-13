@@ -371,14 +371,14 @@ void PlayablePad::masterTempoChanged(const int beatsInLoop, const float newTempo
 
 void PlayablePad::rawClockCallback(const int clock)
 {
-    if (padData->getVelocity() > 0)
-    {
-        if ((clock % 6) == 0)
-        {
-            hitPad(127.0* padData->getPadPressure() / MAX_PRESSURE);
-            DBG(padData->getVelocity());
-
-        }
-    }
+//    if (padData->getVelocity() > 0)
+//    {
+//        if ((clock % 6) == 0)
+//        {
+//            hitPad(127.0* padData->getPadPressure() / MAX_PRESSURE);
+//            DBG(padData->getVelocity());
+//
+//        }
+//    }
 }
 

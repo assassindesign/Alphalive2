@@ -23,6 +23,15 @@
 #include "AppData.hpp"
 #include "IconVectorPaths.h"
 
+/* 
+    Class that wraps the juce ShapeButton class so it can load icons from stored paths
+    using an enum to select which icon.
+ 
+    This should be expanded to include more icons and vector types as they are created.
+ 
+    Icon paths are currently located in IconVectorPaths.h
+ */
+
 class CustomIconButton : public Component
 {
 public:

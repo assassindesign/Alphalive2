@@ -24,6 +24,12 @@
 #include "PadInspectorPanelBase.h"
 #include "CustomIconButton.hpp"
 
+/* 
+    Sub-panel of MidiNoteSettingsPanel, contains the icons and functionality for
+    toggling different pad trigger modes.
+ */
+
+
 class PadTriggerModePanel : public PadInspectorPanelBase,
                             public Button::Listener
 

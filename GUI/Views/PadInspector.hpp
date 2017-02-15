@@ -25,6 +25,16 @@
 #include "GUIStyle.h"
 #include "MainPadInspectorPanels.hpp"
 
+/* 
+    Highest level PadInspector component, contains all PadData config classes.
+    Some beautification elements and the main viewport that enables inspector 
+    scrolling.
+ 
+    As a change in padDataToInspect is fairly intensive (updates every child 
+    component in some way), A timer system has been implemented to set the 
+    minimum time between changes to 250ms.
+ */
+
 class PadInspector : public AppDataListener,
                      public Component,
                      public Timer
@@ -65,18 +75,7 @@ private:
     MainInspectorPanel mainInspectorPanel;
     
     bool inspectingPadChanged = false;
-    /*Midi note(s)
-      Velocity
-      Midi Channel
-      Pressure Mode
-      Sticky
-      Enabled
-      Quantised
-      Reverse Pressure
-      Vel Curve
-      Press Curve
-      Group
-    */
+
 };
 
 #endif /* PadInspector_hpp */

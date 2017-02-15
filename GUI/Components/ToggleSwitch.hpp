@@ -24,6 +24,10 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "GUIStyle.h"
 
+/* 
+    UI Class that looks like a flick switch.
+ */
+
 class ToggleSwitch : public Component
 {
 public:

@@ -24,6 +24,10 @@
 #include "AppData.hpp"
 #include "PadInspectorPanelBase.h"
 
+/* 
+    Placeholder class for audio settings inspector panel
+ */
+
 class AudioIPanel : public PadInspectorPanelBase
 {
 public:

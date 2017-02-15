@@ -27,7 +27,9 @@
 #include "MidiPressureSettingsPanel.hpp"
 #include "TabButton.hpp"
 
-
+/* 
+    Config panel for Pad Midi Settings
+ */
 
 class MidiIPanel : public PadInspectorPanelBase,
                    public TabButton::Listener

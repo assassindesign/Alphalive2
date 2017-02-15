@@ -20,6 +20,10 @@
 #ifndef IconVectorPaths_h
 #define IconVectorPaths_h
 
+/* 
+    Vector paths for custom icons.
+ */
+
 namespace IconVectorPaths
 {
     //Trigger Mode Icons

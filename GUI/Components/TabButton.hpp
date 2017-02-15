@@ -23,6 +23,11 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "GUIStyle.h"
 
+/* 
+    Dual button class consisting of a main large button with text and a little
+    clickable status light.
+ */
+
 class TabButton : public Component
 {
 public:

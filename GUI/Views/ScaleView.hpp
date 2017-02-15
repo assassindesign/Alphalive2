@@ -25,6 +25,11 @@
 #include "AlphaLive2Engine.hpp"
 #include "NeonButton.hpp"
 
+/* 
+    Ancient implementation of scale moving and shifting UI, should not be used 
+    for anything other than debugging. 
+ */
+
 class ScaleView : public Button::Listener,
                   public AppDataListener,
                   public Component

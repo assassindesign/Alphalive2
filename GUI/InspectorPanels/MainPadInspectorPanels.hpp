@@ -28,6 +28,15 @@
 #include "SystemIPanel.hpp"
 #include "PadInspectorPanelBase.h"
 
+/* 
+    Top level components for pad inspector, main panel contains top and bottom panels,
+    top panel contains pad specific information panels, bottom panel contains group 
+    info and config panels.
+ 
+    All panels inherit from PadIspectorPanelBase and pass on their data object to child
+    components.
+ */
+
 class InspectorTopPanel : public PadInspectorPanelBase,
                           public Button::Listener,
                           public ButtonGrid::Listener,

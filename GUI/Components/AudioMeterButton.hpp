@@ -21,6 +21,12 @@
 #define AudioMeterButton_hpp
 
 #include "AppData.hpp"
+
+/* 
+    Half-developed class to display audio output levels. Uses a timer to pull 
+    averaged values that are calculated in the engine.
+ */
+
 class AudioMeterButton : public Timer,
                          public Component
 {

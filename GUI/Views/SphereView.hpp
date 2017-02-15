@@ -24,7 +24,21 @@
 #include "AppData.hpp"
 #include "PadUI.hpp"
 
-class MainContentComponent;
+/* 
+    Top level component for the main sphere display. Features a fully resizeable and scaleable sphere
+    display (read: lots of maths) and the beginnings of group select and edit functionality.
+ 
+    Something in the program is causing high CPU usage when the window is resized, I have a feeling 
+    all this positioning is the culprit, so there may be room for opitimisation. If you want to
+    re-position the pads, enable the ratio sliders by un-commenting the setBounds() calls in resized()
+ 
+    With this being one of the most render-heavy components in the application, I was looking at 
+    rendering this with an OpenGLContext. Unfortunately, when this is enabled all the colours look
+    slightly brighter so there is an ugly box around the sphere. OpenGL also doesn't seem to support
+    text antialiasing in this implementation, so text looks terrible.
+ 
+ */
+
 
 class SphereView : public Component,
                    public Slider::Listener,
@@ -32,7 +46,7 @@ class SphereView : public Component,
                    public AppDataListener
 {
 public:
-    SphereView(const int _sphereID, MainContentComponent &ref);
+    SphereView(const int _sphereID);
     ~SphereView();
     
     void paint(Graphics& g) override;
@@ -92,9 +106,7 @@ private:
     int sphereID;
     
     ColourSelector colourSelector;
-    
-    MainContentComponent* mainComponent;
-    
+        
     Array<Pad*> selectedPads, prevSelectedPads;
     
     bool allPadsSelected;

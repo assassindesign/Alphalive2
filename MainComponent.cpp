@@ -38,7 +38,7 @@ MainContentComponent::MainContentComponent()
     padInspector = new PadInspector();
     addAndMakeVisible(padInspector);
     
-    sphereView = new SphereView(0, *this);
+    sphereView = new SphereView(0);
     addAndMakeVisible(sphereView);
 
     //tempoView = new TempoView();

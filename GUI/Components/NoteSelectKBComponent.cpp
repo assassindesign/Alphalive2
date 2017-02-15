@@ -19,9 +19,7 @@
 
 #include "NoteSelectKBComponent.hpp"
 #include "Alphalive2Engine.hpp"
-/** 
-    Class to be used to select midi notes in Alphalive 2.
- */
+
 
 //============================================================================================
 //
@@ -471,12 +469,12 @@ void NoteSelectKBComponent::paint(Graphics& g)
 }
 
 
-void NoteSelectKBComponent::timerCallback()
+void NoteSelectKBComponent::timerCallback() //scrolling viewport functionality
 {
     static int targetXposition;
     static int increment, currentXPosition;
     
-    increment = 16;
+    increment = 16; //tweak this for faster/slower scrolling
     
     currentXPosition = mainViewport.getViewPositionX();
     targetXposition = lowestKeyToDisplayX;

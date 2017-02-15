@@ -24,6 +24,10 @@
 #include "AppData.hpp"
 #include "PadInspectorPanelBase.h"
 
+/* 
+    Placeholder class for pad system functions
+ */
+
 class SystemIPanel : public PadInspectorPanelBase
 {
 public:

@@ -23,6 +23,10 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "GUIStyle.h"
 
+/* 
+    Awful custom button class, should be removed as soon as possible.
+ */
+
 class NeonButton : public Button
 {
 public:

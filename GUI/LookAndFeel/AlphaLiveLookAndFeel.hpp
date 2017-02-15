@@ -26,6 +26,10 @@
 
 #define ALPHAGREEN 0xff1d837a
 
+/* 
+    Custom LookAndFeel for non-custom components
+ */
+
 
 class CustomLookAndFeel    : public LookAndFeel_V3
 {

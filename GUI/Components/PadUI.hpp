@@ -26,7 +26,16 @@
 #include "GUIStyle.h"
 #include "PadInspector.hpp"
 
-class MainContentComponent;
+/* 
+    Main UI object for an alphasphere pad. Registera as a GUIRepaintListener with the PadData object
+    that it represents. This class will receive a call to repaint() when data changes and the most 
+    up to date data is pulled from the PadData object in the repaint() function.
+ 
+    All the different states are represented by different opacities and ring sizes, so there is full
+    support for the pad to be any colour. using alt + click/drag allows emulation of pad hit + press.
+ 
+ */
+
 class Pad : public GUIRepaintListener
 {
 public:

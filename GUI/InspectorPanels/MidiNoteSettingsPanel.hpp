@@ -30,6 +30,10 @@
 #include "ButtonGrid.hpp"
 #include "PadTriggerModePanel.hpp"
 
+/* 
+    Panel for configuring pad note settings 
+ */
+
 class MidiNoteSettingsPanel : public PadInspectorPanelBase,
                               public ToggleSwitch::Listener,
                               public ButtonGrid::Listener

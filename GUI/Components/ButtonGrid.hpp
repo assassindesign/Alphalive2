@@ -23,6 +23,11 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "GUIStyle.h"
 
+/* 
+    Fairly generic GUI Class that contains a title and a number of buttons that can 
+    be toggled.
+ */
+
 class ButtonGrid : public Component
 {
 public:

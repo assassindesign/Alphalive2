@@ -24,7 +24,7 @@
 #include "MainComponent.h"
 
 
-SphereView::SphereView(const int _sphereID, MainContentComponent &ref) : sphereID(_sphereID), mainComponent(&ref)
+SphereView::SphereView(const int _sphereID) : sphereID(_sphereID)
 {
     //setBufferedToImage(true);
     

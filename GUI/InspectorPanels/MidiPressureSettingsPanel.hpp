@@ -24,6 +24,11 @@
 #include "PadInspectorPanelBase.h"
 #include "ToggleSwitch.hpp"
 
+/*
+ Panel for configuring pad pressure settings
+ */
+
+
 class MidiPressureSettingsPanel : public PadInspectorPanelBase,
                                   public Button::Listener,
                                   public Slider::Listener

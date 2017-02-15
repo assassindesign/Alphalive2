@@ -25,6 +25,20 @@
 #include "PadInspectorPanelBase.h"
 #include "GUIStyle.h"
 
+/*
+    Class for selecting midi notes in Alphalive 2.
+ 
+    Displays all the keys of a midi keyboard inside a viewport and scrolls to the relevant octave
+    when a new key is selected. Scrolling is fairly processor intensive, so the NoteSelectKBComponent
+    uses an OpenGLContext to render itself using OpenGL. shift + click allows selection of multiple 
+    keys, alt + drag enables tweaking of velocity percentages.
+ 
+    Inherits from PadInspectorPanelBase so it gets a notification when the currently displayed 
+    PadData object is changed.
+ 
+ */
+
+
 class KBComponentKey : public Component
 {
 public:

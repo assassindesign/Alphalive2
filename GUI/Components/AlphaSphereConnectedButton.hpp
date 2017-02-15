@@ -22,6 +22,11 @@
 
 #include "AppData.hpp"
 
+/*      
+    Super simple class that displays the current connection status of the alphasphere.
+    Receives a notification from AppData whenever the connection status changes.
+ */
+
 class AlphaSphereConnectedButton : public Component,
                                    public AppDataListener,
                                    public SettableTooltipClient

@@ -22,6 +22,20 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
+/*
+    Main functionality class for pad inspector panels. contains a pointer to an 
+    AppDataFormat object, which should be passed on to nested child components
+    inside the refreshData() function of the inheriting class.
+ 
+    Calling the setDataObject() function registers this class as a listener with
+    the AppDataFormat object and calls the refreshData() function, which should
+    call the setDataObject() function of any child components, allowing a single 
+    call at the top of the tree to trigger the update of all the child components.
+ 
+    Also passes on the application LookAndFeel object.
+ */
+
+
 class PadInspectorPanelBase : public Component,
                               public AppDataListener
 {

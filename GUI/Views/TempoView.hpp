@@ -24,6 +24,11 @@
 #include "Alphalive2Engine.hpp"
 #include "NeonButton.hpp"
 
+
+/* 
+    Ancient and horrible looking display with basic tempo controls. Currently hidden in the app waiting for
+    a new and better replacement.
+ */
 class MetronomeTickerUI : public Component,
                           public MasterClock::Listener
 {

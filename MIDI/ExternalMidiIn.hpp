@@ -23,6 +23,11 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AppData.hpp"
 
+/* 
+    Simple class that registers all available midi devices as possible input to the software.
+    needs expanding to support selecting certain devices only and to handle connects/disconnects
+    during runtime.
+ */
 
 class ExternalMidiIn : public MidiInputCallback
 {

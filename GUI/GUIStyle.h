@@ -22,6 +22,10 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
+/* 
+    Static colour storage in the style of Juce::Colours.
+ */
+
 class GUIColours {
 public:
     static const Colour Background, Main, AlphaGreen, PanelBackground, RackScrewAccent, RecButtonRed;

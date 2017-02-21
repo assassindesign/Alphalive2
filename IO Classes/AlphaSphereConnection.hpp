@@ -28,6 +28,8 @@
 
 /** 
     Class for handling the sphere connection. In Alphalive, the main engine class inherits from HidComms and manages the sphere connection, but in the interests of modularity, this has been moved to a separate entity. This could potentially allow for multiple spheres to be connected and should promote easier maintenence in future.
+ 
+    Still lacking a bunch of the functionality present before refactoring - mainly firmware related things
  */
 
 struct MidiChannelPressureHolder

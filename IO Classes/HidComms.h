@@ -19,6 +19,9 @@
 //
 
 /*
+    Stolen directly from the first version of AlphaLive
+ 
+ 
  How AlphaLive should be set up and changed in relevance to the existance of the HID device.
  
  On start up:

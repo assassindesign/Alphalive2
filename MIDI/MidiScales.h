@@ -20,6 +20,12 @@
 #ifndef MidiScales_h
 #define MidiScales_h
 
+/* 
+    Various scales in semitones from root note format, -1 signifies the end of the array.
+    Used by playableSphere in the mapSphere function. More scales could easily be added here, 
+    although the current algorithmic mapping function only supports 7 note scales.
+*/
+
 namespace IntervalSpacings
 {
     const char* ScaleNames[] = {"Major", "Natural Minor", "Harmonic Minor", "Hungarian", NULL};
@@ -29,8 +35,11 @@ namespace IntervalSpacings
     const int Hungarian[] = {0, 2, 3, 6, 7, 8, 11, 12, -1};
 }
 
-
-
+/*
+    These masks convert the default pad layout - (0-47) to different layouts. Need to find a way
+    to make this more flexible for spheres of different sizes as this only works for the big 
+    sphere.
+*/
 namespace SphereMask
 {
     //const int SphereMask[] = {0,0,0,0,0,0,0,0, 6, 8, 10, 12, 14, 0, 2, 4, 3, 5, 7, 9, 11, 13, 15, 1, 8, 10, 12, 14, 16, 18, 20, 22, 21, 23, 9, 11, 13, 15, 17, 19, 0, 0, 0, 0, 0, 0, 0, 0, -1};

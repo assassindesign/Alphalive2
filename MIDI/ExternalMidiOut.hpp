@@ -24,7 +24,7 @@
 #include "AlphaSphereConnection.hpp"
 
 /** 
-    Super simple class to accept an internal midi note and output the note to an external device.
+    Super simple class to accept an internal midi note and outputs the note to an external device.
  */
 class ExternalMidiOut : public InternalMidiIn
 {

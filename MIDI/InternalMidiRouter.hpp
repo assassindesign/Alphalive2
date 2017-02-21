@@ -24,8 +24,6 @@
 #include "ThreadQueue.hpp"
 
 
-
-
 /**
     Abstract class to be inherited by any class which wants to be a destination for the InternalMidiRouter
  
@@ -42,13 +40,12 @@ public:
 private:
 };
 
-/** 
+
+/**
     Class for routing midi messages from sources to destinations. Holds a pointer to various possible destinations.
  
     Potential in future for making destinations more dynamic by allowing any class that is an InternalMidiIn to be 
-    registered as a destination. 
- 
- 
+    registered as a destination.
  */
 
 class InternalMidiRouter : public ActionBroadcaster,
